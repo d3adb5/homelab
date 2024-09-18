@@ -6,9 +6,9 @@ SECRETS_FILE = secrets.yaml
 CLUSTER_NAME = homelab
 API_ENDPOINT = https://ottawa.lan:6443
 
-TALOS_VERSION = 1.7.6
-INSTALL_IMAGE_ID = $(shell curl -sX POST --data-binary @schematic.yaml https://factory.talos.dev/schematics | jq -r '.id')
-INSTALL_IMAGE = factory.talos.dev/installer/$(INSTALL_IMAGE_ID):v$(TALOS_VERSION)
+TALOS_VERSION := 1.7.6
+INSTALL_IMAGE_ID := $(shell curl -sX POST --data-binary @schematic.yaml https://factory.talos.dev/schematics | jq -r '.id')
+INSTALL_IMAGE := factory.talos.dev/installer/$(INSTALL_IMAGE_ID):v$(TALOS_VERSION)
 
 empty :=
 space := $(empty) $(empty)
