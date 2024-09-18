@@ -1,0 +1,5 @@
+machine:
+  network:
+    hostname: victoria.lan
+  install:
+    disk: /dev/nvme0n1
