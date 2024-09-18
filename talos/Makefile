@@ -14,7 +14,7 @@ empty :=
 space := $(empty) $(empty)
 comma := ,
 
-.PHONY: all clean controlplane-config worker-config apply $(addprefix apply-controlplane-, $(CONTROLPLANE)) $(addprefix apply-worker-, $(WORKERS)) upgrade upgrade-controlplane upgrade-workers
+.PHONY: default all clean controlplane-config worker-config apply $(addprefix apply-controlplane-, $(CONTROLPLANE)) $(addprefix apply-worker-, $(WORKERS)) upgrade upgrade-controlplane upgrade-workers
 
 default: all
 
