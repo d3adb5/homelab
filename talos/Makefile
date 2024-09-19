@@ -24,8 +24,26 @@ clean:
 
 ################################################################################
 
+.PHONY: help
+
+help:
+	@echo "Usage: make [target]"
+	@echo
+	@echo "Targets:"
+	@echo "  config                  Generate configuration files for all nodes"
+	@echo "    config-control          Generate config files for controlplane nodes"
+	@echo "    config-workers          Generate config files for worker nodes"
+	@echo "  apply                   Apply configuration files to all nodes"
+	@echo "    apply-control-<node>    Apply config file to controlplane node"
+	@echo "    apply-worker-<node>     Apply config file to worker node"
+	@echo "  upgrade                 Upgrade all nodes to desired installer image"
+	@echo "    upgrade-control         Upgrade only controlplane nodes"
+	@echo "    upgrade-workers         Upgrade only worker nodes"
+	@echo "  help                    Display this help message"
+	@echo "  clean                   Remove generated configuration files"
 
 
+################################################################################
 
 .PHONY: config-control config-workers
 
