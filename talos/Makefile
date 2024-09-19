@@ -51,11 +51,11 @@ generated/controlplane/%.yaml: nodes/controlplane/%.yaml
 
 ################################################################################
 
-.PHONY: upgrade upgrade-controlplane upgrade-workers
+.PHONY: upgrade upgrade-control upgrade-workers
 
-upgrade: upgrade-controlplane upgrade-workers
+upgrade: upgrade-control upgrade-workers
 
-upgrade-controlplane: config-control
+upgrade-control: config-control
 	@echo "Upgrading controlplane nodes"
 	@talosctl upgrade --image $(INSTALL_IMAGE) -p \
 		-n $(subst $(space),$(comma),$(basename $(CONTROLPLANE)))
