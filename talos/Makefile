@@ -67,12 +67,12 @@ upgrade-workers: config-workers
 
 ################################################################################
 
-.PHONY: apply apply-controlplane-% apply-worker-%
+.PHONY: apply apply-control-% apply-worker-%
 
-apply: $(addprefix apply-controlplane-, $(basename $(CONTROLPLANE)))
+apply: $(addprefix apply-control-, $(basename $(CONTROLPLANE)))
 apply: $(addprefix apply-worker-, $(basename $(WORKERS)))
 
-apply-controlplane-%: generated/controlplane/%.yaml
+apply-control-%: generated/controlplane/%.yaml
 	@echo "Applying config on controlplane node $*"
 	@talosctl apply-config -n $* --file generated/controlplane/$*.yaml
 
