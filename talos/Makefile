@@ -17,18 +17,21 @@ comma := ,
 
 .PHONY: all clean
 
-all: controlplane-config worker-config
+all: config-control config-workers
 
 clean:
 	@rm -rf generated
 
 ################################################################################
 
-.PHONY: controlplane-config worker-config
 
-controlplane-config: $(addprefix generated/controlplane/, $(CONTROLPLANE))
 
-worker-config: $(addprefix generated/workers/, $(WORKERS))
+
+.PHONY: config-control config-workers
+
+config-control: $(addprefix generated/controlplane/, $(CONTROLPLANE))
+
+config-workers: $(addprefix generated/workers/, $(WORKERS))
 
 generated/workers/%.yaml: nodes/workers/%.yaml
 	@mkdir -p $(dir $@)
@@ -52,12 +55,12 @@ generated/controlplane/%.yaml: nodes/controlplane/%.yaml
 
 upgrade: upgrade-controlplane upgrade-workers
 
-upgrade-controlplane: controlplane-config
+upgrade-controlplane: config-control
 	@echo "Upgrading controlplane nodes"
 	@talosctl upgrade --image $(INSTALL_IMAGE) -p \
 		-n $(subst $(space),$(comma),$(basename $(CONTROLPLANE)))
 
-upgrade-workers: worker-config
+upgrade-workers: config-workers
 	@echo "Upgrading worker nodes"
 	@talosctl upgrade --image $(INSTALL_IMAGE) \
 		-n $(subst $(space),$(comma),$(basename $(WORKERS)))
