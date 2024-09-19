@@ -15,9 +15,9 @@ empty :=
 space := $(empty) $(empty)
 comma := ,
 
-.PHONY: all clean
+.PHONY: config clean
 
-all: config-control config-workers
+config: config-control config-workers
 
 clean:
 	@rm -rf generated
