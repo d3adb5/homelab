@@ -1,0 +1,6 @@
+apiVersion: v2
+name: app-of-apps
+version: 0.1.0
+
+type: application
+description: Root application following Argo CD app of apps pattern
