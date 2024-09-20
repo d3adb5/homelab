@@ -5,3 +5,6 @@ repository:
 
 argocd:
   namespace: argocd
+
+metallb:
+  namespace: metallb-system
