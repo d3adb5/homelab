@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: cluster-utils
+spec:
+  description: Cluster utilities that lay outside other applications
+
+  sourceRepos:
+    - {{ .Values.repository.url }}
+
+  destinations:
+    - namespace: "*"
+      server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+    - group: node.k8s.io
+      kind: RuntimeClass
