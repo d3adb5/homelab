@@ -19,9 +19,6 @@ spec:
         configs:
           params:
             server.insecure: true
-          cm:
-            application.namespaces: "*"
-            application.resourceTrackingMethod: annotation+label
 
         controller:
           replicas: 1

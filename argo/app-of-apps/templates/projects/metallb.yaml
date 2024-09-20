@@ -24,6 +24,3 @@ spec:
       kind: ClusterRoleBinding
     - group: admissionregistration.k8s.io
       kind: ValidatingWebhookConfiguration
-
-  sourceNamespaces:
-    - {{ .Values.metallb.namespace }}
