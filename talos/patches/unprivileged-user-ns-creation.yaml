@@ -1,0 +1,7 @@
+# This is necessary for gVisor to work:
+#
+#   https://github.com/siderolabs/extensions/tree/main/container-runtime/gvisor
+
+machine:
+  sysctls:
+    user.max_user_namespaces: "11255"
