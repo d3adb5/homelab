@@ -3,7 +3,7 @@ kind: Application
 metadata:
   name: argocd
 spec:
-  project: default
+  project: argocd
 
   source:
     repoURL: https://argoproj.github.io/argo-helm
