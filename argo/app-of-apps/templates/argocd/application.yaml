@@ -8,12 +8,13 @@ spec:
   source:
     repoURL: https://argoproj.github.io/argo-helm
     chart: argo-cd
-    targetRevision: 7.5.0
+    targetRevision: 7.6.0
 
     helm:
       valuesObject:
         global:
           domain: argocd.d3adb5.net
+          runtimeClassName: gvisor
 
         configs:
           params:
