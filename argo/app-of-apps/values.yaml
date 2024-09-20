@@ -8,3 +8,7 @@ argocd:
 
 metallb:
   namespace: metallb-system
+  ipSharingKey: metallb-use-a-single-ip
+
+ingress:
+  namespace: ingress-nginx
