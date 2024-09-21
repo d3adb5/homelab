@@ -75,12 +75,12 @@ upgrade: upgrade-control upgrade-workers
 
 upgrade-control: config-control
 	@echo "Upgrading controlplane nodes"
-	@talosctl upgrade --image $(INSTALL_IMAGE) -p \
+	@talosctl upgrade --image $(INSTALL_IMAGE) --preserve \
 		-n $(subst $(space),$(comma),$(basename $(CONTROLPLANE)))
 
 upgrade-workers: config-workers
 	@echo "Upgrading worker nodes"
-	@talosctl upgrade --image $(INSTALL_IMAGE) \
+	@talosctl upgrade --image $(INSTALL_IMAGE) --preserve \
 		-n $(subst $(space),$(comma),$(basename $(WORKERS)))
 
 ################################################################################
