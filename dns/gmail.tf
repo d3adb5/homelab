@@ -32,3 +32,18 @@ resource "cloudflare_record" "gmail" {
   priority = each.value
   content  = each.key
 }
+
+resource "cloudflare_record" "spf" {
+  zone_id = data.cloudflare_zone.this.id
+  name    = "@"
+  type    = "TXT"
+  content = "v=spf1 include:_spf.google.com ~all"
+}
+
+# Domain verification for Google Workspace.
+resource "cloudflare_record" "google_cname" {
+  zone_id = data.cloudflare_zone.this.id
+  name    = "cg3vgswa6ehx"
+  type    = "CNAME"
+  content = "gv-mng22fgtuvkl6z.dv.googlehosted.com"
+}
