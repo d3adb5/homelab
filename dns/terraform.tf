@@ -16,3 +16,16 @@ provider "cloudflare" {
 data "cloudflare_zone" "this" {
   name = var.zone_name
 }
+
+# This is necessary to allow Let's Encrypt to issue certificates.
+resource "cloudflare_record" "letsencrypt" {
+  zone_id = data.cloudflare_zone.this.id
+  name    = "@"
+  type    = "CAA"
+
+  data {
+    flags = 128
+    tag   = "issue"
+    value = "letsencrypt.org"
+  }
+}
