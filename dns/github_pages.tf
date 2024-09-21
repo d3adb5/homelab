@@ -45,3 +45,10 @@ resource "cloudflare_record" "github_pages_ipv6_charts" {
   type     = "AAAA"
   content  = each.key
 }
+
+resource "cloudflare_record" "www" {
+  zone_id = data.cloudflare_zone.this.id
+  name    = "www"
+  type    = "CNAME"
+  content = data.cloudflare_zone.this.name
+}
