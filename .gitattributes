@@ -1,1 +1,3 @@
 talos/secrets.yaml filter=git-crypt diff=git-crypt
+dns/terraform.tfstate* filter=git-crypt diff=git-crypt
+dns/terraform.auto.tfvars filter=git-crypt diff=git-crypt
