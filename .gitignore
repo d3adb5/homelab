@@ -1,2 +1,3 @@
 talos/generated/**
 dns/.terraform
+dns/terraform.tfstate.backup
