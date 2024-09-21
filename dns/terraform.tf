@@ -29,3 +29,12 @@ resource "cloudflare_record" "letsencrypt" {
     value = "letsencrypt.org"
   }
 }
+
+# Extra CNAME records to create.
+resource "cloudflare_record" "extra_cnames" {
+  for_each = var.extra_cnames
+  zone_id  = data.cloudflare_zone.this.id
+  name     = each.key
+  type     = "CNAME"
+  content  = each.value
+}

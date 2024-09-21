@@ -17,3 +17,8 @@ variable "hosts" {
     ipv6 = optional(string)
   }))
 }
+
+variable "extra_cnames" {
+  description = "Extra CNAME records to create"
+  type        = map(string)
+}
