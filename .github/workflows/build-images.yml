@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - "*"
     paths:
       - "images/**"
 
@@ -19,8 +21,22 @@ jobs:
       - uses: actions/checkout@v4
       - id: jsonmatrix
         run: |
-          find images -maxdepth 2 -type f -name Dockerfile -exec dirname {} \; \
-            | xargs -L 1 basename | jq -cR '{image:[.,inputs]}' > matrix.json
+          pushEventRef="${{ github.event.ref }}"
+          tagImageRegex="refs/tags/(.*)-([0-9]+.[0-9]+.[0-9]+.*)"
+          desiredImage=""
+
+          if [[ "$pushEventRef" =~ $tagImageRegex ]]; then
+            desiredImage="${BASH_REMATCH[1]}"
+            imageTag="${BASH_REMATCH[2]}"
+          fi
+
+          if [[ -n "$desiredImage" ]]; then
+            jq -cR '{image:[.],tag:["'"$imageTag"'"]}' <<< "$desiredImage" > matrix.json
+          else
+            find images -maxdepth 2 -type f -name Dockerfile -exec dirname {} \; \
+              | xargs -L 1 basename | jq -cR '{image:[.,inputs],tag:["latest"]}' > matrix.json
+          fi
+
           echo "matrix=$(cat matrix.json)" >> "$GITHUB_OUTPUT"
 
   build-image:
@@ -38,12 +54,12 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           context: images/${{ matrix.image }}
-          tags: ghcr.io/${{ github.actor }}/${{ matrix.image }}:latest
+          tags: ghcr.io/${{ github.actor }}/${{ matrix.image }}:${{ matrix.tag }}
           load: true
 
       - uses: aquasecurity/trivy-action@0.24.0
         with:
-          image-ref: ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}:latest
+          image-ref: ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}:${{ matrix.tag }}
           severity: CRITICAL,HIGH
           ignore-unfixed: false
           exit-code: "1"
@@ -57,5 +73,5 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           context: images/${{ matrix.image }}
-          tags: ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}:latest
+          tags: ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}:${{ matrix.tag }}
           push: true
