@@ -30,8 +30,11 @@ jobs:
             imageTag="${BASH_REMATCH[2]}"
           fi
 
-          if [[ -n "$desiredImage" ]]; then
+          if [[ -n "$desiredImage" ]] && [[ -d "images/$desiredImage" ]]; then
             jq -cR '{image:[.],tag:["'"$imageTag"'"]}' <<< "$desiredImage" > matrix.json
+          elif [[ -n "$desiredImage" ]]; then
+            echo "Desired image $desiredImage not found in images directory."
+            echo "{}" > matrix.json
           else
             find images -maxdepth 2 -type f -name Dockerfile -exec dirname {} \; \
               | xargs -L 1 basename | jq -cR '{image:[.,inputs],tag:["latest"]}' > matrix.json
@@ -43,6 +46,7 @@ jobs:
     name: Build & Push
     runs-on: ubuntu-latest
 
+    if: ${{ needs.build-matrix.outputs.matrix != '{}' }}
     needs: build-matrix
     strategy:
       fail-fast: false
