@@ -12,3 +12,6 @@ metallb:
 
 ingress:
   namespace: ingress-nginx
+
+sealedSecrets:
+  namespace: sealed-secrets
