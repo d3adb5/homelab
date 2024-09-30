@@ -15,7 +15,7 @@ spec:
     helm:
       valuesObject:
         global:
-          domain: argocd.d3adb5.net
+          domain: argocd.d3adb5.ca
           runtimeClassName: gvisor
 
         configs:
