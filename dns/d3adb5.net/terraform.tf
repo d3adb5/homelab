@@ -38,15 +38,3 @@ resource "cloudflare_record" "extra_cnames" {
   type     = "CNAME"
   content  = each.value
 }
-
-# Dynamic IP address record for the homelab.
-resource "cloudflare_record" "dynamic" {
-  zone_id = data.cloudflare_zone.this.id
-  name    = "home"
-  type    = "A"
-  content = "127.0.0.1"
-
-  lifecycle {
-    ignore_changes = [content]
-  }
-}
