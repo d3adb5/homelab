@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: ddclient
+spec:
+  description: Dynamic DNS client
+
+  sourceRepos:
+    - https://charts.d3adb5.net
+    - {{ .Values.repository.url }}
+
+  destinations:
+    - namespace: {{ .Values.ddclient.namespace }}
+      server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace

@@ -1,0 +1,8 @@
+config:
+  zone: d3adb5.ca
+  dynamicRecords:
+    - dyn.d3adb5.ca
+  protocol: cloudflare
+  credentials:
+    secretName: ddclient-credentials
+    passwordKey: password

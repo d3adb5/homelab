@@ -15,3 +15,6 @@ ingress:
 
 sealedSecrets:
   namespace: sealed-secrets
+
+ddclient:
+  namespace: ddclient

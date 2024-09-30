@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ddclient
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: ddclient
+
+  sources:
+    - repoURL: https://metallb.github.io/metallb
+      targetRevision: 0.14.8
+      chart: metallb
+    - repoURL: {{ .Values.repository.url }}
+      targetRevision: {{ .Values.repository.targetRevision }}
+      path: argo/metallb
+
+  sources:
+    - repoURL: {{ .Values.repository.url }}
+      targetRevision: {{ .Values.repository.targetRevision }}
+      path: argo/ddclient
+      ref: repository
+
+    - repoURL: https://charts.d3adb5.net
+      chart: ddclient
+      targetRevision: 0.1.0
+      helm:
+        valueFiles:
+          - $repository/argo/ddclient/values.yaml
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.ddclient.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
