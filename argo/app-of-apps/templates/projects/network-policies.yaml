@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: network-policies
+spec:
+  description: Network policies to secure my cluster's namespaces
+
+  sourceRepos:
+    - {{ .Values.repository.url }}
+
+  destinations:
+    - namespace: "*"
+      server: https://kubernetes.default.svc
+
+  namespaceResourceWhitelist:
+    - group: networking.k8s.io
+      kind: NetworkPolicy

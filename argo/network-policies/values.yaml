@@ -1,0 +1,3 @@
+denyAll:
+  namespaces:
+    - default
