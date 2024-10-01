@@ -8,14 +8,6 @@ spec:
   project: ddclient
 
   sources:
-    - repoURL: https://metallb.github.io/metallb
-      targetRevision: 0.14.8
-      chart: metallb
-    - repoURL: {{ .Values.repository.url }}
-      targetRevision: {{ .Values.repository.targetRevision }}
-      path: argo/metallb
-
-  sources:
     - repoURL: {{ .Values.repository.url }}
       targetRevision: {{ .Values.repository.targetRevision }}
       path: argo/ddclient
