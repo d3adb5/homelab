@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ddclient-egress-all
+  namespace: ddclient
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: ddclient
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 10.244.0.0/16 # Pod CIDR
+              - 10.96.0.0/12 # Service CIDR
+      ports:
+        - port: 443
+          protocol: TCP
+        - port: 80
+          protocol: TCP

@@ -1,3 +1,4 @@
 denyAll:
   namespaces:
     - default
+    - ddclient
