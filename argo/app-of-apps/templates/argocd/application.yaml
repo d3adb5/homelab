@@ -17,6 +17,9 @@ spec:
         global:
           domain: argocd.d3adb5.ca
           runtimeClassName: gvisor
+          networkPolicy:
+            create: true
+            defaultDenyIngress: true
 
         configs:
           params:
