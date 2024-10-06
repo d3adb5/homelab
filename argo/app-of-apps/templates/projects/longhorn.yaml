@@ -9,6 +9,7 @@ spec:
 
   sourceRepos:
     - https://charts.longhorn.io
+    - {{ .Values.repository.url }}
 
   destinations:
     - namespace: {{ .Values.longhorn.namespace }}
