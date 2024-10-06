@@ -21,3 +21,6 @@ ddclient:
 
 certManager:
   namespace: cert-manager
+
+longhorn:
+  namespace: longhorn-system
