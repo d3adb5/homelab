@@ -47,3 +47,11 @@ resource "cloudflare_record" "google_cname" {
   type    = "CNAME"
   content = "gv-mng22fgtuvkl6z.dv.googlehosted.com"
 }
+
+# DMARC record for completeness.
+resource "cloudflare_record" "dmarc" {
+  zone_id = data.cloudflare_zone.this.id
+  name    = "_dmarc"
+  type    = "TXT"
+  content = "v=DMARC1; p=none;"
+}
