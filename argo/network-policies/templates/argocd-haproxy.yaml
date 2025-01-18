@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: argocd-haproxy-from-repo-server
+  namespace: argocd
+spec:
+  podSelector:
+    matchLabels:
+      app: redis-ha-haproxy
+      release: argocd
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: argocd
+              app.kubernetes.io/name: argocd-repo-server
+      ports:
+        - port: 6379
