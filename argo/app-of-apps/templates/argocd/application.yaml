@@ -29,6 +29,11 @@ spec:
 
         redis-ha:
           enabled: true
+          networkPolicy:
+            enabled: true
+          haproxy:
+            networkPolicy:
+              enabled: true
 
         server:
           autoscaling:
