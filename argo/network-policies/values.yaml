@@ -2,3 +2,7 @@ denyAll:
   namespaces:
     - default
     - ddclient
+
+allowACME:
+  namespaces:
+    - argocd
