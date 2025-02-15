@@ -11,6 +11,8 @@ TALOS_VERSION    := 1.9.4
 INSTALL_IMAGE_ID := $(shell curl -s --data-binary @schematic.yaml $(FACTORY_URL) | jq -r '.id')
 INSTALL_IMAGE    := factory.talos.dev/installer/$(INSTALL_IMAGE_ID):v$(TALOS_VERSION)
 
+EXTRA_UPGRADE_FLAGS :=
+
 empty :=
 space := $(empty) $(empty)
 comma := ,
@@ -75,12 +77,12 @@ upgrade: upgrade-control upgrade-workers
 
 upgrade-control: config-control
 	@echo "Upgrading controlplane nodes"
-	@talosctl upgrade --image $(INSTALL_IMAGE) --preserve \
+	@talosctl upgrade $(EXTRA_UPGRADE_FLAGS) --image $(INSTALL_IMAGE) --preserve \
 		-n $(subst $(space),$(comma),$(basename $(CONTROLPLANE)))
 
 upgrade-workers: config-workers
 	@echo "Upgrading worker nodes"
-	@talosctl upgrade --image $(INSTALL_IMAGE) --preserve \
+	@talosctl upgrade $(EXTRA_UPGRADE_FLAGS) --image $(INSTALL_IMAGE) --preserve \
 		-n $(subst $(space),$(comma),$(basename $(WORKERS)))
 
 ################################################################################
