@@ -24,3 +24,6 @@ certManager:
 
 longhorn:
   namespace: longhorn-system
+
+minecraft:
+  namespace: minecraft

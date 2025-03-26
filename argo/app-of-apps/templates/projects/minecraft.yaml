@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: minecraft
+spec:
+  description: Services supporting Minecraft servers
+
+  sourceRepos:
+    - https://itzg.github.io/minecraft-server-charts
+    - {{ .Values.repository.url }}
+
+  destinations:
+    - namespace: {{ .Values.minecraft.namespace }}
+      server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRole
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRoleBinding
