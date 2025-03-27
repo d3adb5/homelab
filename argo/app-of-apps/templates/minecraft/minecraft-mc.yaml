@@ -23,11 +23,11 @@ spec:
             Size: 20Gi
         resources:
           requests:
-            cpu: 1
-            memory: 8Gi
+            cpu: 6
+            memory: 16Gi
           limits:
-            cpu: 4
-            memory: 8Gi
+            cpu: 10
+            memory: 16Gi
         minecraftServer:
           eula: true
           type: FABRIC
@@ -44,7 +44,7 @@ spec:
           icon: "http://0x0.st/8e8Y.png"
           rcon:
             enabled: false
-          memory: 7168M
+          memory: 15360M
         mcbackup:
           enabled: false
         affinity:
