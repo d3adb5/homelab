@@ -12,7 +12,7 @@ spec:
     chart: minecraft
     helm:
       valuesObject:
-        serverAnnotations:
+        serviceAnnotations:
           mc-router.itzg.me/externalServerName: "mc.picori.ca"
         workloadAsStatefulSet: true
         strategyType: RollingUpdate
