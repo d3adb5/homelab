@@ -1,0 +1,72 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minecraft-mc
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: minecraft
+  source:
+    repoURL: https://itzg.github.io/minecraft-server-charts
+    targetRevision: 4.26.0
+    chart: minecraft
+    helm:
+      valuesObject:
+        serverAnnotations:
+          mc-router.itzg.me/externalServerName: "mc.picori.ca"
+        workloadAsStatefulSet: true
+        strategyType: RollingUpdate
+        persistence:
+          storageClass: longhorn
+          dataDir:
+            enabled: true
+            Size: 20Gi
+        resources:
+          requests:
+            cpu: 1
+            memory: 8Gi
+          limits:
+            cpu: 4
+            memory: 8Gi
+        minecraftServer:
+          eula: true
+          type: FABRIC
+          version: "1.21.4"
+          difficulty: normal
+          whitelist: ab9c17,Shedy33
+          ops: ab9c17
+          maxPlayers: 10
+          allowNether: true
+          announcePlayerAchievements: true
+          spawnProtection: 0
+          viewDistance: 32
+          motd: "マイクラへようこそ！"
+          icon: "http://0x0.st/8e8Y.png"
+          rcon:
+            enabled: false
+          memory: 7168M
+        mcbackup:
+          enabled: false
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values:
+                          - minecraft
+                  topologyKey: kubernetes.io/hostname
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.minecraft.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
