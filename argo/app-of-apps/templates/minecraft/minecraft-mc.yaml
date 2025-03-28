@@ -45,6 +45,19 @@ spec:
           rcon:
             enabled: false
           memory: 15360M
+
+          extraPorts:
+            - name: voice-chat
+              containerPort: 24454
+              protocol: UDP
+              service:
+                enabled: true
+                embedded: false
+                annotations:
+                  metallb.universe.tf/allow-shared-ip: {{ .Values.metallb.ipSharingKey }}
+                type: LoadBalancer
+                port: 24454
+
         mcbackup:
           enabled: false
         affinity:
