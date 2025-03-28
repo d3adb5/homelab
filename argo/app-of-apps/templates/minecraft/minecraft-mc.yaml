@@ -73,6 +73,43 @@ spec:
                           - minecraft
                   topologyKey: kubernetes.io/hostname
 
+        extraVolumes:
+          - volumes:
+              - name: voice-chat-config
+                configMap:
+                  name: minecraft-mc-voice-chat-config
+            volumeMounts:
+              - name: voice-chat-config
+                mountPath: /data/config/voicechat/voicechart-server.properties
+                subPath: voicechart-server.properties
+
+        extraDeploy:
+          - |
+            apiVersion: v1
+            kind: ConfigMap
+            metadata:
+              name: minecraft-mc-voice-chat-config
+            data:
+              voicechart-server.properties: |
+                port=24454
+                bind_address=
+                max_voice_distance=48.0
+                crouch_distance_multiplier=1.0
+                whisper_distance_multiplier=0.5
+                codec=VOIP
+                mtu_size=1024
+                keep_alive=1000
+                enable_groups=true
+                voice_host=mc.picori.ca
+                allow_recording=true
+                spectator_interaction=false
+                spectator_player_possession=false
+                force_voice_chat=false
+                login_timeout=10000
+                broadcast_range=-1.0
+                allow_pings=true
+                use_natives=true
+
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ .Values.minecraft.namespace }}
