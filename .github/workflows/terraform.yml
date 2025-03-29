@@ -1,0 +1,52 @@
+name: Terraform
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - ".github/workflows/terraform.yml"
+      - "terraform/**"
+  pull_request:
+    paths:
+      - ".github/workflows/terraform.yml"
+      - "terraform/**"
+
+jobs:
+  build-matrix:
+    name: Build Matrix
+    runs-on: ubuntu-latest
+
+    outputs:
+      matrix: ${{ steps.jsonmatrix.outputs.matrix }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - id: jsonmatrix
+        run: |
+          find terraform -type f -name "*.tf" -printf "%h\n" | sort -u \
+            | jq -cR '[.,inputs] | map(split("/")|.[1:]|join("/")) | {path:.}' \
+            > matrix.json
+
+          echo "matrix=$(cat matrix.json)" >> "$GITHUB_OUTPUT"
+
+  format-check:
+    name: Format Check
+    runs-on: ubuntu-latest
+
+    if: ${{ needs.build-matrix.outputs.matrix != '{}' }}
+    needs: build-matrix
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.build-matrix.outputs.matrix) }}
+
+    defaults:
+      run:
+        working-directory: terraform/${{ matrix.path }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: |
+          rm *.tfstate* *.auto.tfvars
+          terraform fmt -check
