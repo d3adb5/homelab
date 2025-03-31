@@ -43,7 +43,9 @@ spec:
           motd: "マイクラへようこそ！"
           icon: "http://0x0.st/8e8Y.png"
           rcon:
-            enabled: false
+            enabled: true
+            existingSecret: minecraft-mc-secrets
+            secretKey: rcon-password
           memory: 15360M
 
           extraPorts:
@@ -84,6 +86,16 @@ spec:
                 subPath: voicechart-server.properties
 
         extraDeploy:
+          - |
+            apiVersion: bitnami.com/v1alpha1
+            kind: SealedSecret
+            metadata:
+              name: minecraft-mc-secrets
+            spec:
+              encryptedData:
+                {{- range $key, $value := .Values.minecraft.server.mc.secrets }}
+                {{ $key }}: {{ splitList "\n" $value | join "" }}
+                {{- end }}
           - |
             apiVersion: v1
             kind: ConfigMap
