@@ -61,7 +61,14 @@ spec:
                 port: 24454
 
         mcbackup:
-          enabled: false
+          enabled: true
+          pruneBackupDays: 14
+          persistence:
+            storageClass: longhorn
+            backupDir:
+              enabled: true
+              Size: 50Gi
+
         affinity:
           podAntiAffinity:
             preferredDuringSchedulingIgnoredDuringExecution:
