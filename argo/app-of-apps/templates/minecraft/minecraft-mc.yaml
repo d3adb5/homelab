@@ -40,7 +40,7 @@ spec:
           announcePlayerAchievements: true
           spawnProtection: 0
           viewDistance: 32
-          motd: "マイクラへようこそ！"
+          motd: "You can voice chat here, y'know?"
           icon: "http://0x0.st/8e8Y.png"
           rcon:
             enabled: true
