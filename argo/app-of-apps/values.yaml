@@ -27,3 +27,17 @@ longhorn:
 
 minecraft:
   namespace: minecraft
+  server:
+    mc:
+      whitelist:
+        - ab9c17
+        - Shedy33
+        - Seleran
+        - ModsBeaver
+        - 2cute4minecraft
+        - sleepyqq
+      ops:
+        - ab9c17
+        - Shedy33
+        - Seleran
+        - ModsBeaver
