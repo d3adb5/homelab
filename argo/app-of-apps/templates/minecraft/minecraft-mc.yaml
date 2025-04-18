@@ -89,7 +89,7 @@ spec:
                   name: minecraft-mc-voice-chat-config
             volumeMounts:
               - name: voice-chat-config
-                mountPath: /data/config/voicechat/voicechart-server.properties
+                mountPath: /data/config/voicechat/voicechat-server.properties
                 subPath: voicechart-server.properties
 
         extraDeploy:
