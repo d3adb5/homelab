@@ -7,7 +7,7 @@ CLUSTER_NAME = homelab
 API_ENDPOINT = https://ottawa.lan:6443
 
 FACTORY_URL      := https://factory.talos.dev/schematics
-TALOS_VERSION    := 1.9.4
+TALOS_VERSION    := 1.9.5
 INSTALL_IMAGE_ID := $(shell curl -s --data-binary @schematic.yaml $(FACTORY_URL) | jq -r '.id')
 INSTALL_IMAGE    := factory.talos.dev/installer/$(INSTALL_IMAGE_ID):v$(TALOS_VERSION)
 
