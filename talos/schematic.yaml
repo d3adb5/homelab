@@ -6,3 +6,6 @@ customization:
       - siderolabs/intel-ucode
       - siderolabs/iscsi-tools
       - siderolabs/gvisor
+      - siderolabs/nvidia
+      - siderolabs/nvidia-container-toolkit
+      - siderolabs/nvidia-open-gpu-kernel-modules
