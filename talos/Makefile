@@ -1,3 +1,5 @@
+.ONESHELL:
+
 WORKERS      = $(notdir $(wildcard nodes/workers/*.yaml))
 CONTROLPLANE = $(notdir $(wildcard nodes/controlplane/*.yaml))
 PATCHES      = $(addprefix --config-patch @, $(wildcard patches/*.yaml))
@@ -6,10 +8,8 @@ SECRETS_FILE = secrets.yaml
 CLUSTER_NAME = homelab
 API_ENDPOINT = https://ottawa.lan:6443
 
-FACTORY_URL      := https://factory.talos.dev/schematics
-TALOS_VERSION    := 1.9.5
-INSTALL_IMAGE_ID := $(shell curl -s --data-binary @schematic.yaml $(FACTORY_URL) | jq -r '.id')
-INSTALL_IMAGE    := factory.talos.dev/installer/$(INSTALL_IMAGE_ID):v$(TALOS_VERSION)
+FACTORY_URL   := https://factory.talos.dev/schematics
+TALOS_VERSION := 1.9.5
 
 EXTRA_UPGRADE_FLAGS :=
 
@@ -53,37 +53,39 @@ config-control: $(addprefix generated/controlplane/, $(CONTROLPLANE))
 
 config-workers: $(addprefix generated/workers/, $(WORKERS))
 
-generated/workers/%.yaml: nodes/workers/%.yaml
+generated/workers/%.yaml: nodes/workers/%.yaml generated/installers/%
 	@mkdir -p $(dir $@)
 	@echo "Generating config file for worker node $*"
 	@talosctl gen config --with-secrets $(SECRETS_FILE) \
 		--output-types worker $(PATCHES) --config-patch @$< --output $@ \
-		--install-image $(INSTALL_IMAGE) \
+		--install-image $$(cat generated/installers/$*) \
 		$(CLUSTER_NAME) $(API_ENDPOINT)
 
-generated/controlplane/%.yaml: nodes/controlplane/%.yaml
+generated/controlplane/%.yaml: nodes/controlplane/%.yaml generated/installers/%
 	@mkdir -p $(dir $@)
 	@echo "Generating config file for controlplane node $*"
 	@talosctl gen config --with-secrets $(SECRETS_FILE) \
 		--output-types controlplane $(PATCHES) --config-patch @$< --output $@ \
-		--install-image $(INSTALL_IMAGE) \
+		--install-image $$(cat generated/installers/$*) \
 		$(CLUSTER_NAME) $(API_ENDPOINT)
 
 ################################################################################
 
-.PHONY: upgrade upgrade-control upgrade-workers
+.PHONY: upgrade upgrade-control upgrade-workers upgrade-worker-% upgrade-control-%
 
 upgrade: upgrade-control upgrade-workers
 
-upgrade-control: config-control
-	@echo "Upgrading controlplane nodes"
-	@talosctl upgrade $(EXTRA_UPGRADE_FLAGS) --image $(INSTALL_IMAGE) --preserve \
-		-n $(subst $(space),$(comma),$(basename $(CONTROLPLANE)))
+upgrade-control: $(addprefix upgrade-control-, $(basename $(CONTROLPLANE)))
 
-upgrade-workers: config-workers
-	@echo "Upgrading worker nodes"
-	@talosctl upgrade $(EXTRA_UPGRADE_FLAGS) --image $(INSTALL_IMAGE) --preserve \
-		-n $(subst $(space),$(comma),$(basename $(WORKERS)))
+upgrade-control-%: generated/installers/%
+	@echo "Upgrading control plane node $*"
+	@talosctl upgrade $(EXTRA_UPGRADE_FLAGS) --image $$(cat $<) --preserve -n $*
+
+upgrade-workers: $(addprefix upgrade-worker-, $(basename $(WORKERS)))
+
+upgrade-worker-%: generated/installers/%
+	@echo "Upgrading worker node $*"
+	@talosctl upgrade $(EXTRA_UPGRADE_FLAGS) --image $$(cat $<) --preserve -n $*
 
 ################################################################################
 
@@ -99,3 +101,19 @@ apply-control-%: generated/controlplane/%.yaml
 apply-worker-%: generated/workers/%.yaml
 	@echo "Applying config on worker node $*"
 	@talosctl apply-config -n $* --file generated/workers/$*.yaml
+
+################################################################################
+
+.PHONY: all-images
+
+all-images: $(addprefix generated/installers/, $(basename $(WORKERS)) $(basename $(CONTROLPLANE)))
+
+generated/installers/%:
+	@mkdir -p $(dir $@)
+	@echo "Generating installer ID file for node $*"
+	[ -f schematics/$*.yaml ] \
+		&& SCHEMATIC="schematics/$*.yaml" \
+		|| SCHEMATIC="schematics/default.yaml"
+	@echo "Using schematic file: $${SCHEMATIC}"
+	IMAGE_ID=$$(curl -s --data-binary @$${SCHEMATIC} $(FACTORY_URL) | jq -r '.id')
+	echo -n factory.talos.dev/installer/$${IMAGE_ID}:v$(TALOS_VERSION) > $@
