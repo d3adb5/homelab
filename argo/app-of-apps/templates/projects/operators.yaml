@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: operators
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Operators, mainly managed through OLM
+
+  sourceRepos:
+    - {{ .Values.repository.url }}
+    - https://github.com/operator-framework/operator-lifecycle-manager
+
+  destinations:
+    - namespace: operators
+      server: https://kubernetes.default.svc
+    - namespace: operator-lifecycle-manager
+      server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRole
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRoleBinding
