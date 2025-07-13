@@ -3,19 +3,6 @@ machine:
     hostname: whitehorse.lan
   install:
     disk: /dev/nvme0n1
-  disks:
-    - device: /dev/disk/by-id/ata-ST8000NT001-3LZ101_WWZ4AF41
-      partitions:
-        - mountpoint: /var/mnt/hdd
-  kubelet:
-    extraMounts:
-      - destination: /var/mnt/hdd
-        type: bind
-        source: /var/mnt/hdd
-        options:
-          - bind
-          - rshared
-          - rw
   kernel:
     modules:
       - name: nvidia
