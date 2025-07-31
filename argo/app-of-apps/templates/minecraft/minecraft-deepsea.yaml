@@ -23,10 +23,10 @@ spec:
             Size: 20Gi
         resources:
           requests:
-            cpu: 6
+            cpu: 4
             memory: 16Gi
           limits:
-            cpu: 10
+            cpu: 8
             memory: 16Gi
         minecraftServer:
           eula: true
