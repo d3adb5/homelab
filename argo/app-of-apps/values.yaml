@@ -25,9 +25,35 @@ certManager:
 longhorn:
   namespace: longhorn-system
 
+democraticCsi:
+  namespace: democratic-csi
+
 minecraft:
   namespace: minecraft
   server:
+    deepsea:
+      whitelist:
+        - ab9c17
+        - applesauze
+        - Honeybeezs
+        - ya_n
+      ops:
+        - ab9c17
+        - applesauze
+        - Honeybeezs
+        - ya_n
+      secrets:
+        rcon-password: |-
+          AgCcYzrYy+PlHIHxzSdh4oX1LWhM9RQdGRDYujD/j2OaZCcdQ4MBtJu43ixoyn18GDUNAV4+YP5fz4Xg
+          0gJBXilL+vavurLJxrFSZnl9Ncgs1QRabPVQ/wRtfmjjaPsN4bbcA0lGD4Uq5lC0IMN2JA1IhkiendkS
+          Ubu0bV6byBCvaqzKxyYqh1Z3TT5kKUfmj9BLtJyrvPNA56iE77/wDweUd4D8gADqDYuPtB9DiNwnNHgk
+          hFQRmQuIO0+ICpToQ3mbIOmsD3GjIZ/8rOQYMJCAmS/KSoS5JusVt8Rl2gk6GWbNuNCPq0JF/xKIs6Oj
+          SapL2OWQbC36IGjFQ4jd1rwAErUx+WwrQjl7zVcSrbGTlEfMDVJkXYwqUNip5L+/PiMpWFaUlF2TYD8r
+          CLgE2XR+e9AkLDp+Qi9JKuXBQsBh+PmEPgVbWHVlkOgvS+Gwl7QwNGmY/HOGZq5uLeYl77CqDm7BtGB/
+          Up2Bad2tpoQXny9H/p9+JbG6YS0807Z41DMS31t4TPcmRwUCxq83r2CpdSv6Eoe66PTWZaMokXKQPXFQ
+          cOCw3gOXxCePxkZE9R0doKHVs3teltsffEERMipCuRzgFumfmdE2eTdxlGHu1EgtKF2plKNL4cwgVTj+
+          hWhnDvrUSkq8pZ17vpL14xtI5i+euiFj2i9LJauiJONuxSnlyJc+iBBqga52DCm0o2N+hcx7znJVyiWo
+          L4XBumhdHRpcpbxOjbHB2Z6GcK8FjsVO+EukCmTwbmr85Ow=
     mc:
       whitelist:
         - ab9c17
