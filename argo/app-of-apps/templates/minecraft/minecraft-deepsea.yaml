@@ -40,8 +40,8 @@ spec:
           announcePlayerAchievements: true
           spawnProtection: 0
           viewDistance: 32
-          motd: "You can voice chat here, y'know?"
-          icon: "http://0x0.st/8e8Y.png"
+          motd: "Lemme nuhh in yo buhh and then fihh"
+          icon: "http://0x0.st/8713.png"
           rcon:
             enabled: true
             existingSecret: minecraft-deepsea-secrets
