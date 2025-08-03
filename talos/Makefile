@@ -9,7 +9,7 @@ CLUSTER_NAME = homelab
 API_ENDPOINT = https://ottawa.lan:6443
 
 FACTORY_URL   := https://factory.talos.dev/schematics
-TALOS_VERSION := 1.10.0
+TALOS_VERSION := 1.10.5
 
 EXTRA_UPGRADE_FLAGS :=
 
