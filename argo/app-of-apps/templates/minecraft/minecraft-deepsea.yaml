@@ -24,10 +24,10 @@ spec:
         resources:
           requests:
             cpu: 4
-            memory: 16Gi
+            memory: 24Gi
           limits:
-            cpu: 8
-            memory: 16Gi
+            cpu: 10
+            memory: 24Gi
         minecraftServer:
           eula: true
           type: FABRIC
