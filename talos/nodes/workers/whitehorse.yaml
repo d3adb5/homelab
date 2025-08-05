@@ -3,6 +3,8 @@ machine:
     hostname: whitehorse.lan
   install:
     disk: /dev/nvme0n1
+  nodeLabels:
+    feature.node.kubernetes.io/gpu.present: "true"
   kernel:
     modules:
       - name: nvidia
