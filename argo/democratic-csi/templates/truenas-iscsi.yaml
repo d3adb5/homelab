@@ -2,6 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: democratic-csi-truenas-iscsi
+  namespace: {{ .Values.argoCDNamespace }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -55,7 +56,7 @@ spec:
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: {{ .Values.democraticCsi.namespace }}
+    namespace: {{ .Release.Namespace }}
 
   syncPolicy:
     automated:

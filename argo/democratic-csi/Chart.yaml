@@ -1,0 +1,4 @@
+apiVersion: v2
+name: democratic-csi-storage
+description: A chart for deploying democratic-csi applications
+version: 0.1.0

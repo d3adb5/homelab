@@ -1,0 +1,6 @@
+driverConfigs: {}
+# example: |-
+#   Sealed Secrets encrypted data
+
+# Namespace for Argo CD applications
+argoCDNamespace: ""

@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: democratic-csi
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: democratic-csi
+
+  source:
+    repoURL: {{ .Values.repository.url }}
+    targetRevision: {{ .Values.repository.targetRevision }}
+    path: argo/democratic-csi
+
+    helm:
+      valuesObject:
+        argoCDNamespace: {{ .Values.argocd.namespace }}
+        driverConfigs:
+          {{- toYaml .Values.democraticCsi.driverConfigs | nindent 10 }}
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.democraticCsi.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

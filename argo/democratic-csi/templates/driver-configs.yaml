@@ -1,10 +1,9 @@
-{{- range $name, $encryptedValue := .Values.democraticCsi.driverConfigs }}
+{{- range $name, $encryptedValue := .Values.driverConfigs }}
 ---
 apiVersion: bitnami.com/v1alpha1
 kind: SealedSecret
 metadata:
   name: {{ quote $name }}
-  namespace: {{ $.Values.democraticCsi.namespace }}
 spec:
   encryptedData:
     driver-config-file.yaml: {{ splitList "\n" $encryptedValue | join "" }}
