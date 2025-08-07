@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: democratic-csi
+spec:
+  description: CSI storage for container orchestration systems
+
+  sourceRepos:
+    - {{ .Values.repository.url }}
+    - https://democratic-csi.github.io/charts/
+
+  destinations:
+    - namespace: {{ .Values.democraticCsi.namespace }}
+      server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace

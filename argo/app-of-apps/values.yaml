@@ -27,6 +27,31 @@ longhorn:
 
 democraticCsi:
   namespace: democratic-csi
+  driverConfigs:
+    truenas-iscsi-driver-config: |-
+      AgAkoLbVnsRdwGdbb6GNlBrFRIaaQH94coxhawEnTTTnzl3ITe4xU3RIKFEH32s8MUAW9mejBGnWwdzR
+      /1re5a1TxnFsHC7ZwJdRclq3rc53EfihVQ8jnqFWLl9D8daSWdTddWnpkRi7x6fxUIitSDyyK8VV/FdJ
+      C/BCC++Qru3SBHIVoZ9MtH5XhqVUxh9zpZjD4v8x+EkqbkyjJv1WXZdF7FO03m7FGB00T3T25VexwxHg
+      qb9OxUZ259YwuIFUz4RxDTQUPgGIazjoWDVe2S5BckLmUihgNwCrMsAygsUTxyrIohaobFyioCMdJE8D
+      AKr2mEL1xIIO5Mi1SH+iY5c9wzQ0jSPLrVuMTIoC4NmqtyPcEQDQlgFihlT8lnYN6md02cjc0AENUA2+
+      BSjvcKsmRKwncDKJ6Gsj4QU+JWtmzyYmwEpNlnxdmIRGFpxLApZbCTgAukdxEllS80MAPcHiSI0mJ1NQ
+      JONNJ1mZ/mF279H4WxK8GHYCndV+oBMJqfpVpSHPEZJJ0BxMDEuAfWYLK7FbfpvTWhTTMXMsDeJ/p23x
+      EhUw/WL1uKkGhUxSRTxvDJhD3WzW5LG+tq3qLIt8T/8gA1siDzCqcEaVxoSN+Dd/XU5A9Nm5iAQ7CfgH
+      bPEWNen5bywwq5PJXPfmBtU1zmiQNjOtJ15SFd2VC+CnWu+B1vKKK5nRY9bFg42szchkKoGMfEAcaG06
+      XW4IXgcHw9Xo2Uxdqv9ah1Dq98vXDkfplC39NyIsh0kLtxkxiVV1qDZayax6h6KDCufSCP3gof+gs875
+      AiWaxslOcTI2Z2qGA1TO1RmjGb6G0uLCHlUPVyn6slA9hU1n2/yBZgaWU5k2NDPZFjhQkycNk9vFuqGJ
+      hGbKZjQz4IX3wURPviGrMvIpixc2Tq+RP3CHm8df2alJ6Lxb2fA8Mn5x48QwJfJXleytd2iLx5u270Wb
+      7Wy2b9/+76edx+cH391XnTgX/UGTwDW9z4OqNoKC8LcpiMDj9VKkTWffe4jB+vvL0r1gkdjeAHsp4yCD
+      9UtdxCm6aMDf+fF7zTRDNIfBkci6CO5JCvjIF1OmUmXIgwBVg95JBlGC9LOgNPEHV3TUSCjDflZzdHpH
+      WdjLe5Q8kfPQI7FKe83X/KxXKHLCjHl12RJXEN1qzwx6FwcPaGGYvIttkjXTtlIpIqg6l0Mmq5Kx04sZ
+      qi8Xz6KOAdqwhr0EhZuWVM9SwXvg8o+Eu4Sye0hco2cKL2z6hk05Bosm1QQUW9QOXn8sVPtgt9b/SqnL
+      IWm2guo87QAFW6f042of+yHGGZWE/Hy2RTGkh3FXdISTrJnmk+1kGRyRXwTTuvy5wSY+vpBT6UC97EwR
+      1edcvl50bdN3fgH8gaJuGNYy5FWxTebY4+Um8JrD1EzvW2XDG5/7rVlFefiH0wvpdgKg58nnhOKKGqd/
+      vWpJvsAtnMREoQQQBr2og3pU8YXLSYtxsN4ebp2pdNLRqm8dXBeQ5XnKDW5vKQO6Wfb9LXK6bbM+tb7F
+      tnkPIGLw9lDFEUYc1PzmO4p36Q/3h/+7WS4JiXc16FHtVbeO3V+yusF9OBEilEcAMpxBIFV9TZNa7H3q
+      fiFNatAiZPyuM1446VncqHSfbqa61Y+1gCE2lEQN/KTRA4zYuNA8Wk1I4r21816zqZ1CZqeLxdUc+PoE
+      76ivS7TTPnKmfyu4oZHtZM9ThJtNBLyNWrhwIFqzWjSr/o0jhXbxYYe+vZEPQ4hDP7OOKtIL6E6A9s4M
+      Wo0yFuxZ79oqHLuJvv/ocJ2e1qAMB11m92V2Cl2xC8KeeqvcoLcP1BwD
 
 minecraft:
   namespace: minecraft
