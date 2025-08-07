@@ -16,3 +16,13 @@ spec:
   clusterResourceWhitelist:
     - group: ""
       kind: Namespace
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRole
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRoleBinding
+    - group: storage.k8s.io
+      kind: StorageClass
+    - group: storage.k8s.io
+      kind: CSIDriver
+    - group: snapshot.storage.k8s.io
+      kind: VolumeSnapshotClass
