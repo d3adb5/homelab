@@ -17,6 +17,8 @@ spec:
       valuesObject:
         driver:
           existingConfigSecret: truenas-iscsi-driver-config
+          config:
+            driver: freenas-api-iscsi
 
         csiDriver:
           name: "org.democratic-csi.truenas-api-iscsi"
