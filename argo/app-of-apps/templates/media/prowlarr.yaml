@@ -1,0 +1,62 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prowlarr
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: media
+
+  source:
+    repoURL: https://charts.d3adb5.net
+    targetRevision: 1.1.0
+    chart: stateful
+
+    helm:
+      valuesObject:
+        replicaCount: 1
+        image:
+          repository: lscr.io/linuxserver/prowlarr
+          tag: "1.37.0@sha256:25d21c04c7cc39a706217abb77bb60b283d9eaaf16acf539c930e3c797e21f25"
+          pullPolicy: IfNotPresent
+        service:
+          port: 9696
+        ingress:
+          enabled: true
+          host: prowlarr.d3adb5.ca
+          className: nginx
+          tls:
+            enabled: true
+            secretName: prowlarr-tls
+          annotations:
+            cert-manager.io/cluster-issuer: letsencrypt
+        extraEnv:
+          - name: TZ
+            value: America/Vancouver
+          - name: PUID
+            value: "1000"
+          - name: PGID
+            value: "1000"
+        extraVolumeMounts:
+          - name: config
+            mountPath: /config
+        extraVolumeClaimTemplates:
+          - metadata:
+              name: config
+            spec:
+              accessModes: [ "ReadWriteOnce" ]
+              storageClassName: longhorn
+              resources:
+                requests:
+                  storage: 2Gi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.media.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
