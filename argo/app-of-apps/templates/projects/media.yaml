@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: media
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Media applications, like Plex
+
+  sourceRepos:
+    - {{ .Values.repository.url }}
+
+  destinations:
+    - namespace: {{ .Values.media.namespace }}
+      server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace

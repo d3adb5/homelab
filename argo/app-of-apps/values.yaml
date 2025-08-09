@@ -22,6 +22,9 @@ ddclient:
 certManager:
   namespace: cert-manager
 
+media:
+  namespace: media
+
 longhorn:
   namespace: longhorn-system
 
