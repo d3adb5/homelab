@@ -1,0 +1,75 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sonarr
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: media
+
+  source:
+    repoURL: https://charts.d3adb5.net
+    targetRevision: 1.1.0
+    chart: stateful
+
+    helm:
+      valuesObject:
+        replicaCount: 1
+        image:
+          repository: lscr.io/linuxserver/sonarr
+          tag: "4.0.15@sha256:c0836f49c20000e603170dc95d74c2527e690d50309977d94fc171eaa49351a4"
+          pullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            cpu: 1
+            memory: 512Mi
+        service:
+          port: 8989
+        ingress:
+          enabled: true
+          host: sonarr.d3adb5.ca
+          className: nginx
+          tls:
+            enabled: true
+            secretName: sonarr-tls
+          annotations:
+            cert-manager.io/cluster-issuer: letsencrypt
+        extraEnv:
+          - name: TZ
+            value: America/Vancouver
+          - name: PUID
+            value: "1000"
+          - name: PGID
+            value: "1000"
+        extraVolumes:
+          - name: tv-library
+            persistentVolumeClaim:
+              claimName: {{ .Values.media.libraries.tv.claimName }}
+        extraVolumeMounts:
+          - name: tv-library
+            mountPath: /downloads
+          - name: config
+            mountPath: /config
+        extraVolumeClaimTemplates:
+          - metadata:
+              name: config
+            spec:
+              accessModes: [ "ReadWriteOnce" ]
+              storageClassName: longhorn
+              resources:
+                requests:
+                  storage: 2Gi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.media.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
