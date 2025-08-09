@@ -15,3 +15,5 @@ spec:
   clusterResourceWhitelist:
     - group: node.k8s.io
       kind: RuntimeClass
+    - group: ''
+      kind: Namespace
