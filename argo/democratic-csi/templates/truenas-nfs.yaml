@@ -1,0 +1,55 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: democratic-csi-truenas-nfs
+  namespace: {{ .Values.argoCDNamespace }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: democratic-csi
+
+  source:
+    repoURL: https://democratic-csi.github.io/charts/
+    chart: democratic-csi
+    targetRevision: 0.15.0
+
+    helm:
+      valuesObject:
+        driver:
+          existingConfigSecret: truenas-nfs-driver-config
+          config:
+            driver: truenas-nfs
+
+        csiDriver:
+          name: "org.democratic-csi.truenas-api-nfs"
+
+        storageClasses:
+          - name: truenas-nfs
+            defaultClass: false
+            reclaimPolicy: Delete
+            volumeBindingMode: Immediate
+            allowVolumeExpansion: true
+            parameters:
+              fsType: ext4
+              detachedVolumesFromSnapshots: "false"
+            mountOptions: []
+            secrets:
+              provisioner-secret:
+              controller-publish-secret:
+              node-stage-secret:
+              node-publish-secret:
+              controller-expand-secret:
+
+        volumeSnapshotClasses:
+          - name: truenas-nfs
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Release.Namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
