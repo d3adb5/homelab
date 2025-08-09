@@ -21,7 +21,7 @@ spec:
             driver: truenas-nfs
 
         csiDriver:
-          name: "org.democratic-csi.truenas-api-nfs"
+          name: "org.democratic-csi.truenas-nfs"
 
         storageClasses:
           - name: truenas-nfs

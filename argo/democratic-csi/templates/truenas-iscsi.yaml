@@ -21,7 +21,7 @@ spec:
             driver: truenas-iscsi
 
         csiDriver:
-          name: "org.democratic-csi.truenas-api-iscsi"
+          name: "org.democratic-csi.truenas-iscsi"
 
         storageClasses:
           - name: truenas-iscsi
