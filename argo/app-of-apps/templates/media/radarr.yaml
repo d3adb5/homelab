@@ -1,0 +1,75 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: radarr
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: media
+
+  source:
+    repoURL: https://charts.d3adb5.net
+    targetRevision: 1.1.0
+    chart: stateful
+
+    helm:
+      valuesObject:
+        replicaCount: 1
+        image:
+          repository: lscr.io/linuxserver/radarr
+          tag: "5.26.2@sha256:ae89f05ad7023258730ed62f5fcca63aab1e27ee5adcca1edb55d716f7cef356"
+          pullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            cpu: 1
+            memory: 512Mi
+        service:
+          port: 7878
+        ingress:
+          enabled: true
+          host: radarr.d3adb5.ca
+          className: nginx
+          tls:
+            enabled: true
+            secretName: radarr-tls
+          annotations:
+            cert-manager.io/cluster-issuer: letsencrypt
+        extraEnv:
+          - name: TZ
+            value: America/Vancouver
+          - name: PUID
+            value: "1000"
+          - name: PGID
+            value: "1000"
+        extraVolumes:
+          - name: movies-library
+            persistentVolumeClaim:
+              claimName: {{ .Values.media.libraries.movies.claimName }}
+        extraVolumeMounts:
+          - name: movies-library
+            mountPath: /downloads
+          - name: config
+            mountPath: /config
+        extraVolumeClaimTemplates:
+          - metadata:
+              name: config
+            spec:
+              accessModes: [ "ReadWriteOnce" ]
+              storageClassName: longhorn
+              resources:
+                requests:
+                  storage: 2Gi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.media.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
