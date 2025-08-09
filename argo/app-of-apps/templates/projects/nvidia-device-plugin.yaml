@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: nvidia-device-plugin
+spec:
+  description: Empowers GPU workloads
+
+  sourceRepos:
+    - https://nvidia.github.io/k8s-device-plugin
+
+  destinations:
+    - namespace: nvidia-device-plugin
+      server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRole
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRoleBinding
