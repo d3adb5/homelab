@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: democratic-csi-truenas-nfs
+  name: democratic-csi-truenas-nfs-hdd
   namespace: {{ .Values.argoCDNamespace }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -21,15 +21,15 @@ spec:
               tag: next
 
         driver:
-          existingConfigSecret: truenas-nfs-driver-config
+          existingConfigSecret: truenas-nfs-hdd-driver-config
           config:
             driver: truenas-nfs
 
         csiDriver:
-          name: "org.democratic-csi.truenas-nfs"
+          name: "org.democratic-csi.truenas-nfs-hdd"
 
         storageClasses:
-          - name: truenas-nfs
+          - name: truenas-nfs-hdd
             defaultClass: false
             reclaimPolicy: Delete
             volumeBindingMode: Immediate
@@ -47,7 +47,7 @@ spec:
               controller-expand-secret:
 
         volumeSnapshotClasses:
-          - name: truenas-nfs
+          - name: truenas-nfs-hdd
 
   destination:
     server: https://kubernetes.default.svc

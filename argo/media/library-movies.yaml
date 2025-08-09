@@ -5,7 +5,7 @@ metadata:
   finalizers:
     - kubernetes.io/pvc-protection
 spec:
-  storageClassName: truenas-nfs
+  storageClassName: truenas-nfs-hdd
   accessModes: [ ReadWriteMany ]
   resources:
     requests:

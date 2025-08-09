@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: democratic-csi-truenas-iscsi
+  name: democratic-csi-truenas-iscsi-hdd
   namespace: {{ .Values.argoCDNamespace }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -16,15 +16,15 @@ spec:
     helm:
       valuesObject:
         driver:
-          existingConfigSecret: truenas-iscsi-driver-config
+          existingConfigSecret: truenas-iscsi-hdd-driver-config
           config:
             driver: truenas-iscsi
 
         csiDriver:
-          name: "org.democratic-csi.truenas-iscsi"
+          name: "org.democratic-csi.truenas-iscsi-hdd"
 
         storageClasses:
-          - name: truenas-iscsi
+          - name: truenas-iscsi-hdd
             defaultClass: false
             reclaimPolicy: Delete
             volumeBindingMode: Immediate
@@ -52,7 +52,7 @@ spec:
             iscsiDirHostPathType: ""
 
         volumeSnapshotClasses:
-          - name: truenas-iscsi
+          - name: truenas-iscsi-hdd
             parameters:
               detachedSnapshots: "true"
 
