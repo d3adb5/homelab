@@ -24,6 +24,11 @@ certManager:
 
 media:
   namespace: media
+  libraries:
+    movies:
+      claimName: media-library-movies
+    tv:
+      claimName: media-library-tv
 
 longhorn:
   namespace: longhorn-system
