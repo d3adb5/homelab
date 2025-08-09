@@ -15,10 +15,6 @@ spec:
 
     helm:
       valuesObject:
-        controller:
-          driver:
-            logLevel: debug
-
         driver:
           existingConfigSecret: truenas-iscsi-driver-config
           config:
