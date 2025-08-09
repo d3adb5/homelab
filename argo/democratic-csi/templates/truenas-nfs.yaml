@@ -17,7 +17,8 @@ spec:
       valuesObject:
         controller:
           driver:
-            logLevel: debug
+            image:
+              tag: next
 
         driver:
           existingConfigSecret: truenas-nfs-driver-config
