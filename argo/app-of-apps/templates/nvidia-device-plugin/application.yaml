@@ -15,9 +15,8 @@ spec:
     helm:
       valuesObject:
         runtimeClassName: nvidia
-        nodeSelector:
-          feature.node.kubernetes.io/gpu.present: "true"
-        tolerations: []
+        gfd:
+          enabled: true
 
   destination:
     namespace: nvidia-device-plugin
