@@ -24,7 +24,7 @@ spec:
             cpu: 350m
             memory: 2Gi
           limits:
-            cpu: 350m
+            cpu: 2
             memory: 2Gi
         persistence:
           config:
