@@ -1,0 +1,82 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: plex-media-server
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: media
+
+  source:
+    repoURL: https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages
+    targetRevision: 1.1.2
+    chart: plex-media-server
+
+    helm:
+      valuesObject:
+        nodeSelector:
+          feature.node.kubernetes.io/gpu.present: "true"
+        runtimeClassName: nvidia
+        image:
+          registry: lscr.io
+          repository: linuxserver/plex
+          tag: "1.42.1@sha256:06a0cde0379869ad62f443de1a708e3477100bfdd2b406206f7d3fc95295ef36"
+          pullPolicy: IfNotPresent
+        ingress:
+          enabled: true
+          ingressClassName: nginx
+          url: plex.d3adb5.ca
+          annotations:
+            cert-manager.io/cluster-issuer: letsencrypt
+          tls:
+            - hosts:
+                - plex.d3adb5.ca
+              secretName: plex-media-server-tls
+        extraEnv:
+          # If redeploying, generate a new claim token through https://www.plex.tv/claim/
+          PLEX_CLAIM: "claim-zxsyX2u3VCZ2HCMEgop9"
+          HOSTNAME: Plex
+          PUID: 1000
+          PGID: 1000
+          VERSION: docker
+          TZ: America/Vancouver
+        extraVolumes:
+          - name: movies-library
+            persistentVolumeClaim:
+              claimName: {{ .Values.media.libraries.movies.claimName }}
+          - name: tv-library
+            persistentVolumeClaim:
+              claimName: {{ .Values.media.libraries.tv.claimName }}
+        extraVolumeMounts:
+          - name: tv-library
+            mountPath: /media/tv
+            subPath: library
+          - name: movies-library
+            mountPath: /media/movies
+            subPath: library
+        service:
+          type: NodePort
+          nodePort: 32400
+        pms:
+          gpu:
+            enabled: true
+          storageClassName: longhorn
+          configStorage: 10Gi
+          resources:
+            requests:
+              cpu: 2
+              memory: 4Gi
+            limits:
+              cpu: 4
+              memory: 4Gi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.media.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

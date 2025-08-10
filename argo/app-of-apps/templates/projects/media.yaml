@@ -10,6 +10,7 @@ spec:
   sourceRepos:
     - {{ .Values.repository.url }}
     - https://charts.d3adb5.net
+    - https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages
 
   destinations:
     - namespace: {{ .Values.media.namespace }}
