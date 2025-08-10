@@ -59,7 +59,8 @@ spec:
           nodePort: 32400
         pms:
           gpu:
-            enabled: true
+            nvidia:
+              enabled: true
           storageClassName: longhorn
           configStorage: 10Gi
           resources:
