@@ -1,0 +1,62 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tautulli
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: media
+
+  source:
+    repoURL: https://charts.d3adb5.net
+    chart: stateful
+    targetRevision: 1.1.0
+
+    helm:
+      valuesObject:
+        replicaCount: 1
+        image:
+          repository: lscr.io/linuxserver/tautulli
+          tag: "2.15.3@sha256:7e1eb9601ac7800329f26e23f143ff4e3f4bc82262eecd8c620888a62c1c7251"
+          pullPolicy: IfNotPresent
+        service:
+          port: 8181
+        ingress:
+          enabled: true
+          host: tautulli.d3adb5.ca
+          className: nginx
+          tls:
+            enabled: true
+            secretName: tautulli-tls
+          annotations:
+            cert-manager.io/cluster-issuer: letsencrypt
+        extraEnv:
+          - name: TZ
+            value: America/Vancouver
+          - name: PUID
+            value: "1000"
+          - name: PGID
+            value: "1000"
+        extraVolumeMounts:
+          - name: config
+            mountPath: /config
+        extraVolumeClaimTemplates:
+          - metadata:
+              name: config
+            spec:
+              accessModes: [ "ReadWriteOnce" ]
+              storageClassName: longhorn
+              resources:
+                requests:
+                  storage: 4Gi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.media.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
