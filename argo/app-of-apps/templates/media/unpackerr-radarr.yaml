@@ -56,6 +56,14 @@ spec:
                 HG5+ZvEG1ALb4bthgff61ZwYX32NZN851k5YZqscXr9oKWc4KlT9P85o0KLKBx0ZMDwSnXurm5rV+rc0
                 JA94PcCUIbj7OqyKJhM8Kn9MiBCueexQqnxyLyHDZdkdrDP1qW4ovOidGoA0blWHoA06W4EBRv37NwxT
                 QOClnbyvLAqkQOCRBEAIt2HV9fL5fw==
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: unpackerr
 
   destination:
     server: https://kubernetes.default.svc
