@@ -34,7 +34,7 @@ spec:
               secretName: plex-media-server-tls
         extraEnv:
           # If redeploying, generate a new claim token through https://www.plex.tv/claim/
-          PLEX_CLAIM: "claim-zxsyX2u3VCZ2HCMEgop9"
+          PLEX_CLAIM: "claim-qosQGNGbGD4EHHsGMVtg"
           HOSTNAME: Plex
           PUID: 1000
           PGID: 1000
