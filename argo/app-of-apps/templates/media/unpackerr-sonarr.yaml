@@ -1,0 +1,69 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: unpackerr-sonarr
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: media
+
+  source:
+    repoURL: https://charts.d3adb5.net
+    targetRevision: 1.0.0
+    chart: unpackerr
+
+    helm:
+      valuesObject:
+        image:
+          repository: golift/unpackerr
+          tag: "0.14"
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+          limits:
+            cpu: 2
+            memory: 512Mi
+        volumes:
+          - name: downloads
+            persistentVolumeClaim:
+              claimName: {{ .Values.media.libraries.tv.claimName }}
+        volumeMounts:
+          - name: downloads
+            mountPath: /downloads
+        config:
+          env:
+            sealed:
+              UN_SONARR_0_URL: |
+                AgClVSB3weKV7BLgNj1Gtzp/YoTBGq+Dt18ckvfCnPpSFvl0TaVcHdYHt0ZBYXTaxhitCAtAshTFnmor
+                gSRxeEfrPnq7CAUS8g5ReQZ6FbbdvF/v++6GpT5/MM9/2mLkUXC4jGbhLp+pd337lrjTQC/HqDFLa3J3
+                t8lw1rO/nN5BYtIpU88DErlwVOBImWDnyzhj0x5kD4mSSHqZsm0v+cFWub6ZcY84NZcXEwbm4/mZ4Zyi
+                kWlyeo5a+xNwd2ZQte3fim2oAa22/AOPLtPdGngK73KZf3miHW21LuUB5UrQc+cy4ma0NoARSexBwPnX
+                sIcDD6G/IAeehcvjqjzlJIGnyPMRK9I1zTIqPxV/oAOevaGEKZ1rgisrNZg0jMjloa0AcR+LpyfSv5Vh
+                W8d7ZTRPM3HHYTsF7UjHxJ+oHKNNNJ63dzTe+ddpFho2vbvINRWxYeWCQvN7iSG19kmvNSeH1I3pCtPT
+                USGGp6ds9RU6OsBRSaH1LIljxOBuULKwtdXIEpKbG1k1n2tXSD/CXelmJULiX3lwpLFJhQ70+V2oPU4L
+                LWhMZuHRnrKsEQKf/ryawQ2dYFSYBEeiCtgk6YXbfhV+rq1361Db8ZcN+eubOJMIrTOP6prNEXqg9P0t
+                TzYXO8yZve8uGC/KWaZ2GxPXq0dr+s9mlDd1GthwW5IWHhlYOLt/Mh9EzBEuwT0stCfgFPQXurrGEsPj
+                Y8jqaPrSg54=
+              UN_SONARR_0_API_KEY: |
+                AgAJHdWZpHOAXlcJCgrAPNmWtB5MVBE4tqTy/roFinLQtpyu5iUOsqCxAkN0MEC12dacYlkgNoRjImW1
+                t1TtQDJikr8bW8HG79DwSBf2RxGobml46c7++xDaK3cuIXhtdtczVWmOhYPf5YeJzBspVGZ5PiTMPkaB
+                Nr1W4/BPACKfm6S37pUjdO4dG6glwBMh30zXwlvHDGr++3OkgV0QJvd/N2iFpr7ddPNMzo/Q5ZRizMWI
+                6T893GlLLoRLqjhD2+8Cy5LxRuVQ1EmOv6yu2VXu/8xq7SlTvK6+cHBu/saKnjuIeesc/gFOVGsaoqoJ
+                Jpt033URFE+eFw2H+iZ8mSMM9IBXHGe3OUL5/kc5znoFUiB3hZ3Cm/QkUb3XqqTkWy/EjzVRq7SNlVTq
+                zv81+tpLQSyrj4TFTrMi/35QkeTx5M8Wu0dR1PVJpMwDTaEY4y+JDOb+YIFB8Bc4XVVMg0aPKdyuYgs0
+                LZlpNSI+f/5cw9CgZKf1DOJn2ozJpKs9UGthx07k+90JtTSPkxNbk52RdRbLHNNdbPy4ah1Fs4fCWj6P
+                wkhRu0IWZNocZT7poGPFjRcnS9kVSRu48mXwZJhp0q4b4T30nqDbpkxuWSXwpZk/wsprSrb7kXV0I6Z7
+                JM50Dk4nc1Unr3MomSnIzCywC4+pZC2moLGk8ssiNWqMdEXc09ifek9k/CF1AbCPujhVA1aMC39c6kqN
+                Hxp6lGXmmf8MZ2M01RTHze5sysRLgQ==
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.media.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
