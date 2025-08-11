@@ -22,6 +22,9 @@ ddclient:
 certManager:
   namespace: cert-manager
 
+monitoring:
+  namespace: monitoring
+
 media:
   namespace: media
   libraries:
