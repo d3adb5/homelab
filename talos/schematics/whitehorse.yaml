@@ -4,5 +4,5 @@ customization:
       - siderolabs/amd-ucode
       - siderolabs/gvisor
       - siderolabs/iscsi-tools
-      - siderolabs/nvidia-container-toolkit-lts
-      - siderolabs/nvidia-open-gpu-kernel-modules-lts
+      - siderolabs/nvidia-container-toolkit-production
+      - siderolabs/nvidia-open-gpu-kernel-modules-production
