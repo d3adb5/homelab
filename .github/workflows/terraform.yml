@@ -21,7 +21,7 @@ jobs:
       matrix: ${{ steps.jsonmatrix.outputs.matrix }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - id: jsonmatrix
         run: |
           find terraform -type f -name "*.tf" -printf "%h\n" | sort -u \
@@ -45,7 +45,7 @@ jobs:
         working-directory: terraform/${{ matrix.path }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: hashicorp/setup-terraform@v3
       - run: |
           rm *.tfstate* *.auto.tfvars

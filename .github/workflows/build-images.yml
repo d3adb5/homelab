@@ -19,7 +19,7 @@ jobs:
       matrix: ${{ steps.jsonmatrix.outputs.matrix }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - id: jsonmatrix
         run: |
           pushEventRef="${{ github.event.ref }}"
@@ -54,7 +54,7 @@ jobs:
       matrix: ${{ fromJson(needs.build-matrix.outputs.matrix) }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: docker/setup-buildx-action@v3
       - uses: docker/build-push-action@v6
         with:
