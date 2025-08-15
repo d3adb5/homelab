@@ -12,7 +12,7 @@ spec:
       targetRevision: HEAD
       path: argo/olmv0
 
-    - repoURL: https://github.com/operator-lifecycle-manager/operator-lifecycle-manager
+    - repoURL: https://github.com/operator-framework/operator-lifecycle-manager
       targetRevision: v0.32.0
       path: deploy/chart
 
