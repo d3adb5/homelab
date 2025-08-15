@@ -22,6 +22,12 @@ spec:
           monitoring:
             enabled: true
             namespace: {{ .Values.monitoring.namespace }}
+          olm:
+            service:
+              externalPort: 8080
+          catalog:
+            service:
+              externalPort: 8080
 
   destination:
     server: https://kubernetes.default.svc
