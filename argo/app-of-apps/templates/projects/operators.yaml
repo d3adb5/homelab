@@ -5,16 +5,18 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  description: Operators, mainly managed through OLM
+  description: Operators, including those managed by OLM
 
   sourceRepos:
     - {{ .Values.repository.url }}
     - https://github.com/operator-framework/operator-lifecycle-manager
 
   destinations:
-    - namespace: operators
+    - namespace: {{ .Values.operators.olmNamespace }}
       server: https://kubernetes.default.svc
-    - namespace: operator-lifecycle-manager
+    - namespace: {{ .Values.operators.namespace }}
+      server: https://kubernetes.default.svc
+    - namespace: {{ .Values.monitoring.namespace }}
       server: https://kubernetes.default.svc
 
   clusterResourceWhitelist:

@@ -6,6 +6,10 @@ repository:
 argocd:
   namespace: argocd
 
+operators:
+  olmNamespace: operator-lifecycle-manager
+  namespace: operators
+
 metallb:
   namespace: metallb-system
   ipSharingKey: metallb-use-a-single-ip
