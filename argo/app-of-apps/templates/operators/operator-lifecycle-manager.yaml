@@ -31,7 +31,7 @@ spec:
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: {{ .Values.operators.olmNamespace }}
+    namespace: {{ .Values.operators.namespace }}
 
   syncPolicy:
     automated:
