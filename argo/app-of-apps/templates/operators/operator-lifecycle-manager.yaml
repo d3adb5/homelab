@@ -5,7 +5,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: operator
+  project: operators
 
   sources:
     - repoURL: {{ .Values.repository.url }}
