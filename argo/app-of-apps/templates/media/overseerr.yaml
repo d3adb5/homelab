@@ -22,9 +22,9 @@ spec:
         resources:
           requests:
             cpu: 200m
-            memory: 512Mi
+            memory: 350Mi
           limits:
-            memory: 512Mi
+            memory: 350Mi
         livenessProbe:
           initialDelaySeconds: 120
         service:
