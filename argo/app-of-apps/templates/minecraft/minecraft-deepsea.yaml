@@ -63,10 +63,10 @@ spec:
           enabled: true
           pruneBackupDays: 14
           persistence:
-            storageClass: longhorn
+            storageClass: truenas-iscsi-hdd
             backupDir:
               enabled: true
-              Size: 50Gi
+              Size: 60Gi
 
         affinity:
           podAntiAffinity:
