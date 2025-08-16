@@ -26,7 +26,6 @@ spec:
             cpu: 4
             memory: 24Gi
           limits:
-            cpu: 10
             memory: 24Gi
         minecraftServer:
           eula: true
