@@ -61,7 +61,7 @@ spec:
 
         mcbackup:
           enabled: true
-          pruneBackupDays: 14
+          pruneBackupDays: 5
           persistence:
             storageClass: truenas-iscsi-hdd
             backupDir:
