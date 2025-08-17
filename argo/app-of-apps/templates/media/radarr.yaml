@@ -21,11 +21,10 @@ spec:
           pullPolicy: IfNotPresent
         resources:
           requests:
-            cpu: 100m
-            memory: 512Mi
+            cpu: 80m
+            memory: 256Mi
           limits:
-            cpu: 1
-            memory: 512Mi
+            memory: 2Gi
         service:
           port: 7878
         ingress:
