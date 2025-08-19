@@ -18,9 +18,8 @@ spec:
           feature.node.kubernetes.io/gpu.present: "true"
         runtimeClassName: nvidia
         image:
-          registry: lscr.io
-          repository: linuxserver/plex
-          tag: "1.42.1@sha256:28f18c27b6822328df994154dbf7c0f511032d9f91bbd10881030b706afd8593"
+          repository: plexinc/pms-docker
+          tag: "1.42.1.10060-4e8b05daf@sha256:4e704a2172129d8a6bc5b05ea201945b329bb6512f48a4e92ed4a4a787c35462"
           pullPolicy: IfNotPresent
         ingress:
           enabled: true
@@ -36,9 +35,6 @@ spec:
           # If redeploying, generate a new claim token through https://www.plex.tv/claim/
           PLEX_CLAIM: "claim-qosQGNGbGD4EHHsGMVtg"
           HOSTNAME: Plex
-          PUID: 1000
-          PGID: 1000
-          VERSION: docker
           TZ: America/Vancouver
         extraVolumes:
           - name: movies-library
