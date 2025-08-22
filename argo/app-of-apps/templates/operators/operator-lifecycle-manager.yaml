@@ -9,7 +9,7 @@ spec:
 
   sources:
     - repoURL: {{ .Values.repository.url }}
-      targetRevision: HEAD
+      targetRevision: {{ .Values.repository.targetRevision }}
       path: argo/olmv0
 
     - repoURL: https://github.com/operator-framework/operator-lifecycle-manager
