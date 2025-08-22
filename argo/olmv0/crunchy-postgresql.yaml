@@ -1,0 +1,9 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: crunchy-postgresql
+spec:
+  channel: v5
+  name: postgresql
+  source: operatorhubio-catalog
+  sourceNamespace: operator-lifecycle-manager
