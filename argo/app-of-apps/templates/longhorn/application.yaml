@@ -20,9 +20,13 @@ spec:
         valuesObject:
           config:
             existingSecret: longhorn-oidc-secrets
-            oidcIssuerUrl: "https://id.d3adb5.ca/realms/core"
-            redirectUrl: "https://longhorn.d3adb5.ca/oauth2/callback"
-            proxyPrefix: "/oauth2"
+
+            configFile: |-
+              email_domains = ["*"]
+              provider = "keycloak-oidc"
+              oidc_issuer_url = "https://id.d3adb5.ca/realms/core"
+              redirect_url = "https://longhorn.d3adb5.ca/oauth2/callback"
+              code_challenge_method = "S256"
 
           ingress:
             enabled: true
