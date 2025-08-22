@@ -23,6 +23,17 @@ spec:
         configs:
           params:
             server.insecure: true
+          cm:
+            oidc.config: |
+              name: Keycloak
+              issuer: https://id.d3adb5.ca/realms/core
+              clientID: argocd
+              clientSecret: $oidc.keycloak.clientSecret
+              requestedScopes: ["openid", "profile", "email", "groups"]
+          rbac:
+            policy.csv: |
+              g, /Admin,   role:admin
+              g, /Argo CD, role:readonly
 
         controller:
           replicas: 1
