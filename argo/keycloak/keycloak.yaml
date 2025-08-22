@@ -18,7 +18,6 @@ spec:
   http:
     tlsSecret: keycloak-tls
   hostname:
-    admin: admin.id.d3adb5.ca
     hostname: id.d3adb5.ca
   proxy:
     headers: xforwarded
