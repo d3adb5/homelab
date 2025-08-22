@@ -18,6 +18,8 @@ spec:
       server: https://kubernetes.default.svc
     - namespace: {{ .Values.monitoring.namespace }}
       server: https://kubernetes.default.svc
+    - namespace: keycloak
+      server: https://kubernetes.default.svc
 
   clusterResourceWhitelist:
     - group: ""
