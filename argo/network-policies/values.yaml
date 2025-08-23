@@ -3,6 +3,18 @@ denyAll:
     - default
     - ddclient
 
+denyIngress:
+  namespaces:
+    - media
+
 allowACME:
   namespaces:
     - argocd
+
+allowIngressNGINX:
+  namespaces:
+    - media
+
+allowNamespaceIngress:
+  namespaces:
+    - media
