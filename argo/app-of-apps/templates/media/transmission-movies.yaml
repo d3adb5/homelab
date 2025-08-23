@@ -7,66 +7,102 @@ metadata:
 spec:
   project: media
 
-  source:
-    repoURL: https://charts.d3adb5.net
-    targetRevision: 0.1.0
-    chart: transmission
+  sources:
+    - repoURL: {{ .Values.repository.url }}
+      targetRevision: {{ .Values.repository.targetRevision }}
+      path: argo/media/transmission-movies
 
-    helm:
-      valuesObject:
-        image:
-          repository: lscr.io/linuxserver/transmission
-          pullPolicy: IfNotPresent
-          tag: "4.0.5@sha256:c6a95f014f7ec812c9173be5a0afef4656e7c09be1c2d063786f42bdc3ee3d8a"
-        replicaCount: 1
-        resources:
-          requests:
-            cpu: 350m
-            memory: 2Gi
-          limits:
-            cpu: 2
-            memory: 2Gi
-        persistence:
+    - repoURL: https://oauth2-proxy.github.io/manifests
+      targetRevision: 8.1.1
+      chart: oauth2-proxy
+
+      helm:
+        valuesObject:
           config:
-            storageClass: longhorn
-        ingress:
-          enabled: true
-          className: nginx
-          host: movies.transmission.d3adb5.ca
-          tls:
+            existingSecret: transmission-movies-oidc-secrets
+
+            configFile: |-
+              email_domains = ["*"]
+              provider = "keycloak-oidc"
+              oidc_issuer_url = "https://id.d3adb5.ca/realms/core"
+              redirect_url = "https://movies.transmission.d3adb5.ca/oauth2/callback"
+              code_challenge_method = "S256"
+
+          ingress:
             enabled: true
-            secretName: transmission-movies-tls
-          annotations:
-            cert-manager.io/cluster-issuer: letsencrypt
-        peerService:
-          type: NodePort
-          nodePort: 32666
-          port: 32666
-        extraEnv:
-          - name: PEERPORT
-            value: "32666"
-          - name: TZ
-            value: America/Vancouver
-          - name: PUID
-            value: "1000"
-          - name: PGID
-            value: "1000"
-        extraVolumes:
-          - name: movies-library
-            persistentVolumeClaim:
-              claimName: {{ .Values.media.libraries.movies.claimName }}
-        extraVolumeMounts:
-          - name: movies-library
-            mountPath: /downloads
-        affinity:
-          podAntiAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              - labelSelector:
-                  matchExpressions:
-                    - key: app.kubernetes.io/name
-                      operator: In
-                      values: [ transmission ]
-                topologyKey: kubernetes.io/hostname
+            className: nginx
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt
+            hosts:
+              - "movies.transmission.d3adb5.ca"
+            path: /oauth2
+            tls:
+              - hosts:
+                  - "movies.transmission.d3adb5.ca"
+                secretName: transmission-movies-tls
+
+    - repoURL: https://charts.d3adb5.net
+      targetRevision: 0.2.0
+      chart: transmission
+
+      helm:
+        valuesObject:
+          transmission:
+            generateCredentials: false
+          image:
+            repository: lscr.io/linuxserver/transmission
+            pullPolicy: IfNotPresent
+            tag: "4.0.5@sha256:c6a95f014f7ec812c9173be5a0afef4656e7c09be1c2d063786f42bdc3ee3d8a"
+          replicaCount: 1
+          resources:
+            requests:
+              cpu: 350m
+              memory: 2Gi
+            limits:
+              cpu: 2
+              memory: 2Gi
+          persistence:
+            config:
+              storageClass: longhorn
+          ingress:
+            enabled: true
+            className: nginx
+            host: movies.transmission.d3adb5.ca
+            tls:
+              enabled: true
+              secretName: transmission-movies-tls
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt
+              {{- toYaml .Values.ingress.oauth2ProxyAnnotations | nindent 14 }}
+          peerService:
+            type: NodePort
+            nodePort: 32666
+            port: 32666
+          extraEnv:
+            - name: PEERPORT
+              value: "32666"
+            - name: TZ
+              value: America/Vancouver
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          extraVolumes:
+            - name: movies-library
+              persistentVolumeClaim:
+                claimName: {{ .Values.media.libraries.movies.claimName }}
+          extraVolumeMounts:
+            - name: movies-library
+              mountPath: /downloads
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values: [ transmission ]
+                  topologyKey: kubernetes.io/hostname
 
   destination:
     server: https://kubernetes.default.svc
@@ -78,11 +114,3 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - RespectIgnoreDifferences=true
-
-  ignoreDifferences:
-    - kind: Secret
-      name: transmission-movies-web-secret
-      jsonPointers:
-        - /data/USER
-        - /data/PASS
