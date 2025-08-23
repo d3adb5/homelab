@@ -7,60 +7,95 @@ metadata:
 spec:
   project: media
 
-  source:
-    repoURL: https://charts.d3adb5.net
-    targetRevision: 1.1.0
-    chart: stateful
+  sources:
+    - repoURL: {{ .Values.repository.url }}
+      targetRevision: {{ .Values.repository.targetRevision }}
+      path: argo/media/sonarr
 
-    helm:
-      valuesObject:
-        replicaCount: 1
-        image:
-          repository: lscr.io/linuxserver/sonarr
-          tag: "4.0.15@sha256:c0836f49c20000e603170dc95d74c2527e690d50309977d94fc171eaa49351a4"
-          pullPolicy: IfNotPresent
-        resources:
-          requests:
-            cpu: 50m
-            memory: 512Mi
-          limits:
-            memory: 2Gi
-        service:
-          port: 8989
-        ingress:
-          enabled: true
-          host: sonarr.d3adb5.ca
-          className: nginx
-          tls:
+    - repoURL: https://oauth2-proxy.github.io/manifests
+      targetRevision: 8.1.1
+      chart: oauth2-proxy
+
+      helm:
+        valuesObject:
+          config:
+            existingSecret: sonarr-oidc-secrets
+
+            configFile: |-
+              email_domains = ["*"]
+              provider = "keycloak-oidc"
+              oidc_issuer_url = "https://id.d3adb5.ca/realms/core"
+              redirect_url = "https://sonarr.d3adb5.ca/oauth2/callback"
+              code_challenge_method = "S256"
+              allowed_groups = ["/Sonarr"]
+
+          ingress:
             enabled: true
-            secretName: sonarr-tls
-          annotations:
-            cert-manager.io/cluster-issuer: letsencrypt
-        extraEnv:
-          - name: TZ
-            value: America/Vancouver
-          - name: PUID
-            value: "1000"
-          - name: PGID
-            value: "1000"
-        extraVolumes:
-          - name: tv-library
-            persistentVolumeClaim:
-              claimName: {{ .Values.media.libraries.tv.claimName }}
-        extraVolumeMounts:
-          - name: tv-library
-            mountPath: /downloads
-          - name: config
-            mountPath: /config
-        extraVolumeClaimTemplates:
-          - metadata:
-              name: config
-            spec:
-              accessModes: [ "ReadWriteOnce" ]
-              storageClassName: longhorn
-              resources:
-                requests:
-                  storage: 2Gi
+            className: nginx
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt
+            hosts:
+              - "sonarr.d3adb5.ca"
+            path: /oauth2
+            tls:
+              - hosts:
+                  - "sonarr.d3adb5.ca"
+                secretName: sonarr-tls
+
+    - repoURL: https://charts.d3adb5.net
+      targetRevision: 1.1.0
+      chart: stateful
+
+      helm:
+        valuesObject:
+          replicaCount: 1
+          image:
+            repository: lscr.io/linuxserver/sonarr
+            tag: "4.0.15@sha256:c0836f49c20000e603170dc95d74c2527e690d50309977d94fc171eaa49351a4"
+            pullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 50m
+              memory: 512Mi
+            limits:
+              memory: 2Gi
+          service:
+            port: 8989
+          ingress:
+            enabled: true
+            host: sonarr.d3adb5.ca
+            className: nginx
+            tls:
+              enabled: true
+              secretName: sonarr-tls
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt
+              {{- toYaml .Values.ingress.oauth2ProxyAnnotations | nindent 14 }}
+          extraEnv:
+            - name: TZ
+              value: America/Vancouver
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          extraVolumes:
+            - name: tv-library
+              persistentVolumeClaim:
+                claimName: {{ .Values.media.libraries.tv.claimName }}
+          extraVolumeMounts:
+            - name: tv-library
+              mountPath: /downloads
+            - name: config
+              mountPath: /config
+          extraVolumeClaimTemplates:
+            - metadata:
+                name: config
+              spec:
+                accessModes: [ "ReadWriteOnce" ]
+                storageClassName: longhorn
+                resources:
+                  requests:
+                    storage: 2Gi
 
   destination:
     server: https://kubernetes.default.svc
