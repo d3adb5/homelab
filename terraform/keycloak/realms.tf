@@ -8,6 +8,8 @@ resource "keycloak_realm" "core" {
   login_theme = "keycloak"
 
   default_signature_algorithm = "RS256"
+
+  sso_session_idle_timeout = "2h"
 }
 
 resource "keycloak_user" "users" {
