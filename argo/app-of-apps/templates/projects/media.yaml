@@ -11,6 +11,7 @@ spec:
     - {{ .Values.repository.url }}
     - https://charts.d3adb5.net
     - https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages
+    - https://oauth2-proxy.github.io/manifests
 
   destinations:
     - namespace: {{ .Values.media.namespace }}
