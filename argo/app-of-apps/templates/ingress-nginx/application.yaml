@@ -16,6 +16,8 @@ spec:
       valuesObject:
         controller:
           allowSnippetAnnotations: true
+          config:
+            annotations-risk-level: Critical
           service:
             annotations:
               metallb.universe.tf/allow-shared-ip: {{ .Values.metallb.ipSharingKey }}
