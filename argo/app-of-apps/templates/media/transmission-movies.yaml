@@ -27,6 +27,7 @@ spec:
               oidc_issuer_url = "https://id.d3adb5.ca/realms/core"
               redirect_url = "https://movies.transmission.d3adb5.ca/oauth2/callback"
               code_challenge_method = "S256"
+              allowed_groups = ["/Transmission"]
 
           ingress:
             enabled: true
