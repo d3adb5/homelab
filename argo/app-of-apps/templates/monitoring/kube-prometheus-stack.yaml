@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: ghcr.io/prometheus-community/charts
     chart: kube-prometheus-stack
-    targetRevision: 76.5.1
+    targetRevision: 77.0.0
 
     helm:
       valuesObject:
