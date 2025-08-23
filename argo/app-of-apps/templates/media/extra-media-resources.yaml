@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: {{ .Values.repository.url }}
     targetRevision: {{ .Values.repository.targetRevision }}
-    path: argo/media
+    path: argo/media/extra-resources
 
   destination:
     server: https://kubernetes.default.svc
