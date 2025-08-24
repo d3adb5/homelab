@@ -12,6 +12,36 @@ spec:
       targetRevision: {{ .Values.repository.targetRevision }}
       path: argo/monitoring
 
+    - repoURL: https://oauth2-proxy.github.io/manifests
+      targetRevision: 8.1.1
+      chart: oauth2-proxy
+
+      helm:
+        valuesObject:
+          config:
+            existingSecret: prometheus-oidc-secrets
+
+            configFile: |-
+              email_domains = ["*"]
+              provider = "keycloak-oidc"
+              oidc_issuer_url = "https://id.d3adb5.ca/realms/core"
+              redirect_url = "https://prometheus.d3adb5.ca/oauth2/callback"
+              code_challenge_method = "S256"
+              allowed_groups = ["/Prometheus"]
+
+          ingress:
+            enabled: true
+            className: nginx
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt
+            hosts:
+              - "prometheus.d3adb5.ca"
+            path: /oauth2
+            tls:
+              - hosts:
+                  - "prometheus.d3adb5.ca"
+                secretName: prometheus-tls
+
     - repoURL: ghcr.io/prometheus-community/charts
       chart: kube-prometheus-stack
       targetRevision: 77.0.0
@@ -39,6 +69,18 @@ spec:
                 cpu: 10m
                 memory: 32Mi
           prometheus:
+            ingress:
+              enabled: true
+              ingressClassName: nginx
+              annotations:
+                cert-manager.io/cluster-issuer: "letsencrypt"
+                {{- toYaml .Values.ingress.oauth2ProxyAnnotations | nindent 16 }}
+              hosts:
+                - prometheus.d3adb5.ca
+              tls:
+                - hosts:
+                    - prometheus.d3adb5.ca
+                  secretName: prometheus-tls
             prometheusSpec:
               storageSpec:
                 volumeClaimTemplate:

@@ -9,6 +9,7 @@ spec:
 
   sourceRepos:
     - ghcr.io/prometheus-community/charts
+    - https://oauth2-proxy.github.io/manifests
     - {{ .Values.repository.url }}
 
   destinations:
