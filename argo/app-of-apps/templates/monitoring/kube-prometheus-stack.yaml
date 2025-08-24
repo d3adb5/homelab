@@ -94,8 +94,8 @@ spec:
                 token_url: https://id.d3adb5.ca/realms/core/protocol/openid-connect/token
                 api_url: https://id.d3adb5.ca/realms/core/protocol/openid-connect/userinfo
                 role_attribute_path: >-
-                  contains(groups[*], 'Admin') && 'Admin'
-                  || contains(groups[*], 'Grafana') && Editor
+                  contains(groups[*], '/Admin') && 'Admin'
+                  || contains(groups[*], '/Grafana') && Editor
                   || 'Viewer'
 
             resources:
