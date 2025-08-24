@@ -7,85 +7,114 @@ metadata:
 spec:
   project: monitoring
 
-  source:
-    repoURL: ghcr.io/prometheus-community/charts
-    chart: kube-prometheus-stack
-    targetRevision: 77.0.0
+  sources:
+    - repoURL: {{ .Values.repository.url }}
+      targetRevision: {{ .Values.repository.targetRevision }}
+      path: argo/monitoring
 
-    helm:
-      valuesObject:
-        crds:
-          enabled: true
-          upgradeJob:
-            enabled: false
-        kube-state-metrics:
-          resources:
-            limits:
-              cpu: 100m
-              memory: 64Mi
-            requests:
-              cpu: 10m
-              memory: 32Mi
-        prometheus-node-exporter:
-          resources:
-            limits:
-              cpu: 100m
-              memory: 64Mi
-            requests:
-              cpu: 10m
-              memory: 32Mi
-        prometheus:
-          prometheusSpec:
-            storageSpec:
-              volumeClaimTemplate:
-                spec:
-                  storageClassName: truenas-iscsi-hdd
-                  accessModes:
-                    - ReadWriteOnce
-                  resources:
-                    requests:
-                      storage: 20Gi
-        grafana:
-          persistence:
-            enabled: true
-            storageClassName: truenas-iscsi-hdd
-            size: 2Gi
-          ingress:
-            enabled: true
-            ingressClassName: nginx
-            annotations:
-              cert-manager.io/cluster-issuer: "letsencrypt"
-            hosts:
-              - grafana.d3adb5.ca
-            tls:
-              - hosts:
-                  - grafana.d3adb5.ca
-                secretName: grafana-tls
-          resources:
-            limits:
-              cpu: 250m
-              memory: 512Mi
-            requests:
-              cpu: 20m
-              memory: 512Mi
+    - repoURL: ghcr.io/prometheus-community/charts
+      chart: kube-prometheus-stack
+      targetRevision: 77.0.0
 
-          sidecar:
+      helm:
+        valuesObject:
+          crds:
+            enabled: true
+            upgradeJob:
+              enabled: false
+          kube-state-metrics:
             resources:
               limits:
-                cpu: 200m
-                memory: 128Mi
-              requests:
-                cpu: 10m
-                memory: 128Mi
-
-          initChownData:
-            resources:
-              limits:
-                cpu: 10m
-                memory: 32Mi
+                cpu: 100m
+                memory: 64Mi
               requests:
                 cpu: 10m
                 memory: 32Mi
+          prometheus-node-exporter:
+            resources:
+              limits:
+                cpu: 100m
+                memory: 64Mi
+              requests:
+                cpu: 10m
+                memory: 32Mi
+          prometheus:
+            prometheusSpec:
+              storageSpec:
+                volumeClaimTemplate:
+                  spec:
+                    storageClassName: truenas-iscsi-hdd
+                    accessModes:
+                      - ReadWriteOnce
+                    resources:
+                      requests:
+                        storage: 20Gi
+          grafana:
+            persistence:
+              enabled: false
+            ingress:
+              enabled: true
+              ingressClassName: nginx
+              annotations:
+                cert-manager.io/cluster-issuer: "letsencrypt"
+              hosts:
+                - grafana.d3adb5.ca
+              tls:
+                - hosts:
+                    - grafana.d3adb5.ca
+                  secretName: grafana-tls
+            envValueFrom:
+              GRAFANA_OAUTH_CLIENT_ID:
+                secretKeyRef:
+                  name: grafana-oidc-secrets
+                  key: client-id
+              GRAFANA_OAUTH_CLIENT_SECRET:
+                secretKeyRef:
+                  name: grafana-oidc-secrets
+                  key: client-secret
+            grafana.ini:
+              server:
+                root_url: https://grafana.d3adb5.ca
+              auth.generic_oauth:
+                enabled: true
+                name: Keycloak
+                allow_sign_up: true
+                client_id: "${GRAFANA_OAUTH_CLIENT_ID}"
+                client_secret: "${GRAFANA_OAUTH_CLIENT_SECRET}"
+                scopes: openid email profile offline_access roles groups
+                email_attribute_path: email
+                login_attribute_path: username
+                name_attribute_path: full_name
+                auth_url: https://id.d3adb5.ca/realms/core/protocol/openid-connect/auth
+                token_url: https://id.d3adb5.ca/realms/core/protocol/openid-connect/token
+                api_url: https://id.d3adb5.ca/realms/core/protocol/openid-connect/userinfo
+                role_attribute_path: >-
+                  contains(groups[*], 'Admin') && 'Admin'
+                  || contains(groups[*], 'Grafana') && Editor
+                  || 'Viewer'
+
+            resources:
+              limits:
+                memory: 512Mi
+              requests:
+                cpu: 20m
+                memory: 512Mi
+
+            sidecar:
+              resources:
+                limits:
+                  memory: 128Mi
+                requests:
+                  cpu: 10m
+                  memory: 128Mi
+
+            initChownData:
+              resources:
+                limits:
+                  memory: 32Mi
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
 
   destination:
     server: https://kubernetes.default.svc

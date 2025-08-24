@@ -9,6 +9,7 @@ spec:
 
   sourceRepos:
     - ghcr.io/prometheus-community/charts
+    - {{ .Values.repository.url }}
 
   destinations:
     - namespace: {{ .Values.monitoring.namespace }}
