@@ -15,12 +15,22 @@ spec:
     helm:
       valuesObject:
         controller:
+          replicaCount: 3
           allowSnippetAnnotations: true
           config:
             annotations-risk-level: Critical
           service:
             annotations:
               metallb.universe.tf/allow-shared-ip: {{ .Values.metallb.ipSharingKey }}
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: ScheduleAnyway
+              nodeTaintsPolicy: Honor
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: ingress-nginx
+                  app.kubernetes.io/component: controller
 
   destination:
     namespace: {{ .Values.ingress.namespace }}
