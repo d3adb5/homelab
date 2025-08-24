@@ -15,8 +15,9 @@ spec:
     helm:
       valuesObject:
         crds:
+          enabled: true
           upgradeJob:
-            enabled: true
+            enabled: false
         kube-state-metrics:
           resources:
             limits:
