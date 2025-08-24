@@ -81,6 +81,7 @@ spec:
                 enabled: false
               auth.generic_oauth:
                 enabled: true
+                auto_login: true
                 name: Keycloak
                 allow_sign_up: true
                 client_id: "${GRAFANA_OAUTH_CLIENT_ID}"
