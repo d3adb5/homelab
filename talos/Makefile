@@ -41,6 +41,8 @@ help:
 	@echo "  upgrade                 Upgrade all nodes to desired installer image"
 	@echo "    upgrade-control         Upgrade only controlplane nodes"
 	@echo "    upgrade-workers         Upgrade only worker nodes"
+	@echo "    upgrade-control-<node>  Upgrade a controlplane node"
+	@echo "    upgrade-worker-<node>   Upgrade a worker node"
 	@echo "  help                    Display this help message"
 	@echo "  clean                   Remove generated configuration files"
 
