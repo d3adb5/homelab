@@ -1,0 +1,140 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minecraft-pip
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: minecraft
+  source:
+    repoURL: https://itzg.github.io/minecraft-server-charts
+    targetRevision: 4.26.4
+    chart: minecraft
+    helm:
+      valuesObject:
+        serviceAnnotations:
+          mc-router.itzg.me/externalServerName: "pip.picori.ca"
+        workloadAsStatefulSet: true
+        strategyType: RollingUpdate
+        persistence:
+          storageClass: longhorn
+          dataDir:
+            enabled: true
+            Size: 20Gi
+        resources:
+          requests:
+            cpu: 2
+            memory: 10Gi
+          limits:
+            memory: 10Gi
+        minecraftServer:
+          eula: true
+          type: FORGE
+          version: "1.20.1"
+          difficulty: normal
+          whitelist: {{ join "," .Values.minecraft.server.pip.whitelist }}
+          ops: {{ join "," .Values.minecraft.server.pip.ops }}
+          maxPlayers: 10
+          allowNether: true
+          announcePlayerAchievements: true
+          spawnProtection: 0
+          viewDistance: 32
+          motd: "Pip pip hooray!"
+          icon: "http://0x0.st/KoOI.png"
+          rcon:
+            enabled: true
+            existingSecret: minecraft-pip-secrets
+            secretKey: rcon-password
+          memory: 9216M
+
+          extraPorts:
+            - name: voice-chat
+              containerPort: 24452
+              protocol: UDP
+              service:
+                enabled: true
+                embedded: false
+                annotations:
+                  metallb.universe.tf/allow-shared-ip: {{ .Values.metallb.ipSharingKey }}
+                type: LoadBalancer
+                port: 24452
+
+        mcbackup:
+          enabled: true
+          pruneBackupDays: 7
+          persistence:
+            storageClass: truenas-iscsi-hdd
+            backupDir:
+              enabled: true
+              Size: 50Gi
+
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values:
+                          - minecraft
+                  topologyKey: kubernetes.io/hostname
+
+        extraVolumes:
+          - volumes:
+              - name: voice-chat-config
+                configMap:
+                  name: minecraft-pip-voice-chat-config
+            volumeMounts:
+              - name: voice-chat-config
+                mountPath: /data/config/voicechat/voicechat-server.properties
+                subPath: voicechart-server.properties
+
+        extraDeploy:
+          - |
+            apiVersion: bitnami.com/v1alpha1
+            kind: SealedSecret
+            metadata:
+              name: minecraft-pip-secrets
+            spec:
+              encryptedData:
+                {{- range $key, $value := .Values.minecraft.server.pip.secrets }}
+                {{ $key }}: {{ splitList "\n" $value | join "" }}
+                {{- end }}
+          - |
+            apiVersion: v1
+            kind: ConfigMap
+            metadata:
+              name: minecraft-pip-voice-chat-config
+            data:
+              voicechart-server.properties: |
+                port=24452
+                bind_address=
+                max_voice_distance=48.0
+                crouch_distance_multiplier=1.0
+                whisper_distance_multiplier=0.5
+                codec=VOIP
+                mtu_size=1024
+                keep_alive=1000
+                enable_groups=true
+                voice_host=pip.picori.ca
+                allow_recording=true
+                spectator_interaction=false
+                spectator_player_possession=false
+                force_voice_chat=false
+                login_timeout=10000
+                broadcast_range=-1.0
+                allow_pings=true
+                use_natives=true
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.minecraft.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -167,6 +167,29 @@ democraticCsi:
 minecraft:
   namespace: minecraft
   server:
+    pip:
+      whitelist:
+        - Yamz348
+        - mysterybagel
+        - PhlatD
+        - nyaniette
+        - ab9c17
+      ops:
+        - ab9c17
+        - nyaniette
+        - Yamz348
+      secrets:
+        rcon-password: |-
+          AgA8LdNV3nOgFyzmZphkgSLcbD8L3LaSNyj9Z7YJy2N+UE9sk2K1WU8egeP2h5WR5jgBvMAyUWxZRzxF
+          ZK/GkDtaslqq2vvQ48yghtq+5vvuY+i/s4HX74mDCAYsm+UpXXml1MAnHkrCBCggvBxe4hKvwT6bWo6a
+          tfUEU0YrFJnj6T7xzd97pU6D+27vygI0mS1PUqUqZzU3Ogyblo5GjLR15luiMjM4gHiEoJCU+ZVsICU5
+          CZfiDc78mbQGe3A3nhY3usRFBet0uVJdKuLov24w3QpuV7Vh9krvs529LQrj23AQTQfQUKBE6dr0yZ4r
+          iLZ2KvmN6lbmf55fJ1NtoHfmxpL6F2le4AFr+qAWTN0jhFtgtoi2DvAmc3ztHxq59Est6CLUvIN0kBwl
+          XH/VjlzLuyNFr+WPjvO3gsG+8dR2Jeir5JbjwHPdiUjjf4C9CcGdcA9g4EcofLv5/4Uh7Sg3Vs5wJIBD
+          9oGIN4tlpUfAN3rHimnG9PYsWelvwokSQywThfgodGIhOV+RfQdgFV2jBgc9Zd4VE5fYaJTjCDwKaMLY
+          6MF6ZuoEHUCittNu0/M6Sbq3Ix58mLDb8MNWs3MOtj3dlr7HGIRO3iM2kn/V9a9UmdqY7RY72BooSdQI
+          O94wsNnYsIcoarfOedUPD4zq/bN5Ecf+hdy+BV62/Dm1hbKGBz/20RCT+eTXZ/1lok372I6n7AryNVur
+          t1dJmjwb22330oseKTmqlhpxj0reL5nbwBpBRfcGhmLirXY=
     deepsea:
       whitelist:
         - ab9c17
