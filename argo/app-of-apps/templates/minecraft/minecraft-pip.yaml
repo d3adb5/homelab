@@ -24,9 +24,9 @@ spec:
         resources:
           requests:
             cpu: 2
-            memory: 10Gi
+            memory: 12Gi
           limits:
-            memory: 10Gi
+            memory: 12Gi
         minecraftServer:
           eula: true
           type: FORGE
@@ -45,7 +45,7 @@ spec:
             enabled: true
             existingSecret: minecraft-pip-secrets
             secretKey: rcon-password
-          memory: 9216M
+          memory: 11264M
 
           extraPorts:
             - name: voice-chat
