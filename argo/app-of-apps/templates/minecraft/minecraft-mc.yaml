@@ -27,6 +27,8 @@ spec:
             memory: 10Gi
           limits:
             memory: 10Gi
+        extraEnv:
+          USE_MEOWICE_FLAGS: "true"
         minecraftServer:
           eula: true
           type: FABRIC
@@ -45,7 +47,7 @@ spec:
             enabled: true
             existingSecret: minecraft-mc-secrets
             secretKey: rcon-password
-          memory: 9216M
+          memory: 7680M
 
           extraPorts:
             - name: voice-chat
