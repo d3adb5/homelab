@@ -27,6 +27,8 @@ spec:
             memory: 16Gi
           limits:
             memory: 16Gi
+        extraEnv:
+          USE_MEOWICE_FLAGS: "true"
         minecraftServer:
           eula: true
           type: FORGE
@@ -34,7 +36,7 @@ spec:
           difficulty: normal
           whitelist: {{ join "," .Values.minecraft.server.pip.whitelist }}
           ops: {{ join "," .Values.minecraft.server.pip.ops }}
-          maxPlayers: 10
+          maxPlayers: 12
           allowNether: true
           announcePlayerAchievements: true
           spawnProtection: 0
@@ -45,7 +47,7 @@ spec:
             enabled: true
             existingSecret: minecraft-pip-secrets
             secretKey: rcon-password
-          memory: 15000M
+          memory: 12288M
 
           extraPorts:
             - name: voice-chat
