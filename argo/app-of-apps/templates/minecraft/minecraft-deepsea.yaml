@@ -23,10 +23,10 @@ spec:
             Size: 20Gi
         resources:
           requests:
-            cpu: 4
-            memory: 24Gi
+            cpu: 2
+            memory: 13Gi
           limits:
-            memory: 24Gi
+            memory: 13Gi
         minecraftServer:
           eula: true
           type: FABRIC
@@ -45,7 +45,7 @@ spec:
             enabled: true
             existingSecret: minecraft-deepsea-secrets
             secretKey: rcon-password
-          memory: 23000M
+          memory: 12000M
 
           extraPorts:
             - name: voice-chat
