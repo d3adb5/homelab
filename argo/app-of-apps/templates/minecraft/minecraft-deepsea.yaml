@@ -24,9 +24,11 @@ spec:
         resources:
           requests:
             cpu: 2
-            memory: 13Gi
+            memory: 11Gi
           limits:
-            memory: 13Gi
+            memory: 11Gi
+        extraEnv:
+          USE_MEOWICE_FLAGS: "true"
         minecraftServer:
           eula: true
           type: FABRIC
@@ -45,7 +47,7 @@ spec:
             enabled: true
             existingSecret: minecraft-deepsea-secrets
             secretKey: rcon-password
-          memory: 12000M
+          memory: 8096M
 
           extraPorts:
             - name: voice-chat
