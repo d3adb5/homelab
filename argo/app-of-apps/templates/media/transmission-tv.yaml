@@ -33,7 +33,7 @@ spec:
             enabled: true
             className: nginx
             annotations:
-              cert-manager.io/cluster-issuer: letsencrypt
+              {{- toYaml .Values.ingress.oauth2ProxyIngressAnnotations | nindent 14 }}
             hosts:
               - "tv.transmission.d3adb5.ca"
             path: /oauth2

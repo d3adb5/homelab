@@ -33,8 +33,7 @@ spec:
             enabled: true
             className: nginx
             annotations:
-              cert-manager.io/cluster-issuer: letsencrypt
-              nginx.ingress.kubernetes.io/proxy-buffer-size: "8k"
+              {{- toYaml .Values.ingress.oauth2ProxyIngressAnnotations | nindent 14 }}
             hosts:
               - "prometheus.d3adb5.ca"
             path: /oauth2
