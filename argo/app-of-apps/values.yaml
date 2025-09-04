@@ -6,6 +6,9 @@ repository:
 argocd:
   namespace: argocd
 
+minio:
+  namespace: minio
+
 operators:
   olmNamespace: operator-lifecycle-manager
   namespace: operators

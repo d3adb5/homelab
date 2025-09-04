@@ -1,0 +1,91 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minio
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: minio
+
+  sources:
+    - repoURL: {{ .Values.repository.url }}
+      targetRevision: {{ .Values.repository.targetRevision }}
+      path: argo/minio
+
+    - repoURL: https://charts.min.io/
+      targetRevision: 5.4.0
+      chart: minio
+
+      helm:
+        valuesObject:
+          replicas: 3
+
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: ScheduleAnyway
+              labelSelector:
+                matchLabels:
+                  app: minio
+
+          persistence:
+            enabled: true
+            storageClass: truenas-iscsi-hdd
+            size: 50Gi
+
+          resources:
+            requests:
+              memory: 4Gi
+              cpu: 500m
+            limits:
+              memory: 4Gi
+
+          users:
+            - accessKey: console
+              policy: consoleAdmin
+              existingSecret: minio-admin-credentials
+              existingSecretKey: password
+
+          oidc:
+            enabled: true
+            configUrl: https://id.d3adb5.ca/realms/core/.well-known/openid-configuration
+            existingClientSecretName: minio-oidc-secrets
+            existingClientIdKey: client-id
+            existingClientSecretKey: client-secret
+            scopes: openid,profile,email,groups
+            redirectUri: https://console.minio.d3adb5.ca/oauth_callback
+
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt
+            hosts:
+              - minio.d3adb5.ca
+            tls:
+              - secretName: minio-tls
+                hosts:
+                  - minio.d3adb5.ca
+
+          consoleIngress:
+            enabled: true
+            ingressClassName: nginx
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt
+            hosts:
+              - console.minio.d3adb5.ca
+            tls:
+              - secretName: minio-console-tls
+                hosts:
+                  - console.minio.d3adb5.ca
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.minio.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
