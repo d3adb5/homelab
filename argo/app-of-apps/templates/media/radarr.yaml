@@ -51,7 +51,7 @@ spec:
           replicaCount: 1
           image:
             repository: lscr.io/linuxserver/radarr
-            tag: "5.26.2@sha256:ae89f05ad7023258730ed62f5fcca63aab1e27ee5adcca1edb55d716f7cef356"
+            tag: "5.27.5@sha256:3ebb31bce86870dbcc15a5db3fba8864e302310cb2adb70476b0b64c1b3dc6dc"
             pullPolicy: IfNotPresent
           resources:
             requests:
