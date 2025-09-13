@@ -20,10 +20,9 @@ spec:
         resources:
           requests:
             cpu: 250m
-            memory: 256Mi
+            memory: 384Mi
           limits:
-            cpu: 2
-            memory: 512Mi
+            memory: 384Mi
         volumes:
           - name: downloads
             persistentVolumeClaim:
