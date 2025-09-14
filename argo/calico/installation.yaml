@@ -4,6 +4,7 @@ metadata:
   name: default
 spec:
   calicoNetwork:
+    linuxDataplane: BPF
     ipPools:
       - name: default-ipv4-ippool
         allowedUses:
