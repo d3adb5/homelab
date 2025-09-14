@@ -6,6 +6,12 @@ spec:
   calicoNetwork:
     ipPools:
       - name: default-ipv4-ippool
+        allowedUses:
+          - Workload
+          - Tunnel
+        assignmentMode: Automatic
+        disableBGPExport: false
+        disableNewAllocations: false
         blockSize: 26
         cidr: 10.244.0.0/16
         encapsulation: VXLANCrossSubnet
