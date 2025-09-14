@@ -24,6 +24,9 @@ spec:
           params:
             server.insecure: true
           cm:
+            resource.customizations.ignoreDifferences.apiextensions.k8s.io_CustomResourceDefinition: |
+              jsonPointers:
+                - /spec/preserveUnknownFields
             oidc.config: |
               name: Keycloak
               issuer: https://id.d3adb5.ca/realms/core
