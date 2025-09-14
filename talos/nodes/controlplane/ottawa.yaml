@@ -1,10 +1,19 @@
 machine:
   network:
-    hostname: ottawa.lan
+    hostname: ottawa
   install:
     disk: /dev/nvme0n1
+  certSANs:
+    - ottawa.lan
+    - ottawa.d3adb5.ca
+    - 192.168.1.11
 
 cluster:
+  apiServer:
+    certSANs:
+      - ottawa.lan
+      - ottawa.d3adb5.ca
+      - 192.168.1.11
   extraManifests:
     - https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/main/deploy/standalone-install.yaml
     - https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
