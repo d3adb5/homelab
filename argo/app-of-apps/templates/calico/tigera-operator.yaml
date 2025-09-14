@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tigera-operator
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: calico
+
+  source:
+    repoURL: "https://github.com/projectcalico/calico"
+    targetRevision: v3.30.3
+    path: manifests
+    directory:
+      recurse: false
+      include: '{operator-crds.yaml,tigera-operator.yaml}'
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tigera-operator
+
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: calico
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: calico
+
+  source:
+    repoURL: {{ .Values.repository.url }}
+    targetRevision: {{ .Values.repository.targetRevision }}
+    path: argo/calico
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tigera-operator
+
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
