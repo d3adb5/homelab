@@ -13,8 +13,15 @@ spec:
         assignmentMode: Automatic
         disableBGPExport: false
         disableNewAllocations: false
-        blockSize: 26
+        blockSize: 22
         cidr: 10.244.0.0/16
-        encapsulation: VXLANCrossSubnet
+        encapsulation: IPIP
+        natOutgoing: Enabled
+        nodeSelector: all()
+
+      - name: default-ipv6-ippool
+        blockSize: 112
+        cidr: 2001:db8:1::/64
+        encapsulation: None
         natOutgoing: Enabled
         nodeSelector: all()
