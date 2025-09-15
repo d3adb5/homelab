@@ -27,7 +27,7 @@ spec:
         disableBGPExport: false
         disableNewAllocations: false
         blockSize: 112
-        cidr: 2001:db8:1::/64
+        cidr: 2001:db8:42:1::/64
         encapsulation: None
         natOutgoing: Enabled
         nodeSelector: all()
