@@ -15,19 +15,6 @@ spec:
         disableNewAllocations: false
         blockSize: 22
         cidr: 10.244.0.0/16
-        encapsulation: IPIP
-        natOutgoing: Enabled
-        nodeSelector: all()
-
-      - name: default-ipv6-ippool
-        allowedUses:
-          - Workload
-          - Tunnel
-        assignmentMode: Automatic
-        disableBGPExport: false
-        disableNewAllocations: false
-        blockSize: 112
-        cidr: 2001:db8:42:1::/64
-        encapsulation: None
+        encapsulation: VXLANCrossSubnet
         natOutgoing: Enabled
         nodeSelector: all()
