@@ -45,9 +45,31 @@ spec:
           enabled: true
           networkPolicy:
             enabled: true
+            egressRules:
+              - selectors:
+                  - ipBlock:
+                      cidr: 10.96.0.10/32
+                  - ipBlock:
+                      cidr: 169.254.169.254/32
+                ports:
+                  - port: 53
+                    protocol: UDP
+                  - port: 53
+                    protocol: TCP
           haproxy:
             networkPolicy:
               enabled: true
+              egressRules:
+                - selectors:
+                    - ipBlock:
+                        cidr: 10.96.0.10/32
+                    - ipBlock:
+                        cidr: 169.254.169.254/32
+                  ports:
+                    - port: 53
+                      protocol: UDP
+                    - port: 53
+                      protocol: TCP
 
         server:
           autoscaling:
