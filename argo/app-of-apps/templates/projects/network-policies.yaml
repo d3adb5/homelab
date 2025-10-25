@@ -6,7 +6,7 @@ spec:
   description: Network policies to secure my cluster's namespaces
 
   sourceRepos:
-    - {{ .Values.repository.url }}
+    - {{ .Values.repository.homelab.url }}
 
   destinations:
     - namespace: "*"

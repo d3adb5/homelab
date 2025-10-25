@@ -8,8 +8,8 @@ spec:
   project: media
 
   sources:
-    - repoURL: {{ .Values.repository.url }}
-      targetRevision: {{ .Values.repository.targetRevision }}
+    - repoURL: {{ .Values.repository.homelab.url }}
+      targetRevision: {{ .Values.repository.homelab.targetRevision }}
       path: argo/media/radarr
 
     - repoURL: https://oauth2-proxy.github.io/manifests

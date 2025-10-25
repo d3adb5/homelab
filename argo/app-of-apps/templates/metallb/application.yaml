@@ -11,8 +11,8 @@ spec:
     - repoURL: https://metallb.github.io/metallb
       targetRevision: 0.15.2
       chart: metallb
-    - repoURL: {{ .Values.repository.url }}
-      targetRevision: {{ .Values.repository.targetRevision }}
+    - repoURL: {{ .Values.repository.homelab.url }}
+      targetRevision: {{ .Values.repository.homelab.targetRevision }}
       path: argo/metallb
 
   destination:

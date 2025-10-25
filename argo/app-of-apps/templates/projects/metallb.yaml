@@ -7,7 +7,7 @@ spec:
 
   sourceRepos:
     - https://metallb.github.io/metallb
-    - {{ .Values.repository.url }}
+    - {{ .Values.repository.homelab.url }}
 
   destinations:
     - namespace: {{ .Values.metallb.namespace }}

@@ -7,7 +7,7 @@ spec:
 
   sourceRepos:
     - https://itzg.github.io/minecraft-server-charts
-    - {{ .Values.repository.url }}
+    - {{ .Values.repository.homelab.url }}
 
   destinations:
     - namespace: {{ .Values.minecraft.namespace }}

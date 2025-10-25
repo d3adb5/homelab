@@ -6,7 +6,7 @@ spec:
   description: CSI storage for container orchestration systems
 
   sourceRepos:
-    - {{ .Values.repository.url }}
+    - {{ .Values.repository.homelab.url }}
     - https://democratic-csi.github.io/charts/
 
   destinations:

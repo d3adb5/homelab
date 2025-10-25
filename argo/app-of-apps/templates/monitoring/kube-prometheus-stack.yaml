@@ -8,8 +8,8 @@ spec:
   project: monitoring
 
   sources:
-    - repoURL: {{ .Values.repository.url }}
-      targetRevision: {{ .Values.repository.targetRevision }}
+    - repoURL: {{ .Values.repository.homelab.url }}
+      targetRevision: {{ .Values.repository.homelab.targetRevision }}
       path: argo/monitoring
 
     - repoURL: https://oauth2-proxy.github.io/manifests

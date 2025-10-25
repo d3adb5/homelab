@@ -7,10 +7,10 @@ metadata:
 spec:
   project: default
 
-  source:
-    repoURL: {{ .Values.repository.url }}
-    targetRevision: {{ .Values.repository.targetRevision }}
-    path: {{ .Values.repository.path }}
+  sources:
+    - repoURL: {{ .Values.repository.homelab.url }}
+      targetRevision: {{ .Values.repository.homelab.targetRevision }}
+      path: {{ .Values.repository.homelab.path }}
 
   destination:
     server: https://kubernetes.default.svc

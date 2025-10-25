@@ -8,8 +8,8 @@ spec:
   project: cluster-utils
 
   source:
-    repoURL: {{ .Values.repository.url }}
-    targetRevision: {{ .Values.repository.targetRevision }}
+    repoURL: {{ .Values.repository.homelab.url }}
+    targetRevision: {{ .Values.repository.homelab.targetRevision }}
     path: argo/cluster-utils
 
   destination:

@@ -8,8 +8,8 @@ spec:
   project: operators
 
   sources:
-    - repoURL: {{ .Values.repository.url }}
-      targetRevision: {{ .Values.repository.targetRevision }}
+    - repoURL: {{ .Values.repository.homelab.url }}
+      targetRevision: {{ .Values.repository.homelab.targetRevision }}
       path: argo/olmv0
 
     - repoURL: https://github.com/operator-framework/operator-lifecycle-manager

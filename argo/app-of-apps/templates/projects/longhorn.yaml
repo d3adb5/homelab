@@ -10,7 +10,7 @@ spec:
   sourceRepos:
     - https://charts.longhorn.io
     - https://oauth2-proxy.github.io/manifests
-    - {{ .Values.repository.url }}
+    - {{ .Values.repository.homelab.url }}
 
   destinations:
     - namespace: {{ .Values.longhorn.namespace }}

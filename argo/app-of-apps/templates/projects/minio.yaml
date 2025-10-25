@@ -8,7 +8,7 @@ spec:
   description: MinIO object storage
 
   sourceRepos:
-    - {{ .Values.repository.url }}
+    - {{ .Values.repository.homelab.url }}
     - https://charts.min.io/
 
   destinations:

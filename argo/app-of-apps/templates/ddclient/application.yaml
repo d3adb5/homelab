@@ -8,8 +8,8 @@ spec:
   project: ddclient
 
   sources:
-    - repoURL: {{ .Values.repository.url }}
-      targetRevision: {{ .Values.repository.targetRevision }}
+    - repoURL: {{ .Values.repository.homelab.url }}
+      targetRevision: {{ .Values.repository.homelab.targetRevision }}
       path: argo/ddclient
       ref: repository
 
