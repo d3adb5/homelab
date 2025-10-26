@@ -3,6 +3,10 @@ repository:
     url: "https://github.com/d3adb5/homelab"
     path: "argo/app-of-apps"
     targetRevision: "HEAD"
+  secretlab:
+    url: "https://github.com/d3adb5/secretlab"
+    path: "argo/app-of-apps"
+    targetRevision: "HEAD"
 
 argocd:
   namespace: argocd

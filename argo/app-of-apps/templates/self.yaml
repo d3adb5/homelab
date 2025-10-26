@@ -12,6 +12,14 @@ spec:
       targetRevision: {{ .Values.repository.homelab.targetRevision }}
       path: {{ .Values.repository.homelab.path }}
 
+    - repoURL: {{ .Values.repository.secretlab.url }}
+      targetRevision: {{ .Values.repository.secretlab.targetRevision }}
+      path: {{ .Values.repository.secretlab.path }}
+
+      helm:
+        valuesObject:
+          {{- toYaml .Values | nindent 10 }}
+
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ .Values.argocd.namespace }}
