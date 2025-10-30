@@ -92,7 +92,7 @@ spec:
           - volumes:
               - name: voice-chat-config
                 configMap:
-                  name: minecraft-deepsea-voice-chat-config
+                  name: minecraft-gug-voice-chat-config
             volumeMounts:
               - name: voice-chat-config
                 mountPath: /data/config/voicechat/voicechat-server.properties
