@@ -12,8 +12,6 @@ spec:
     chart: minecraft
     helm:
       valuesObject:
-        image:
-          tag: java8
         serviceAnnotations:
           mc-router.itzg.me/externalServerName: "gug.d3adb5.ca"
         workloadAsStatefulSet: true
@@ -34,8 +32,8 @@ spec:
         minecraftServer:
           eula: true
           type: FORGE
-          downloadModpackUrl: "http://0x0.st/H3s4.3.zip"
-          version: "1.12.2"
+          downloadModpackUrl: "http://0x0.st/K_tU.5.zip"
+          version: "1.18.2"
           difficulty: normal
           whitelist: {{ join "," .Values.minecraft.server.gug.whitelist }}
           ops: {{ join "," .Values.minecraft.server.gug.ops }}
@@ -44,7 +42,7 @@ spec:
           announcePlayerAchievements: true
           spawnProtection: 0
           viewDistance: 32
-          motd: "Onnie and Beaver, sitting under a tree..."
+          motd: "Is it still necrophilia if it's with a zombie?"
           icon: "http://0x0.st/K_t4.png"
           rcon:
             enabled: true
