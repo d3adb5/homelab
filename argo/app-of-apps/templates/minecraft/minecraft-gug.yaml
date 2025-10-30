@@ -66,6 +66,18 @@ spec:
             secretKey: rcon-password
           memory: 12288M
 
+          extraPorts:
+            - name: voice-chat
+              containerPort: 24451
+              protocol: UDP
+              service:
+                enabled: true
+                embedded: false
+                annotations:
+                  metallb.universe.tf/allow-shared-ip: {{ .Values.metallb.ipSharingKey }}
+                type: LoadBalancer
+                port: 24451
+
         mcbackup:
           enabled: true
           pruneBackupDays: 7
