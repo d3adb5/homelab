@@ -180,6 +180,29 @@ democraticCsi:
 minecraft:
   namespace: minecraft
   server:
+    rlcraft:
+      whitelist:
+        - ab9c17
+        - OnyxKier
+        - Harkly_
+        - Nightmar35
+      ops:
+        - ab9c17
+        - OnyxKier
+        - Harkly_
+        - Nightmar35
+      secrets:
+        rcon-password: |-
+          AgA4aG8bclIN5h2/PBu5lnMJ11r5bL0f8nzRc2escYFiLoe4Mzyezz2C+0VmOU5G5vJpNwTstAXTJc92
+          ZoFKrKGIoihbrWG70G0s9c9qYJkZt8whZzT4fSfl9vxcPnOPrY8oor77iPjHg67lYOqlWdNGWreG3f5t
+          DyUlic+WCepHHRz4ihg7mPXC4/FxOfPvEWnEL7ugA+6PPqvgnHttjLWRLEIH74zDtYKmD3uSaGTQ9ocT
+          6hc4w3J0b/2+PHkxymiddS4RQR5AwE1iViRxUjhheTFAkQGSel00pXv9dN7oDsboSLUk6iDEPqbOuBB6
+          6GlHZF5S4+57aUyuY3g/fWnWIr+A5YTIpn8u9ccSrVUGktaUxbAI43V+wflgbTIfx4yk1cULNoucRQy9
+          +ebH8F8zuA40u0JM8JrIzLLIJrKvdLeWYw5vX4dQRcRYxGr8GPvUaNmd4BcqJE/LgpkpGLr4I/hnNb9Q
+          HiGJKUCHLGv7vTCdI/XyCA4Ktpevke4hrZbtejJ+t0P95q1/KPSU71JJiVyVDuPS/X4WJgbUQTvcuIYm
+          GdDkht7NKVoSGbh99W7MgxWTMuiZS/lnohMNbWT6Ilgae476SUAXRASAxX5npaZHbwbz17gK8LRXZSuM
+          SzaZBn52czMD2bOHlpcjvZ40wZaZcjpi+d3+Grjp3ZrhyResROlfVjQuedN3OwouJDWOX3BmTnFBmsIE
+          LhdFbSTySq+e/uYZ1YUiWgkLfiZ5N4DJzfiMy1wOemw9I7A=
     gug:
       whitelist:
         - ab9c17

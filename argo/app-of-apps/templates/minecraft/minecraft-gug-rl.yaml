@@ -1,0 +1,167 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minecraft-rlcraft
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: minecraft
+  source:
+    repoURL: https://itzg.github.io/minecraft-server-charts
+    targetRevision: 5.0.0
+    chart: minecraft
+    helm:
+      valuesObject:
+        image:
+          tag: java8
+        initContainers:
+          - name: fix-config-permissions
+            image: busybox
+            command:
+              - sh
+              - -c
+              - |
+                mkdir -p /data/config
+                chown -R 1000:1000 /data
+                while [ -f /data/need-maintenance ]; do
+                  echo "Waiting for /data/need-maintenance to be deleted..."
+                  sleep 5
+                done
+            securityContext:
+              runAsUser: 0
+              runAsGroup: 0
+              runAsNonRoot: false
+            volumeMounts:
+              - name: datadir
+                mountPath: /data
+
+        serviceAnnotations:
+          mc-router.itzg.me/externalServerName: "rl.gug.d3adb5.ca"
+        workloadAsStatefulSet: true
+        strategyType: RollingUpdate
+        persistence:
+          storageClass: longhorn
+          dataDir:
+            enabled: true
+            Size: 20Gi
+        resources:
+          requests:
+            cpu: 2
+            memory: 10Gi
+          limits:
+            memory: 10Gi
+        extraEnv:
+          USE_MEOWICE_FLAGS: "true"
+        minecraftServer:
+          eula: true
+          type: FORGE
+          version: "1.12.2"
+          difficulty: hard
+          maxTickTime: -1
+          enableCommandBlock: true
+          whitelist: {{ join "," .Values.minecraft.server.rlcraft.whitelist }}
+          ops: {{ join "," .Values.minecraft.server.rlcraft.ops }}
+          maxPlayers: 16
+          allowNether: true
+          announcePlayerAchievements: true
+          spawnProtection: 0
+          viewDistance: 16
+          motd: "This time I'm really gonna do it."
+          rcon:
+            enabled: true
+            existingSecret: minecraft-rlcraft-secrets
+            secretKey: rcon-password
+          memory: 8192M
+          overrideServerProperties: false
+
+          extraPorts:
+            - name: voice-chat
+              containerPort: 24450
+              protocol: UDP
+              service:
+                enabled: true
+                embedded: false
+                annotations:
+                  metallb.universe.tf/allow-shared-ip: {{ .Values.metallb.ipSharingKey }}
+                type: LoadBalancer
+                port: 24450
+
+        mcbackup:
+          enabled: true
+          pruneBackupDays: 7
+          persistence:
+            storageClass: truenas-iscsi-hdd
+            backupDir:
+              enabled: true
+              Size: 50Gi
+
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values:
+                          - minecraft
+                  topologyKey: kubernetes.io/hostname
+
+        extraVolumes:
+          - volumes:
+              - name: voice-chat-config
+                configMap:
+                  name: minecraft-rlcraft-voice-chat-config
+            volumeMounts:
+              - name: voice-chat-config
+                mountPath: /data/config/voicechat/voicechat-server.properties
+                subPath: voicechart-server.properties
+
+        extraDeploy:
+          - |
+            apiVersion: bitnami.com/v1alpha1
+            kind: SealedSecret
+            metadata:
+              name: minecraft-rlcraft-secrets
+            spec:
+              encryptedData:
+                {{- range $key, $value := .Values.minecraft.server.rlcraft.secrets }}
+                {{ $key }}: {{ splitList "\n" $value | join "" }}
+                {{- end }}
+          - |
+            apiVersion: v1
+            kind: ConfigMap
+            metadata:
+              name: minecraft-rlcraft-voice-chat-config
+            data:
+              voicechart-server.properties: |
+                port=24450
+                bind_address=
+                max_voice_distance=48.0
+                crouch_distance_multiplier=1.0
+                whisper_distance_multiplier=0.5
+                codec=VOIP
+                mtu_size=1024
+                keep_alive=1000
+                enable_groups=true
+                voice_host=rl.gug.d3adb5.ca
+                allow_recording=true
+                spectator_interaction=false
+                spectator_player_possession=false
+                force_voice_chat=false
+                login_timeout=10000
+                broadcast_range=-1.0
+                allow_pings=true
+                use_natives=true
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.minecraft.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
