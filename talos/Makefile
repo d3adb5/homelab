@@ -6,7 +6,7 @@ PATCHES      = $(addprefix --config-patch @, $(wildcard patches/*.yaml))
 SECRETS_FILE = secrets.yaml
 
 CLUSTER_NAME = homelab
-API_ENDPOINT = https://ottawa.lan:6443
+API_ENDPOINT = https://ottawa.d3adb5.ca:6443
 
 FACTORY_URL   := https://factory.talos.dev/schematics
 TALOS_VERSION := 1.11.1
