@@ -180,6 +180,27 @@ democraticCsi:
 minecraft:
   namespace: minecraft
   server:
+    gug:
+      whitelist:
+        - ab9c17
+        - OnyxKier
+        - Harkly_
+      ops:
+        - ab9c17
+        - OnyxKier
+        - Harkly_
+      secrets:
+        rcon-password: |-
+          AgCCK32qYJqFWQk9UISQ/cGT40qZ40sEuIqPjmziuEBsZFggMpFWq9PMOPBMimP020GgHp3QnwjOhvPe
+          YqH/3X0EFa1LKBIdm90lCADyMY66/eRe2pv4i+WpAT2daYMPVDWEdpg0+K+Qk/GAxKoz2f/6v9DDYOwF
+          Z0nhO+J5ziwDuLGam4Qm1XC5hMEz0UoovRAwYGb921CoPgSxCUpWRmOSI8BryVgHcBf/5cQ8KDBD6O4M
+          Wol2Try8TJxG2o0Mx7wWK3bGRAsZd/tmeVyGjWE6isGDqa9rxQH/ak96nxcxC7DJAOshbdsHt8NbtjMx
+          S+JZianFd2dxauZR4Wo++1Z1FTsvOrBpTY+1y9og/Gt21B87FuRxKB/LKllHfPsbm6dlZyCbTLaDNjU5
+          FXh2qChNCrXqqP1yCJ/S8874/MrHa/oLAk49oIMbMWDTxelZyHmT7q0jeNpMseiVs6uRb8GmueUIRfLV
+          Ge6ihHLof2WnSFFrdUA+U2Gvc4xHWY7o83qF6PDCOSXHstV75nCpl8kxc3uMOt1lI7xehyhjhsNXoh7e
+          eKI8F7V+IdCTUFG7Hb70gU5Lv9oU5+8FCyBsg/qonWlOFASsLdf0OPAu7i5PiYWwywBO0Sg66TES+BVY
+          GrA0h45Gt/a4otKqYdcLJCjKrAJrAK0GsNWGnL0Tb0/SmdIRDTMI1rdaOz4CNcRQSoCrLEcDfcJ2/wj1
+          Cndgub9uJjDpXw4SXNMemkIuxd6jL3QyWgo4NSV0Vy9Dy7w=
     pip:
       whitelist:
         - Yamz348
