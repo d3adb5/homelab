@@ -12,6 +12,8 @@ spec:
     chart: minecraft
     helm:
       valuesObject:
+        image:
+          tag: java8
         serviceAnnotations:
           mc-router.itzg.me/externalServerName: "gug.d3adb5.ca"
         workloadAsStatefulSet: true
