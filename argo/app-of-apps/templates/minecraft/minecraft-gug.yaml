@@ -12,6 +12,23 @@ spec:
     chart: minecraft
     helm:
       valuesObject:
+        initContainers:
+          - name: fix-config-permissions
+            image: busybox
+            command:
+              - sh
+              - -c
+              - |
+                mkdir -p /data/config
+                chown -R 1000:1000 /data
+            securityContext:
+              runAsUser: 0
+              runAsGroup: 0
+              runAsNonRoot: false
+            volumeMounts:
+              - name: datadir
+                mountPath: /data
+
         serviceAnnotations:
           mc-router.itzg.me/externalServerName: "gug.d3adb5.ca"
         workloadAsStatefulSet: true
