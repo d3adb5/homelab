@@ -32,7 +32,7 @@ spec:
         minecraftServer:
           eula: true
           type: FORGE
-          downloadModpackUrl: "http://0x0.st/K_tU.5.zip"
+          downloadModpackUrl: "http://0x0.st/K_tD.5.zip"
           version: "1.18.2"
           difficulty: normal
           whitelist: {{ join "," .Values.minecraft.server.gug.whitelist }}
