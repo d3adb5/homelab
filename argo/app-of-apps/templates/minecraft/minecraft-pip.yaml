@@ -12,6 +12,7 @@ spec:
     chart: minecraft
     helm:
       valuesObject:
+        replicaCount: 0
         serviceAnnotations:
           mc-router.itzg.me/externalServerName: "pip.picori.ca"
         workloadAsStatefulSet: true
