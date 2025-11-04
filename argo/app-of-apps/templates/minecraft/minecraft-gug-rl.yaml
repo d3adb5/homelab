@@ -47,9 +47,9 @@ spec:
         resources:
           requests:
             cpu: 2
-            memory: 18Gi
+            memory: 10Gi
           limits:
-            memory: 18Gi
+            memory: 10Gi
         extraEnv:
           USE_MEOWICE_FLAGS: "true"
         minecraftServer:
@@ -71,7 +71,7 @@ spec:
             enabled: true
             existingSecret: minecraft-rlcraft-secrets
             secretKey: rcon-password
-          memory: 16384M
+          memory: 8192M
           overrideServerProperties: false
 
           extraPorts:
