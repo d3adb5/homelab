@@ -31,6 +31,10 @@ spec:
               - name: datadir
                 mountPath: /data
 
+        livenessProbe:
+          initialDelaySeconds: 120
+          failureThreshold: 40
+
         serviceAnnotations:
           mc-router.itzg.me/externalServerName: "carpg.d3adb5.ca"
         workloadAsStatefulSet: true
