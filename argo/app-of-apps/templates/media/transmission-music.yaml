@@ -1,0 +1,116 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: transmission-music
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: media
+
+  sources:
+    - repoURL: {{ .Values.repository.homelab.url }}
+      targetRevision: {{ .Values.repository.homelab.targetRevision }}
+      path: argo/media/transmission-music
+
+    - repoURL: https://oauth2-proxy.github.io/manifests
+      targetRevision: 8.3.1
+      chart: oauth2-proxy
+
+      helm:
+        valuesObject:
+          config:
+            existingSecret: transmission-music-oidc-secrets
+
+            configFile: |-
+              email_domains = ["*"]
+              provider = "keycloak-oidc"
+              oidc_issuer_url = "https://id.d3adb5.ca/realms/core"
+              redirect_url = "https://music.transmission.d3adb5.ca/oauth2/callback"
+              code_challenge_method = "S256"
+              allowed_groups = ["/Transmission"]
+
+          ingress:
+            enabled: true
+            className: nginx
+            annotations:
+              {{- toYaml .Values.ingress.oauth2ProxyIngressAnnotations | nindent 14 }}
+            hosts:
+              - "music.transmission.d3adb5.ca"
+            path: /oauth2
+            tls:
+              - hosts:
+                  - "music.transmission.d3adb5.ca"
+                secretName: transmission-music-tls
+
+    - repoURL: https://charts.d3adb5.net
+      targetRevision: 0.2.0
+      chart: transmission
+
+      helm:
+        valuesObject:
+          transmission:
+            generateCredentials: false
+          image:
+            repository: lscr.io/linuxserver/transmission
+            pullPolicy: IfNotPresent
+            tag: "4.0.5@sha256:c6a95f014f7ec812c9173be5a0afef4656e7c09be1c2d063786f42bdc3ee3d8a"
+          replicaCount: 1
+          resources:
+            requests:
+              cpu: 350m
+              memory: 2Gi
+            limits:
+              memory: 2Gi
+          persistence:
+            config:
+              storageClass: longhorn
+          ingress:
+            enabled: true
+            className: nginx
+            host: music.transmission.d3adb5.ca
+            tls:
+              enabled: true
+              secretName: transmission-music-tls
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt
+              {{- toYaml .Values.ingress.oauth2ProxyAnnotations | nindent 14 }}
+          peerService:
+            type: NodePort
+            nodePort: 32555
+            port: 32555
+          extraEnv:
+            - name: PEERPORT
+              value: "32555"
+            - name: TZ
+              value: America/Vancouver
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          extraVolumes:
+            - name: music-library
+              persistentVolumeClaim:
+                claimName: {{ .Values.media.libraries.music.claimName }}
+          extraVolumeMounts:
+            - name: music-library
+              mountPath: /downloads
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values: [ transmission ]
+                  topologyKey: kubernetes.io/hostname
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.media.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

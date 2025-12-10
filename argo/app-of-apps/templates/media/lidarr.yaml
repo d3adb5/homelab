@@ -1,0 +1,109 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lidarr
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: media
+
+  sources:
+    - repoURL: {{ .Values.repository.homelab.url }}
+      targetRevision: {{ .Values.repository.homelab.targetRevision }}
+      path: argo/media/lidarr
+
+    - repoURL: https://oauth2-proxy.github.io/manifests
+      targetRevision: 8.3.1
+      chart: oauth2-proxy
+
+      helm:
+        valuesObject:
+          config:
+            existingSecret: lidarr-oidc-secrets
+
+            configFile: |-
+              email_domains = ["*"]
+              provider = "keycloak-oidc"
+              oidc_issuer_url = "https://id.d3adb5.ca/realms/core"
+              redirect_url = "https://lidarr.d3adb5.ca/oauth2/callback"
+              code_challenge_method = "S256"
+              allowed_groups = ["/Lidarr"]
+
+          ingress:
+            enabled: true
+            className: nginx
+            annotations:
+              {{- toYaml .Values.ingress.oauth2ProxyIngressAnnotations | nindent 14 }}
+            hosts:
+              - "lidarr.d3adb5.ca"
+            path: /oauth2
+            tls:
+              - hosts:
+                  - "lidarr.d3adb5.ca"
+                secretName: lidarr-tls
+
+    - repoURL: https://charts.d3adb5.net
+      targetRevision: 1.1.0
+      chart: stateful
+
+      helm:
+        valuesObject:
+          replicaCount: 1
+          image:
+            repository: lscr.io/linuxserver/lidarr
+            tag: "3.1.0@sha256:c1e17cc29421c9da603f0c727b7785d280dc98dfb1f835d0b176485dc8c5deb5"
+            pullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 50m
+              memory: 512Mi
+            limits:
+              memory: 2Gi
+          service:
+            port: 8686
+          ingress:
+            enabled: true
+            host: lidarr.d3adb5.ca
+            className: nginx
+            tls:
+              enabled: true
+              secretName: lidarr-tls
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt
+              {{- toYaml .Values.ingress.oauth2ProxyAnnotations | nindent 14 }}
+          extraEnv:
+            - name: TZ
+              value: America/Vancouver
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          extraVolumes:
+            - name: music-library
+              persistentVolumeClaim:
+                claimName: {{ .Values.media.libraries.music.claimName }}
+          extraVolumeMounts:
+            - name: music-library
+              mountPath: /downloads
+            - name: config
+              mountPath: /config
+          extraVolumeClaimTemplates:
+            - metadata:
+                name: config
+              spec:
+                accessModes: [ "ReadWriteOnce" ]
+                storageClassName: longhorn
+                resources:
+                  requests:
+                    storage: 2Gi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.media.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
