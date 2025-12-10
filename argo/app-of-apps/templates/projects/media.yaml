@@ -12,6 +12,7 @@ spec:
     - https://charts.d3adb5.net
     - https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages
     - https://oauth2-proxy.github.io/manifests
+    - oci.trueforge.org/truecharts
 
   destinations:
     - namespace: {{ .Values.media.namespace }}

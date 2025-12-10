@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media-library-music
+  finalizers:
+    - kubernetes.io/pvc-protection
+spec:
+  storageClassName: truenas-nfs-hdd
+  accessModes: [ ReadWriteMany ]
+  resources:
+    requests:
+      storage: 4Ti

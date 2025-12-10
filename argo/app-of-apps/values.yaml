@@ -62,6 +62,8 @@ media:
       claimName: media-library-movies
     tv:
       claimName: media-library-tv
+    music:
+      claimName: media-library-music
 
 longhorn:
   namespace: longhorn-system
