@@ -48,7 +48,7 @@ spec:
 
       helm:
         valuesObject:
-          replicaCount: 1
+          replicaCount: 0
           image:
             repository: lscr.io/linuxserver/lidarr
             tag: "3.1.0@sha256:c1e17cc29421c9da603f0c727b7785d280dc98dfb1f835d0b176485dc8c5deb5"
