@@ -43,6 +43,9 @@ spec:
           - name: tv-library
             persistentVolumeClaim:
               claimName: {{ .Values.media.libraries.tv.claimName }}
+          - name: music-library
+            persistentVolumeClaim:
+              claimName: {{ .Values.media.libraries.music.claimName }}
         extraVolumeMounts:
           - name: tv-library
             mountPath: /media/tv
@@ -50,6 +53,10 @@ spec:
           - name: movies-library
             mountPath: /media/movies
             subPath: library
+          - name: music-library
+            mountPath: /media/music
+            subPath: library
+            readOnly: true
         service:
           type: NodePort
           nodePort: 32400
