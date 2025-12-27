@@ -23,7 +23,6 @@ spec:
                     ND_MUSICFOLDER: /music
                     ND_PROMETHEUS_ENABLED: "true"
                     ND_ENABLESHARING: "true"
-                    ND_ENABLETRANSCODINGCONFIG: "true"
 
         persistence:
           data:
