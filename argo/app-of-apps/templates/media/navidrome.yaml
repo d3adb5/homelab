@@ -22,7 +22,7 @@ spec:
                   env:
                     ND_MUSICFOLDER: /music
                     ND_PROMETHEUS_ENABLED: "true"
-                    ND_ENABLESHARING: "false"
+                    ND_ENABLESHARING: "true"
 
         persistence:
           data:
