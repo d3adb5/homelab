@@ -24,6 +24,7 @@ spec:
                     ND_PROMETHEUS_ENABLED: "true"
                     ND_ENABLESHARING: "true"
                     ND_ENABLETRANSCODINGCONFIG: "true"
+                    ND_LOGLEVEL: debug
 
         persistence:
           data:
