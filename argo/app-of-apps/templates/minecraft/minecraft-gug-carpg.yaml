@@ -12,6 +12,7 @@ spec:
     chart: minecraft
     helm:
       valuesObject:
+        replicaCount: 0
         initContainers:
           - name: pause-for-setup
             image: busybox
