@@ -1,0 +1,121 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minecraft-chudbunnies
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: minecraft
+  source:
+    repoURL: https://itzg.github.io/minecraft-server-charts
+    targetRevision: 5.0.0
+    chart: minecraft
+    helm:
+      valuesObject:
+        image:
+          tag: java21
+        initContainers:
+          - name: pause-for-setup
+            image: busybox
+            command:
+              - sh
+              - -c
+              - |
+                while [ ! -f /data/setup-complete ]; do
+                  echo "Waiting for /data/setup-complete to be created..."
+                  sleep 5
+                done
+            securityContext:
+              runAsUser: 0
+              runAsGroup: 0
+              runAsNonRoot: false
+            volumeMounts:
+              - name: datadir
+                mountPath: /data
+
+        livenessProbe:
+          initialDelaySeconds: 120
+          failureThreshold: 40
+
+        serviceAnnotations:
+          mc-router.itzg.me/externalServerName: "chudbunnies.d3adb5.ca"
+        workloadAsStatefulSet: true
+        strategyType: RollingUpdate
+        persistence:
+          storageClass: longhorn
+          dataDir:
+            enabled: true
+            Size: 40Gi
+        resources:
+          requests:
+            cpu: 2
+            memory: 14Gi
+          limits:
+            memory: 14Gi
+        extraEnv:
+          USE_MEOWICE_FLAGS: "true"
+        minecraftServer:
+          eula: true
+          type: FORGE
+          version: "1.19.2"
+          difficulty: easy
+          maxTickTime: -1
+          whitelist: {{ join "," .Values.minecraft.server.chudbunnies.whitelist }}
+          ops: {{ join "," .Values.minecraft.server.chudbunnies.ops }}
+          maxPlayers: 32
+          allowNether: true
+          announcePlayerAchievements: true
+          spawnProtection: 0
+          viewDistance: 20
+          motd: "Hop in for some bunny fun, chuds! Beavers are better, though."
+          rcon:
+            enabled: true
+            existingSecret: minecraft-chudbunnies-secrets
+            secretKey: rcon-password
+          memory: 12288M
+          overrideServerProperties: false
+
+        mcbackup:
+          enabled: true
+          pruneBackupDays: 7
+          persistence:
+            storageClass: truenas-iscsi-hdd
+            backupDir:
+              enabled: true
+              Size: 50Gi
+
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values:
+                          - minecraft
+                  topologyKey: kubernetes.io/hostname
+
+        extraDeploy:
+          - |
+            apiVersion: bitnami.com/v1alpha1
+            kind: SealedSecret
+            metadata:
+              name: minecraft-chudbunnies-secrets
+            spec:
+              encryptedData:
+                {{- range $key, $value := .Values.minecraft.server.chudbunnies.secrets }}
+                {{ $key }}: {{ splitList "\n" $value | join "" }}
+                {{- end }}
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.minecraft.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

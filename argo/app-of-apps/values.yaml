@@ -182,6 +182,27 @@ democraticCsi:
 minecraft:
   namespace: minecraft
   server:
+    chudbunnies:
+      whitelist:
+        - ab9c17
+        - OnyxKier
+        - Warden_Gaming
+      ops:
+        - ab9c17
+        - OnyxKier
+        - Warden_Gaming
+      secrets:
+        rcon-password: |-
+          AgBvz2o0O5O3PfRT1PaZYmwltv/URPwWSlUKuFS7jaHmpC1wWAiImxdFwxPUEkh3AcwBPVhou+vgrj1m
+          ZJVSyJ5JS1sp7Fd8tBDzr9hr2QVXTKOxLv1t1UNFl/Bw8CP19SXUZoEWN6sirP9FLpxAR7tSMqJf20SH
+          L40mRVPwH5uTikIZ1zACWjnv4aCmJPNbqqLWsTdEjdmxEG/dkEkuDTFgPyv43XEjcg7RByYsxWdc0vuz
+          iPJFnipNTOqD1te//nhtEnrVx1HIn1nGn8CUC3M1geMyA6ZYYgxCf/eax7jn7PXlRSBjahVcejOiadeY
+          rYhWtGS9MkkoCqp+vJCvFcLznwnYI4fJYpHWxqVQkB1z4Poq0WThLdtUyy1OtFE9qKsWBPeB72HoaReg
+          EyT/o3AZCA8DQ5cPCWv9zcNfLK7jocjIgnQD5gYfCFaQm86jeCyFDCJuhvcGRqeEzPKS5QKg4Uef19Bl
+          /5JnCWYDB4FqA1r7SpAjsu9uZeLf9eOGBOKIql/qcihyCYrTNrbErrk4gIKupaUpZCFWwTaNN9cL6rDM
+          TA7vcBVGPKgTcWpxoLzGjDNHLRy4tvmigNYsK77BKv79JvzubloBezNMAwDhporEbEWaZuyxD5S+kr6Y
+          Hlhi8OkGy7+B33KpBPBpq2JLBOcAeCjI9rFFigtlb6GxLbINIxWgRQqpDKssBf/+BmDibDBH7vMXZ2TG
+          MId/ICiWMyeUyQZVcxrlvdxMtaqZdt9JMYf+QTB4NEHdI6Q=
     carpg:
       whitelist:
         - ab9c17
