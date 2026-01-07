@@ -49,9 +49,9 @@ spec:
         resources:
           requests:
             cpu: 2
-            memory: 14Gi
+            memory: 22Gi
           limits:
-            memory: 14Gi
+            memory: 22Gi
         extraEnv:
           USE_MEOWICE_FLAGS: "true"
         minecraftServer:
@@ -72,7 +72,7 @@ spec:
             enabled: true
             existingSecret: minecraft-chudbunnies-secrets
             secretKey: rcon-password
-          memory: 12288M
+          memory: 20480M
           overrideServerProperties: false
 
           extraPorts:
