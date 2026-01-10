@@ -13,6 +13,11 @@ spec:
 
     helm:
       valuesObject:
+        minecraftRouter:
+          mappings:
+            - port: 25565
+              externalHostname: "test.d3adb5.ca"
+              host: "192.168.1.237"
         services:
           minecraft:
             type: LoadBalancer
