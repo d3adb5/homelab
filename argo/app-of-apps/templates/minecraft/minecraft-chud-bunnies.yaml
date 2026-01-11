@@ -12,6 +12,7 @@ spec:
     chart: minecraft
     helm:
       valuesObject:
+        replicaCount: 0
         image:
           tag: java21
         initContainers:
