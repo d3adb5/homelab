@@ -3,7 +3,7 @@ kind: PostgresCluster
 metadata:
   name: keycloak
 spec:
-  postgresVersion: 17
+  postgresVersion: 18
   databaseInitSQL:
     name: keycloak-db-init-sql
     key: init.sql
