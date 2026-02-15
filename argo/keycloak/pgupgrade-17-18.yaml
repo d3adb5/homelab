@@ -1,8 +1,0 @@
-apiVersion: postgres-operator.crunchydata.com/v1beta1
-kind: PGUpgrade
-metadata:
-  name: keycloak-upgrade-17-18
-spec:
-  postgresClusterName: keycloak
-  fromPostgresVersion: 17
-  toPostgresVersion: 18

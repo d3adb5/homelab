@@ -2,11 +2,8 @@ apiVersion: postgres-operator.crunchydata.com/v1beta1
 kind: PostgresCluster
 metadata:
   name: keycloak
-  annotations:
-    postgres-operator.crunchydata.com/allow-upgrade: "keycloak-upgrade-17-18"
 spec:
-  shutdown: true
-  postgresVersion: 17
+  postgresVersion: 18
   databaseInitSQL:
     name: keycloak-db-init-sql
     key: init.sql
