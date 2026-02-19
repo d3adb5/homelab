@@ -6,3 +6,7 @@ config:
   credentials:
     secretName: ddclient-credentials
     passwordKey: password
+
+image:
+  repository: ghcr.io/d3adb5/ddclient
+  tag: 4.0.0
