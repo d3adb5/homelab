@@ -16,7 +16,7 @@ spec:
       valuesObject:
         image:
           repository: golift/unpackerr
-          tag: "0.14"
+          tag: "0.15"
         resources:
           requests:
             cpu: 250m
