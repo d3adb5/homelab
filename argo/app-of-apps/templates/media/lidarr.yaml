@@ -13,7 +13,7 @@ spec:
       path: argo/media/lidarr
 
     - repoURL: https://oauth2-proxy.github.io/manifests
-      targetRevision: 10.1.4
+      targetRevision: 10.4.2
       chart: oauth2-proxy
 
       helm:
