@@ -9,7 +9,7 @@ spec:
 
   source:
     repoURL: https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages
-    targetRevision: 1.4.0
+    targetRevision: 1.5.0
     chart: plex-media-server
 
     helm:
@@ -19,7 +19,7 @@ spec:
         runtimeClassName: nvidia
         image:
           repository: plexinc/pms-docker
-          tag: "1.43.0.10492@sha256:1131c4cd21fa22f8196f749f1dbb69af306776c3c83c7f5b061e51dc49bcff7f"
+          tag: "1.43.1.10611@sha256:7fe30c0ca399103535e6a5b10207aa2b72d053c652763ee2ce69d082db797d74"
           pullPolicy: IfNotPresent
         ingress:
           enabled: true
