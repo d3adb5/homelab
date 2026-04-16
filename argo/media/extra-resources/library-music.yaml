@@ -10,3 +10,5 @@ spec:
   resources:
     requests:
       storage: 2Ti
+
+  volumeName: pvc-267acbd6-7a63-48f6-99e0-cec4d6a02e99
