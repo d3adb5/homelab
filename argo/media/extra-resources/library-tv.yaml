@@ -9,4 +9,4 @@ spec:
   accessModes: [ ReadWriteMany ]
   resources:
     requests:
-      storage: 8Ti
+      storage: 10Ti
