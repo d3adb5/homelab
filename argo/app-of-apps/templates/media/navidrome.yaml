@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: oci.trueforge.org/truecharts
     chart: navidrome
-    targetRevision: 23.0.0
+    targetRevision: 23.3.0
 
     helm:
       valuesObject:
