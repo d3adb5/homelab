@@ -19,7 +19,7 @@ spec:
         runtimeClassName: nvidia
         image:
           repository: plexinc/pms-docker
-          tag: "1.43.1.10611@sha256:7fe30c0ca399103535e6a5b10207aa2b72d053c652763ee2ce69d082db797d74"
+          tag: "1.43.2.10687@sha256:c37106c57fed7a6624f5dee5a3ce460ff011f09a2aa7f4ee9e8dbbd08ae1b87e"
           pullPolicy: IfNotPresent
         ingress:
           enabled: true
