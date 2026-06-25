@@ -9,7 +9,7 @@ spec:
 
   source:
     repoURL: "https://github.com/projectcalico/calico"
-    targetRevision: v3.32.0
+    targetRevision: v3.32.1
     path: manifests
     directory:
       recurse: false
