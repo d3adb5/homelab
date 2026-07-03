@@ -9,7 +9,7 @@ spec:
 
   source:
     repoURL: https://bitnami.github.io/sealed-secrets
-    targetRevision: 2.19.0
+    targetRevision: 2.19.1
     chart: sealed-secrets
 
     helm:
