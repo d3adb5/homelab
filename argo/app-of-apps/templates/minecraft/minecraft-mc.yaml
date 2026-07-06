@@ -57,7 +57,7 @@ spec:
                 enabled: true
                 embedded: false
                 annotations:
-                  metallb.universe.tf/allow-shared-ip: {{ .Values.metallb.ipSharingKey }}
+                  metallb.io/allow-shared-ip: {{ .Values.metallb.ipSharingKey }}
                 type: LoadBalancer
                 port: 24454
 

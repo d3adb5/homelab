@@ -29,7 +29,7 @@ spec:
             type: LoadBalancer
             port: 25565
             annotations:
-              metallb.universe.tf/allow-shared-ip: {{ .Values.metallb.ipSharingKey }}
+              metallb.io/allow-shared-ip: {{ .Values.metallb.ipSharingKey }}
         resources:
           requests:
             cpu: 100m
