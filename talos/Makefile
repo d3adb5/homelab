@@ -9,7 +9,7 @@ CLUSTER_NAME = homelab
 API_ENDPOINT = https://ottawa.d3adb5.ca:6443
 
 FACTORY_URL   := https://factory.talos.dev/schematics
-TALOS_VERSION := 1.12.7
+TALOS_VERSION := 1.13.6
 
 EXTRA_UPGRADE_FLAGS :=
 
@@ -74,6 +74,9 @@ generated/controlplane/%.yaml: nodes/controlplane/%.yaml generated/installers/%
 ################################################################################
 
 .PHONY: upgrade upgrade-control upgrade-workers upgrade-worker-% upgrade-control-%
+
+# --preserve only applies to the legacy upgrade API used against pre-1.13 nodes.
+# Drop it once every node runs 1.13+: the LifecycleService API always preserves.
 
 upgrade: upgrade-control upgrade-workers
 

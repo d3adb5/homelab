@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gpu-operator
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: gpu-operator
+
+  source:
+    repoURL: https://helm.ngc.nvidia.com/nvidia
+    targetRevision: v26.3.3
+    chart: gpu-operator
+
+    helm:
+      valuesObject:
+        # Talos ships the driver and container toolkit as system extensions,
+        # installed under /usr/local. See:
+        # https://docs.siderolabs.com/talos/v1.13/configure-your-talos-cluster/hardware-and-drivers/nvidia-gpu
+        driver:
+          enabled: false
+        toolkit:
+          enabled: false
+        hostPaths:
+          driverInstallDir: /usr/local
+        dcgmExporter:
+          serviceMonitor:
+            enabled: true
+            additionalLabels:
+              # Prometheus only selects ServiceMonitors carrying the release label.
+              release: kube-prometheus-stack
+
+  destination:
+    namespace: gpu-operator
+    server: https://kubernetes.default.svc
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

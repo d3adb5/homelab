@@ -1,15 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: nvidia-device-plugin
+  name: gpu-operator
 spec:
   description: Empowers GPU workloads
 
   sourceRepos:
-    - https://nvidia.github.io/k8s-device-plugin
+    - https://helm.ngc.nvidia.com/nvidia
 
   destinations:
-    - namespace: nvidia-device-plugin
+    - namespace: gpu-operator
       server: https://kubernetes.default.svc
 
   clusterResourceWhitelist:
@@ -21,3 +21,5 @@ spec:
       kind: ClusterRole
     - group: rbac.authorization.k8s.io
       kind: ClusterRoleBinding
+    - group: nvidia.com
+      kind: ClusterPolicy
