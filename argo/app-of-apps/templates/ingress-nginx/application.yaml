@@ -22,7 +22,7 @@ spec:
             strict-validate-path-type: false
           service:
             annotations:
-              metallb.io/allow-shared-ip: {{ .Values.metallb.ipSharingKey }}
+              metallb.io/loadBalancerIPs: 192.168.1.32
           topologySpreadConstraints:
             - maxSkew: 1
               topologyKey: kubernetes.io/hostname

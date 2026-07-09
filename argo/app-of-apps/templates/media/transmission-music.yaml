@@ -43,7 +43,7 @@ spec:
                 secretName: transmission-music-tls
 
     - repoURL: https://charts.d3adb5.net
-      targetRevision: 0.2.0
+      targetRevision: 0.3.0
       chart: transmission
 
       helm:
@@ -75,9 +75,11 @@ spec:
               cert-manager.io/cluster-issuer: letsencrypt
               {{- toYaml .Values.ingress.oauth2ProxyAnnotations | nindent 14 }}
           peerService:
-            type: NodePort
-            nodePort: 32555
+            type: LoadBalancer
             port: 32555
+            externalTrafficPolicy: Local
+            annotations:
+              metallb.io/loadBalancerIPs: "192.168.1.38"
           extraEnv:
             - name: PEERPORT
               value: "32555"

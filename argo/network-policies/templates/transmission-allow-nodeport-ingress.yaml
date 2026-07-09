@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: transmission-allow-nodeport-ingress
+  name: transmission-allow-peer-port-ingress
   namespace: media
 spec:
   podSelector:
