@@ -11,6 +11,12 @@ spec:
     - repoURL: https://metallb.github.io/metallb
       targetRevision: 0.16.1
       chart: metallb
+
+      helm:
+        valuesObject:
+          speaker:
+            ignoreExcludeLB: true
+
     - repoURL: {{ .Values.repository.homelab.url }}
       targetRevision: {{ .Values.repository.homelab.targetRevision }}
       path: argo/metallb
