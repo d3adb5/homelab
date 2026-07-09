@@ -43,7 +43,7 @@ spec:
                 secretName: transmission-music-tls
 
     - repoURL: https://charts.d3adb5.net
-      targetRevision: 0.2.0
+      targetRevision: 0.3.0
       chart: transmission
 
       helm:
