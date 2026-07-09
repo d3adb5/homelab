@@ -58,8 +58,11 @@ spec:
             subPath: library
             readOnly: true
         service:
-          type: NodePort
+          type: LoadBalancer
           nodePort: 32400
+          externalTrafficPolicy: Local
+          annotations:
+            metallb.io/loadBalancerIPs: "192.168.1.36"
         pms:
           gpu:
             nvidia:

@@ -43,7 +43,7 @@ spec:
                 secretName: transmission-tv-tls
 
     - repoURL: https://charts.d3adb5.net
-      targetRevision: 0.2.0
+      targetRevision: 0.3.0
       chart: transmission
 
       helm:
@@ -75,9 +75,12 @@ spec:
               cert-manager.io/cluster-issuer: letsencrypt
               {{- toYaml .Values.ingress.oauth2ProxyAnnotations | nindent 14 }}
           peerService:
-            type: NodePort
+            type: LoadBalancer
             nodePort: 32444
             port: 32444
+            externalTrafficPolicy: Local
+            annotations:
+              metallb.io/loadBalancerIPs: "192.168.1.37"
           extraEnv:
             - name: PEERPORT
               value: "32444"

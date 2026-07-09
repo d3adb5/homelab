@@ -49,6 +49,8 @@ spec:
             secretKey: rcon-password
           memory: 7680M
 
+          externalTrafficPolicy: Local
+
           extraPorts:
             - name: voice-chat
               containerPort: 24454
@@ -57,7 +59,7 @@ spec:
                 enabled: true
                 embedded: false
                 annotations:
-                  metallb.io/allow-shared-ip: {{ .Values.metallb.ipSharingKey }}
+                  metallb.io/loadBalancerIPs: "192.168.1.35"
                 type: LoadBalancer
                 port: 24454
 

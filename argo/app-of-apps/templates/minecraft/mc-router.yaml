@@ -13,23 +13,14 @@ spec:
 
     helm:
       valuesObject:
-        minecraftRouter:
-          mappings:
-            - port: 25565
-              externalHostname: "test.d3adb5.ca"
-              host: "192.168.1.237"
-            - port: 25565
-              externalHostname: "guglets.d3adb5.ca"
-              host: "192.168.1.237"
-            - port: 25565
-              externalHostname: "chudbunnies.d3adb5.ca"
-              host: "192.168.1.237"
         services:
           minecraft:
             type: LoadBalancer
             port: 25565
             annotations:
-              metallb.io/allow-shared-ip: {{ .Values.metallb.ipSharingKey }}
+              metallb.io/loadBalancerIPs: "192.168.1.34"
+          extraServiceSpec:
+            externalTrafficPolicy: Local
         resources:
           requests:
             cpu: 100m
