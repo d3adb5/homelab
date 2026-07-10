@@ -1,0 +1,9 @@
+machine:
+  network:
+    interfaces:
+      - interface: bond0
+        dhcp: true
+        bond:
+          mode: active-backup
+          deviceSelectors:
+            - physical: true
