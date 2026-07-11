@@ -22,8 +22,6 @@ metallb:
   namespace: metallb-system
 
 ingress:
-  namespace: ingress-nginx
-
   oauth2ProxyIngressAnnotations:
     cert-manager.io/cluster-issuer: letsencrypt
 

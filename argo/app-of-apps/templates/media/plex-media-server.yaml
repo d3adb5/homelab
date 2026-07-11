@@ -23,7 +23,7 @@ spec:
           pullPolicy: IfNotPresent
         ingress:
           enabled: true
-          ingressClassName: nginx
+          ingressClassName: traefik
           url: plex.d3adb5.ca
           annotations:
             cert-manager.io/cluster-issuer: letsencrypt

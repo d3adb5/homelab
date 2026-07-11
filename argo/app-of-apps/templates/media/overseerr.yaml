@@ -32,7 +32,7 @@ spec:
         ingress:
           enabled: true
           host: requests.d3adb5.ca
-          className: nginx
+          className: traefik
           tls:
             enabled: true
             secretName: overseerr-tls

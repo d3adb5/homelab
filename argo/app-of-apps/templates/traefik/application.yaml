@@ -28,11 +28,11 @@ spec:
 
         service:
           annotations:
-            metallb.io/loadBalancerIPs: 192.168.1.40
+            metallb.io/loadBalancerIPs: 192.168.1.32
 
         ingressClass:
           enabled: true
-          isDefaultClass: false
+          isDefaultClass: true
 
         providers:
           kubernetesIngress:

@@ -7,52 +7,68 @@ metadata:
 spec:
   project: media
 
-  source:
-    repoURL: oci.trueforge.org/truecharts
-    chart: navidrome
-    targetRevision: 23.9.1
+  sources:
+    - repoURL: {{ .Values.repository.homelab.url }}
+      targetRevision: {{ .Values.repository.homelab.targetRevision }}
+      path: argo/media/navidrome
 
-    helm:
-      valuesObject:
-        workload:
-          main:
-            podSpec:
-              containers:
-                main:
-                  env:
-                    ND_MUSICFOLDER: /music
-                    ND_PROMETHEUS_ENABLED: "true"
-                    ND_ENABLESHARING: "true"
+    - repoURL: oci.trueforge.org/truecharts
+      chart: navidrome
+      targetRevision: 23.9.1
 
-        persistence:
-          data:
-            enabled: true
-            type: pvc
-            storageClass: longhorn
-            size: 10Gi
-          music:
-            existingClaim: {{ .Values.media.libraries.music.claimName }}
-            subPath: library
-            mountPath: /music
-            readOnly: true
+      helm:
+        valuesObject:
+          workload:
+            main:
+              podSpec:
+                containers:
+                  main:
+                    env:
+                      ND_MUSICFOLDER: /music
+                      ND_PROMETHEUS_ENABLED: "true"
+                      ND_ENABLESHARING: "true"
 
-        ingress:
-          main:
-            enabled: true
-            ingressClassName: nginx
-            annotations:
-              nginx.ingress.kubernetes.io/configuration-snippet: |
-                location /metrics {
-                  deny all;
-                  return 403;
-                }
-              cert-manager.io/cluster-issuer: letsencrypt
-            hosts:
-              - host: navidrome.d3adb5.ca
-            tls:
-              - hosts:
-                  - navidrome.d3adb5.ca
-                secretName: navidrome-tls
+          persistence:
+            data:
+              enabled: true
+              type: pvc
+              storageClass: longhorn
+              size: 10Gi
+            music:
+              existingClaim: {{ .Values.media.libraries.music.claimName }}
+              subPath: library
+              mountPath: /music
+              readOnly: true
+
+          ingress:
+            main:
+              enabled: true
+              ingressClassName: traefik
+              annotations:
+                cert-manager.io/cluster-issuer: letsencrypt
+              hosts:
+                - host: navidrome.d3adb5.ca
+              tls:
+                - hosts:
+                    - navidrome.d3adb5.ca
+                  secretName: navidrome-tls
+
+            # Routes /metrics through a middleware that rejects every client,
+            # standing in for the location block Ingress NGINX used to have.
+            metrics-block:
+              enabled: true
+              ingressClassName: traefik
+              annotations:
+                traefik.ingress.kubernetes.io/router.middlewares: {{ .Values.media.namespace }}-navidrome-metrics-block@kubernetescrd
+              hosts:
+                - host: navidrome.d3adb5.ca
+                  paths:
+                    - path: /metrics
+                      pathType: Prefix
+              tls:
+                - hosts:
+                    - navidrome.d3adb5.ca
+                  secretName: navidrome-tls
 
   destination:
     server: https://kubernetes.default.svc

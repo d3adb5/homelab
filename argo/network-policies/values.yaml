@@ -11,10 +11,6 @@ allowACME:
   namespaces:
     - argocd
 
-allowIngressNGINX:
-  namespaces:
-    - media
-
 allowTraefik:
   namespaces:
     - media
