@@ -11,6 +11,8 @@ API_ENDPOINT = https://ottawa.home.arpa:6443
 FACTORY_URL   := https://factory.talos.dev/schematics
 TALOS_VERSION := 1.13.6
 
+KUBERNETES_VERSION := 1.36.2
+
 EXTRA_UPGRADE_FLAGS :=
 
 empty :=
@@ -61,6 +63,7 @@ generated/workers/%.yaml: nodes/workers/%.yaml generated/installers/%
 	@talosctl gen config --with-secrets $(SECRETS_FILE) \
 		--output-types worker $(PATCHES) --config-patch @$< --output $@ \
 		--install-image $$(cat generated/installers/$*) \
+		--kubernetes-version $(KUBERNETES_VERSION) \
 		$(CLUSTER_NAME) $(API_ENDPOINT)
 
 generated/controlplane/%.yaml: nodes/controlplane/%.yaml generated/installers/%
@@ -69,6 +72,7 @@ generated/controlplane/%.yaml: nodes/controlplane/%.yaml generated/installers/%
 	@talosctl gen config --with-secrets $(SECRETS_FILE) \
 		--output-types controlplane $(PATCHES) --config-patch @$< --output $@ \
 		--install-image $$(cat generated/installers/$*) \
+		--kubernetes-version $(KUBERNETES_VERSION) \
 		$(CLUSTER_NAME) $(API_ENDPOINT)
 
 ################################################################################
