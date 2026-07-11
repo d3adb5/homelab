@@ -28,10 +28,13 @@ spec:
               redirect_url = "https://tv.transmission.d3adb5.ca/oauth2/callback"
               code_challenge_method = "S256"
               allowed_groups = ["/Transmission"]
+              upstreams = [ "static://202" ]
+              reverse_proxy = true
+              skip_provider_button = true
 
           ingress:
             enabled: true
-            className: nginx
+            className: traefik
             annotations:
               {{- toYaml .Values.ingress.oauth2ProxyIngressAnnotations | nindent 14 }}
             hosts:
@@ -66,14 +69,14 @@ spec:
               storageClass: longhorn
           ingress:
             enabled: true
-            className: nginx
+            className: traefik
             host: tv.transmission.d3adb5.ca
             tls:
               enabled: true
               secretName: transmission-tv-tls
             annotations:
               cert-manager.io/cluster-issuer: letsencrypt
-              {{- toYaml .Values.ingress.oauth2ProxyAnnotations | nindent 14 }}
+              traefik.ingress.kubernetes.io/router.middlewares: {{ .Values.media.namespace }}-transmission-tv-oauth2-proxy@kubernetescrd
           peerService:
             type: LoadBalancer
             port: 32444
