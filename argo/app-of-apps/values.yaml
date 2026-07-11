@@ -42,6 +42,9 @@ ingress:
         end
       }
 
+traefik:
+  namespace: traefik
+
 sealedSecrets:
   namespace: sealed-secrets
 
