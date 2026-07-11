@@ -1,6 +1,4 @@
 machine:
-  network:
-    hostname: whitehorse.lan
   install:
     disk: /dev/nvme0n1
   nodeLabels:
@@ -13,3 +11,8 @@ machine:
       - name: nvidia_modeset
   sysctls:
     net.core.bpf_jit_harden: 1
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+auto: off
+hostname: whitehorse.home.arpa

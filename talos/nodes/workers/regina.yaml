@@ -1,5 +1,8 @@
 machine:
-  network:
-    hostname: regina.lan
   install:
     disk: /dev/nvme0n1
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+auto: off
+hostname: regina.home.arpa
