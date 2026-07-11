@@ -97,6 +97,13 @@ spec:
           grafana:
             persistence:
               enabled: false
+            plugins:
+              - victoriametrics-logs-datasource
+            additionalDataSources:
+              - name: VictoriaLogs
+                type: victoriametrics-logs-datasource
+                access: proxy
+                url: http://victoria-logs.{{ .Values.monitoring.namespace }}.svc.cluster.local:9428
             ingress:
               enabled: true
               ingressClassName: traefik

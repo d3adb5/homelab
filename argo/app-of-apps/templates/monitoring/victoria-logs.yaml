@@ -1,0 +1,71 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: victoria-logs
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: monitoring
+
+  sources:
+    - repoURL: https://victoriametrics.github.io/helm-charts
+      targetRevision: 0.13.8
+      chart: victoria-logs-single
+
+      helm:
+        valuesObject:
+          server:
+            fullnameOverride: victoria-logs
+
+            retentionPeriod: 1y
+            retentionDiskSpaceUsage: 40GiB
+
+            persistentVolume:
+              enabled: true
+              storageClassName: truenas-iscsi-hdd
+              size: 50Gi
+
+            resources:
+              limits:
+                memory: 1Gi
+              requests:
+                cpu: 100m
+                memory: 512Mi
+
+            serviceMonitor:
+              enabled: true
+              extraLabels:
+                release: kube-prometheus-stack
+
+    - repoURL: https://victoriametrics.github.io/helm-charts
+      targetRevision: 0.3.6
+      chart: victoria-logs-collector
+
+      helm:
+        valuesObject:
+          fullnameOverride: victoria-logs-collector
+
+          remoteWrite:
+            - url: http://victoria-logs.{{ .Values.monitoring.namespace }}.svc.cluster.local:9428
+
+          tolerations:
+            - effect: NoSchedule
+              operator: Exists
+
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              cpu: 50m
+              memory: 128Mi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.monitoring.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
