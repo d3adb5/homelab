@@ -1,0 +1,53 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: victoria-logs
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: victoria-logs.storage
+      rules:
+        - alert: VictoriaLogsStorageNearingCap
+          expr: >-
+            sum(vl_data_size_bytes)
+              > 0.8 * sum(vl_max_disk_space_usage_bytes > 0)
+          for: 6h
+          labels:
+            severity: warning
+          annotations:
+            summary: VictoriaLogs storage is above 80% of its retention size cap
+            description: >-
+              Log data occupies {{ $value | humanize1024 }}B, more than 80% of
+              the configured size cap. Once the cap is reached, the oldest logs
+              will be rotated out before the intended 1 year retention period.
+
+        - alert: VictoriaLogsSizeBasedRotationActive
+          expr: >-
+            sum(vl_data_size_bytes)
+              > 0.95 * sum(vl_max_disk_space_usage_bytes > 0)
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: VictoriaLogs is rotating out logs due to the size cap
+            description: >-
+              Log data has reached the configured size cap. The oldest daily
+              partitions are being dropped before the intended 1 year retention
+              period. Consider expanding the volume and raising the cap.
+
+        - alert: VictoriaLogsVolumeAlmostFull
+          expr: >-
+            kubelet_volume_stats_used_bytes{persistentvolumeclaim=~"server-volume-victoria-logs-.*"}
+              / kubelet_volume_stats_capacity_bytes{persistentvolumeclaim=~"server-volume-victoria-logs-.*"}
+              > 0.9
+          for: 30m
+          labels:
+            severity: critical
+          annotations:
+            summary: VictoriaLogs persistent volume is over 90% full
+            description: >-
+              The VictoriaLogs volume {{ $labels.persistentvolumeclaim }} is
+              over 90% full. The retention size cap should have rotated data
+              out well before this point; check the retention configuration and
+              merge headroom before ingestion becomes read-only.
