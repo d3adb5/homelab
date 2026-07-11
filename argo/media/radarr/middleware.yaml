@@ -1,0 +1,8 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: radarr-oauth2-proxy
+spec:
+  forwardAuth:
+    address: http://radarr-oauth2-proxy.media.svc.cluster.local
+    trustForwardHeader: true

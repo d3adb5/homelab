@@ -28,10 +28,13 @@ spec:
               redirect_url = "https://sonarr.d3adb5.ca/oauth2/callback"
               code_challenge_method = "S256"
               allowed_groups = ["/Sonarr"]
+              upstreams = [ "static://202" ]
+              reverse_proxy = true
+              skip_provider_button = true
 
           ingress:
             enabled: true
-            className: nginx
+            className: traefik
             annotations:
               {{- toYaml .Values.ingress.oauth2ProxyIngressAnnotations | nindent 14 }}
             hosts:
@@ -64,13 +67,13 @@ spec:
           ingress:
             enabled: true
             host: sonarr.d3adb5.ca
-            className: nginx
+            className: traefik
             tls:
               enabled: true
               secretName: sonarr-tls
             annotations:
               cert-manager.io/cluster-issuer: letsencrypt
-              {{- toYaml .Values.ingress.oauth2ProxyAnnotations | nindent 14 }}
+              traefik.ingress.kubernetes.io/router.middlewares: {{ .Values.media.namespace }}-sonarr-oauth2-proxy@kubernetescrd
           extraEnv:
             - name: TZ
               value: America/Vancouver

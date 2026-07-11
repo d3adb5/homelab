@@ -28,10 +28,13 @@ spec:
               redirect_url = "https://prometheus.d3adb5.ca/oauth2/callback"
               code_challenge_method = "S256"
               allowed_groups = ["/Prometheus"]
+              upstreams = [ "static://202" ]
+              reverse_proxy = true
+              skip_provider_button = true
 
           ingress:
             enabled: true
-            className: nginx
+            className: traefik
             annotations:
               {{- toYaml .Values.ingress.oauth2ProxyIngressAnnotations | nindent 14 }}
             hosts:
@@ -71,10 +74,10 @@ spec:
           prometheus:
             ingress:
               enabled: true
-              ingressClassName: nginx
+              ingressClassName: traefik
               annotations:
                 cert-manager.io/cluster-issuer: "letsencrypt"
-                {{- toYaml .Values.ingress.oauth2ProxyAnnotations | nindent 16 }}
+                traefik.ingress.kubernetes.io/router.middlewares: {{ .Values.monitoring.namespace }}-kube-prometheus-stack-oauth2-proxy@kubernetescrd
               hosts:
                 - prometheus.d3adb5.ca
               tls:
