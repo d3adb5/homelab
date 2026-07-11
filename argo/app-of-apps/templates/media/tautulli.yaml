@@ -24,7 +24,7 @@ spec:
         ingress:
           enabled: true
           host: tautulli.d3adb5.ca
-          className: nginx
+          className: traefik
           tls:
             enabled: true
             secretName: tautulli-tls
