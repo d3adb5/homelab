@@ -30,3 +30,13 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+
+  ignoreDifferences:
+    - group: argoproj.io
+      kind: Application
+      jqPathExpressions:
+        - >-
+          .metadata.finalizers[]?
+            | select(startswith("pre-delete-finalizer.argocd.argoproj.io")
+                or startswith("post-delete-finalizer.argocd.argoproj.io"))
