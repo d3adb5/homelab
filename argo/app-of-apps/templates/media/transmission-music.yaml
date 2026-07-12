@@ -119,3 +119,9 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+
+  ignoreDifferences:
+    - kind: Service
+      jqPathExpressions:
+        - .spec.ports[]?.nodePort
