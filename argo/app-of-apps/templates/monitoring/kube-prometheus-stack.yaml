@@ -102,6 +102,7 @@ spec:
             additionalDataSources:
               - name: VictoriaLogs
                 type: victoriametrics-logs-datasource
+                uid: victorialogs
                 access: proxy
                 url: http://victoria-logs.{{ .Values.monitoring.namespace }}.svc.cluster.local:9428
             ingress:

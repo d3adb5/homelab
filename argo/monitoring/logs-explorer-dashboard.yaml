@@ -1,0 +1,144 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logs-explorer-dashboard
+  labels:
+    grafana_dashboard: "1"
+data:
+  logs-explorer.json: |
+    {
+      "title": "Logs Explorer",
+      "uid": "logs-explorer",
+      "tags": ["logs", "victorialogs"],
+      "timezone": "browser",
+      "schemaVersion": 39,
+      "editable": true,
+      "graphTooltip": 1,
+      "time": { "from": "now-1h", "to": "now" },
+      "templating": {
+        "list": [
+          {
+            "name": "namespace",
+            "label": "Namespace",
+            "type": "query",
+            "datasource": { "type": "victoriametrics-logs-datasource", "uid": "victorialogs" },
+            "query": { "refId": "VariableQuery", "type": "fieldValue", "field": "kubernetes.pod_namespace", "limit": 0 },
+            "refresh": 2,
+            "multi": true,
+            "includeAll": true,
+            "allValue": ".*",
+            "sort": 1,
+            "current": { "selected": true, "text": ["All"], "value": ["$__all"] },
+            "options": []
+          },
+          {
+            "name": "pod",
+            "label": "Pod",
+            "type": "query",
+            "datasource": { "type": "victoriametrics-logs-datasource", "uid": "victorialogs" },
+            "query": {
+              "refId": "VariableQuery",
+              "type": "fieldValue",
+              "field": "kubernetes.pod_name",
+              "query": "{kubernetes.pod_namespace=~\"$namespace\"}",
+              "limit": 0
+            },
+            "refresh": 2,
+            "multi": true,
+            "includeAll": true,
+            "allValue": ".*",
+            "sort": 1,
+            "current": { "selected": true, "text": ["All"], "value": ["$__all"] },
+            "options": []
+          },
+          {
+            "name": "container",
+            "label": "Container",
+            "type": "query",
+            "datasource": { "type": "victoriametrics-logs-datasource", "uid": "victorialogs" },
+            "query": {
+              "refId": "VariableQuery",
+              "type": "fieldValue",
+              "field": "kubernetes.container_name",
+              "query": "{kubernetes.pod_namespace=~\"$namespace\", kubernetes.pod_name=~\"$pod\"}",
+              "limit": 0
+            },
+            "refresh": 2,
+            "multi": true,
+            "includeAll": true,
+            "allValue": ".*",
+            "sort": 1,
+            "current": { "selected": true, "text": ["All"], "value": ["$__all"] },
+            "options": []
+          },
+          {
+            "name": "search",
+            "label": "Search",
+            "type": "textbox",
+            "query": "",
+            "current": { "text": "", "value": "" },
+            "options": []
+          }
+        ]
+      },
+      "panels": [
+        {
+          "id": 1,
+          "title": "Log volume by namespace",
+          "type": "timeseries",
+          "datasource": { "type": "victoriametrics-logs-datasource", "uid": "victorialogs" },
+          "gridPos": { "h": 6, "w": 24, "x": 0, "y": 0 },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": { "type": "victoriametrics-logs-datasource", "uid": "victorialogs" },
+              "queryType": "hits",
+              "fields": ["kubernetes.pod_namespace"],
+              "expr": "{kubernetes.pod_namespace=~\"$namespace\", kubernetes.pod_name=~\"$pod\", kubernetes.container_name=~\"$container\"} $search"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "drawStyle": "bars",
+                "fillOpacity": 100,
+                "lineWidth": 0,
+                "stacking": { "mode": "normal", "group": "A" }
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          }
+        },
+        {
+          "id": 2,
+          "title": "Logs",
+          "type": "logs",
+          "datasource": { "type": "victoriametrics-logs-datasource", "uid": "victorialogs" },
+          "gridPos": { "h": 18, "w": 24, "x": 0, "y": 6 },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": { "type": "victoriametrics-logs-datasource", "uid": "victorialogs" },
+              "queryType": "instant",
+              "maxLines": 1000,
+              "expr": "{kubernetes.pod_namespace=~\"$namespace\", kubernetes.pod_name=~\"$pod\", kubernetes.container_name=~\"$container\"} $search"
+            }
+          ],
+          "options": {
+            "showTime": true,
+            "showLabels": false,
+            "showCommonLabels": false,
+            "wrapLogMessage": true,
+            "prettifyLogMessage": false,
+            "enableLogDetails": true,
+            "dedupStrategy": "none",
+            "sortOrder": "Descending"
+          }
+        }
+      ]
+    }
