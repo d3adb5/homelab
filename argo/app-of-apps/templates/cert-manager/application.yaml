@@ -19,8 +19,6 @@ spec:
           prometheus:
             servicemonitor:
               enabled: true
-              labels:
-                release: kube-prometheus-stack
 
     - repoURL: {{ .Values.repository.homelab.url }}
       targetRevision: {{ .Values.repository.homelab.targetRevision }}

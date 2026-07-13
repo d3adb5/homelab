@@ -37,8 +37,6 @@ kind: ServiceMonitor
 metadata:
   name: felix-metrics
   namespace: calico-system
-  labels:
-    release: kube-prometheus-stack
 spec:
   selector:
     matchLabels:
@@ -51,8 +49,6 @@ kind: ServiceMonitor
 metadata:
   name: typha-metrics
   namespace: calico-system
-  labels:
-    release: kube-prometheus-stack
 spec:
   selector:
     matchLabels:
@@ -67,8 +63,6 @@ kind: ServiceMonitor
 metadata:
   name: kube-controllers-metrics
   namespace: calico-system
-  labels:
-    release: kube-prometheus-stack
 spec:
   selector:
     matchLabels:

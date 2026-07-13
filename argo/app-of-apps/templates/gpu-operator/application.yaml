@@ -26,9 +26,6 @@ spec:
         dcgmExporter:
           serviceMonitor:
             enabled: true
-            additionalLabels:
-              # Prometheus only selects ServiceMonitors carrying the release label.
-              release: kube-prometheus-stack
 
   destination:
     namespace: gpu-operator

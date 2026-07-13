@@ -31,8 +31,6 @@ spec:
           metrics:
             serviceMonitor:
               enabled: true
-              labels:
-                release: kube-prometheus-stack
 
           ingress:
             enabled: true
@@ -73,8 +71,6 @@ spec:
 
             serviceMonitor:
               enabled: true
-              extraLabels:
-                release: kube-prometheus-stack
 
             ingress:
               enabled: true
@@ -109,8 +105,6 @@ spec:
 
           podMonitor:
             enabled: true
-            extraLabels:
-              release: kube-prometheus-stack
 
           resources:
             limits:

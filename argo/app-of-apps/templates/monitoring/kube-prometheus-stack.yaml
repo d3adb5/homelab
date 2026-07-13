@@ -35,8 +35,6 @@ spec:
           metrics:
             serviceMonitor:
               enabled: true
-              labels:
-                release: kube-prometheus-stack
 
           ingress:
             enabled: true
@@ -91,6 +89,10 @@ spec:
                     - prometheus.d3adb5.ca
                   secretName: prometheus-tls
             prometheusSpec:
+              # Select every ServiceMonitor and PodMonitor in the cluster
+              # instead of only those labeled with the release name.
+              serviceMonitorSelectorNilUsesHelmValues: false
+              podMonitorSelectorNilUsesHelmValues: false
               storageSpec:
                 volumeClaimTemplate:
                   spec:

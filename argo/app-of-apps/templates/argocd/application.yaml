@@ -44,8 +44,6 @@ spec:
             enabled: true
             serviceMonitor:
               enabled: true
-              additionalLabels:
-                release: kube-prometheus-stack
 
         redis-ha:
           enabled: true
@@ -85,8 +83,6 @@ spec:
             enabled: true
             serviceMonitor:
               enabled: true
-              additionalLabels:
-                release: kube-prometheus-stack
           ingress:
             enabled: true
             ingressClassName: traefik
@@ -102,8 +98,6 @@ spec:
             enabled: true
             serviceMonitor:
               enabled: true
-              additionalLabels:
-                release: kube-prometheus-stack
 
         applicationSet:
           replicas: 2
@@ -111,16 +105,12 @@ spec:
             enabled: true
             serviceMonitor:
               enabled: true
-              additionalLabels:
-                release: kube-prometheus-stack
 
         notifications:
           metrics:
             enabled: true
             serviceMonitor:
               enabled: true
-              additionalLabels:
-                release: kube-prometheus-stack
 
   destination:
     server: https://kubernetes.default.svc

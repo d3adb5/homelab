@@ -22,8 +22,6 @@ spec:
         metrics:
           serviceMonitor:
             enabled: true
-            labels:
-              release: kube-prometheus-stack
 
   destination:
     namespace: {{ .Values.sealedSecrets.namespace }}

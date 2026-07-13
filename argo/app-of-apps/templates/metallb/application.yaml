@@ -24,12 +24,6 @@ spec:
             namespace: {{ .Values.monitoring.namespace }}
             serviceMonitor:
               enabled: true
-              speaker:
-                additionalLabels:
-                  release: kube-prometheus-stack
-              controller:
-                additionalLabels:
-                  release: kube-prometheus-stack
 
     - repoURL: {{ .Values.repository.homelab.url }}
       targetRevision: {{ .Values.repository.homelab.targetRevision }}

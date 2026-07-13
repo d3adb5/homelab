@@ -40,8 +40,6 @@ spec:
             kind: PodMonitor
             metadata:
               name: mc-router
-              labels:
-                release: kube-prometheus-stack
             spec:
               selector:
                 matchLabels:

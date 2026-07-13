@@ -36,8 +36,6 @@ spec:
           metrics:
             serviceMonitor:
               enabled: true
-              labels:
-                release: kube-prometheus-stack
 
           ingress:
             enabled: true
@@ -90,8 +88,6 @@ spec:
             main:
               enabled: true
               type: servicemonitor
-              labels:
-                release: kube-prometheus-stack
               endpoints:
                 - port: main
                   path: /metrics

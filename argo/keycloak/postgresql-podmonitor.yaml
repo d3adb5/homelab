@@ -4,8 +4,6 @@ apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
   name: keycloak-postgres-exporter
-  labels:
-    release: kube-prometheus-stack
 spec:
   selector:
     matchLabels:

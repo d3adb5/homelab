@@ -8,8 +8,6 @@ kind: ServiceMonitor
 metadata:
   name: olm-operator-homelab
   namespace: operator-lifecycle-manager
-  labels:
-    release: kube-prometheus-stack
 spec:
   jobLabel: app
   selector:
@@ -23,8 +21,6 @@ kind: ServiceMonitor
 metadata:
   name: catalog-operator-homelab
   namespace: operator-lifecycle-manager
-  labels:
-    release: kube-prometheus-stack
 spec:
   jobLabel: app
   selector:
