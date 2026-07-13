@@ -7,6 +7,12 @@ spec:
   additionalOptions:
     - name: metrics-enabled
       value: "true"
+    # Latency histograms and user event counters, needed by the official
+    # Keycloak Grafana dashboards.
+    - name: http-metrics-histograms-enabled
+      value: "true"
+    - name: event-metrics-user-enabled
+      value: "true"
   db:
     vendor: postgres
     host: keycloak-pgbouncer
