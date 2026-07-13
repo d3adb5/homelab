@@ -28,6 +28,29 @@ spec:
           limits:
             memory: 64Mi
 
+        minecraftRouter:
+          metrics:
+            backend: prometheus
+
+        # Metrics are served on the api port; the chart has no monitor
+        # resource of its own.
+        extraDeploy:
+          - |
+            apiVersion: monitoring.coreos.com/v1
+            kind: PodMonitor
+            metadata:
+              name: mc-router
+              labels:
+                release: kube-prometheus-stack
+            spec:
+              selector:
+                matchLabels:
+                  app.kubernetes.io/name: mc-router
+                  app.kubernetes.io/instance: mc-router
+              podMetricsEndpoints:
+                - port: api
+                  path: /metrics
+
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ .Values.minecraft.namespace }}
