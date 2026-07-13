@@ -1,0 +1,15 @@
+# PGO adds the postgres_exporter sidecar but ships no monitor resource,
+# so target the discovery label it stamps on exporter-enabled pods.
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: keycloak-postgres-exporter
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      postgres-operator.crunchydata.com/cluster: keycloak
+      postgres-operator.crunchydata.com/crunchy-postgres-exporter: "true"
+  podMetricsEndpoints:
+    - port: exporter

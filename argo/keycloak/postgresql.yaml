@@ -4,6 +4,9 @@ metadata:
   name: keycloak
 spec:
   postgresVersion: 18
+  monitoring:
+    pgmonitor:
+      exporter: {}
   databaseInitSQL:
     name: keycloak-db-init-sql
     key: init.sql
