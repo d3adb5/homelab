@@ -83,6 +83,19 @@ spec:
               mountPath: /music
               readOnly: true
 
+          # Scrapes the /metrics endpoint ND_PROMETHEUS_ENABLED already
+          # exposes. External access to it stays blocked by the
+          # metrics-block middleware below.
+          metrics:
+            main:
+              enabled: true
+              type: servicemonitor
+              labels:
+                release: kube-prometheus-stack
+              endpoints:
+                - port: main
+                  path: /metrics
+
           ingress:
             main:
               enabled: true
