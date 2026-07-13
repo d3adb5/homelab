@@ -1,0 +1,34 @@
+# The OLM chart's own ServiceMonitors assume OpenShift: they scrape over
+# HTTPS with the service-ca bundle and bind RBAC to a prometheus-k8s
+# service account, none of which exist here. Without cert-manager or
+# service-ca enabled the operators serve plain HTTP on their metrics
+# services, so these monitors replace the chart's.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: olm-operator-homelab
+  namespace: operator-lifecycle-manager
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobLabel: app
+  selector:
+    matchLabels:
+      app: olm-operator
+  endpoints:
+    - port: https-metrics
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: catalog-operator-homelab
+  namespace: operator-lifecycle-manager
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobLabel: app
+  selector:
+    matchLabels:
+      app: catalog-operator
+  endpoints:
+    - port: https-metrics
