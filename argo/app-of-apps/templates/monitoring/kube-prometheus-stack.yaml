@@ -107,6 +107,68 @@ spec:
               enabled: false
             plugins:
               - victoriametrics-logs-datasource
+
+            # Dashboards for the services Prometheus now scrapes, fetched
+            # at startup from grafana.com (pinned revisions) or upstream
+            # repositories (pinned refs).
+            dashboardProviders:
+              dashboardproviders.yaml:
+                apiVersion: 1
+                providers:
+                  - name: downloaded
+                    orgId: 1
+                    folder: ""
+                    type: file
+                    disableDeletion: false
+                    options:
+                      path: /var/lib/grafana/dashboards/downloaded
+
+            dashboards:
+              downloaded:
+                argocd:
+                  gnetId: 14584
+                  revision: 1
+                  datasource: Prometheus
+                traefik:
+                  gnetId: 17347
+                  revision: 9
+                  datasource: Prometheus
+                longhorn:
+                  gnetId: 13032
+                  revision: 6
+                  datasource: Prometheus
+                metallb:
+                  gnetId: 14127
+                  revision: 1
+                  datasource: Prometheus
+                cert-manager:
+                  gnetId: 11001
+                  revision: 1
+                  datasource: Prometheus
+                calico-felix:
+                  gnetId: 12175
+                  revision: 7
+                  datasource: Prometheus
+                # Has a job variable, so it also covers node-local-dns
+                # alongside the built-in CoreDNS dashboard.
+                coredns:
+                  gnetId: 15762
+                  revision: 22
+                  datasource: Prometheus
+                # postgres_exporter view of the keycloak PostgresCluster.
+                postgresql:
+                  gnetId: 9628
+                  revision: 8
+                  datasource: Prometheus
+                keycloak-troubleshooting:
+                  url: https://raw.githubusercontent.com/keycloak/keycloak-grafana-dashboard/f819507c13206e9b0d2ca0b95470bac605361a43/dashboards/keycloak-troubleshooting-dashboard.json
+                  datasource: Prometheus
+                keycloak-capacity-planning:
+                  url: https://raw.githubusercontent.com/keycloak/keycloak-grafana-dashboard/f819507c13206e9b0d2ca0b95470bac605361a43/dashboards/keycloak-capacity-planning-dashboard.json
+                  datasource: Prometheus
+                vlagent:
+                  url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaLogs/v1.51.0/dashboards/vlagent.json
+                  datasource: Prometheus
             additionalDataSources:
               - name: VictoriaLogs
                 type: victoriametrics-logs-datasource

@@ -1,0 +1,118 @@
+# oauth2-proxy has no upstream dashboard (oauth2-proxy/oauth2-proxy#1644),
+# so this covers the three metrics it exposes across every instance.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oauth2-proxy-dashboard
+  labels:
+    grafana_dashboard: "1"
+data:
+  oauth2-proxy.json: |
+    {
+      "title": "OAuth2 Proxy",
+      "uid": "oauth2-proxy",
+      "tags": ["oauth2-proxy", "auth"],
+      "timezone": "browser",
+      "schemaVersion": 39,
+      "editable": true,
+      "graphTooltip": 1,
+      "time": { "from": "now-6h", "to": "now" },
+      "templating": {
+        "list": [
+          {
+            "name": "job",
+            "label": "Instance",
+            "type": "query",
+            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "query": { "qryType": 1, "query": "label_values(oauth2_proxy_requests_total, job)", "refId": "VariableQuery" },
+            "refresh": 2,
+            "multi": true,
+            "includeAll": true,
+            "allValue": ".*",
+            "sort": 1
+          }
+        ]
+      },
+      "panels": [
+        {
+          "id": 1,
+          "type": "timeseries",
+          "title": "Requests by status code",
+          "gridPos": { "x": 0, "y": 0, "w": 12, "h": 9 },
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": { "defaults": { "unit": "reqps" }, "overrides": [] },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum by (code) (rate(oauth2_proxy_requests_total{job=~\"$job\"}[$__rate_interval]))",
+              "legendFormat": "{{code}}"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "type": "timeseries",
+          "title": "Requests by instance",
+          "gridPos": { "x": 12, "y": 0, "w": 12, "h": 9 },
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": { "defaults": { "unit": "reqps" }, "overrides": [] },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum by (job) (rate(oauth2_proxy_requests_total{job=~\"$job\"}[$__rate_interval]))",
+              "legendFormat": "{{job}}"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "type": "timeseries",
+          "title": "Response duration",
+          "gridPos": { "x": 0, "y": 9, "w": 12, "h": 9 },
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "histogram_quantile(0.50, sum by (le) (rate(oauth2_proxy_response_duration_seconds_bucket{job=~\"$job\"}[$__rate_interval])))",
+              "legendFormat": "p50"
+            },
+            {
+              "refId": "B",
+              "expr": "histogram_quantile(0.95, sum by (le) (rate(oauth2_proxy_response_duration_seconds_bucket{job=~\"$job\"}[$__rate_interval])))",
+              "legendFormat": "p95"
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": "timeseries",
+          "title": "4xx / 5xx by instance",
+          "gridPos": { "x": 12, "y": 9, "w": 12, "h": 9 },
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": { "defaults": { "unit": "reqps" }, "overrides": [] },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum by (job) (rate(oauth2_proxy_requests_total{job=~\"$job\", code=~\"4..|5..\"}[$__rate_interval]))",
+              "legendFormat": "{{job}}"
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "type": "timeseries",
+          "title": "Requests in flight",
+          "gridPos": { "x": 0, "y": 18, "w": 24, "h": 8 },
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum by (job) (oauth2_proxy_requests_in_flight{job=~\"$job\"})",
+              "legendFormat": "{{job}}"
+            }
+          ]
+        }
+      ]
+    }
