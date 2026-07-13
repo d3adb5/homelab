@@ -17,6 +17,20 @@ spec:
           speaker:
             ignoreExcludeLB: true
 
+          prometheus:
+            # Metrics are served over TLS and authorized through TokenReview,
+            # so the chart binds RBAC to Prometheus' service account.
+            serviceAccount: kube-prometheus-stack-prometheus
+            namespace: {{ .Values.monitoring.namespace }}
+            serviceMonitor:
+              enabled: true
+              speaker:
+                additionalLabels:
+                  release: kube-prometheus-stack
+              controller:
+                additionalLabels:
+                  release: kube-prometheus-stack
+
     - repoURL: {{ .Values.repository.homelab.url }}
       targetRevision: {{ .Values.repository.homelab.targetRevision }}
       path: argo/metallb
