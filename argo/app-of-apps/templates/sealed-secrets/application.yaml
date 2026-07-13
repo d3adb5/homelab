@@ -22,6 +22,12 @@ spec:
         metrics:
           serviceMonitor:
             enabled: true
+          # Ships the chart's controller dashboard; the label is what the
+          # grafana sidecar watches for across namespaces.
+          dashboards:
+            create: true
+            labels:
+              grafana_dashboard: "1"
 
   destination:
     namespace: {{ .Values.sealedSecrets.namespace }}
