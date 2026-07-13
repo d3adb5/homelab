@@ -3,6 +3,10 @@ kind: Installation
 metadata:
   name: default
 spec:
+  # Setting the ports makes the operator enable prometheus reporting in
+  # Felix and Typha; the Services and ServiceMonitors live in metrics.yaml.
+  nodeMetricsPort: 9091
+  typhaMetricsPort: 9093
   calicoNetwork:
     linuxDataplane: BPF
     ipPools:
