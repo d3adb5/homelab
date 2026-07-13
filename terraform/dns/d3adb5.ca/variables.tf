@@ -22,3 +22,17 @@ variable "extra_cnames" {
   description = "Extra CNAME records to create"
   type        = map(string)
 }
+
+variable "ses_dkim_tokens" {
+  description = "Easy DKIM tokens from the dkim_tokens output of terraform/ses"
+  type        = list(string)
+  default     = []
+}
+
+variable "aws_ses_mail_from_mx" {
+  type     = string
+  nullable = true
+  default  = null
+
+  description = "Amazon SES domain for the SMTP server."
+}

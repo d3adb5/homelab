@@ -48,3 +48,18 @@ variable "groups" {
   default     = []
   type        = list(string)
 }
+
+variable "smtp" {
+  description = "SMTP server settings for the main realm."
+  default     = null
+  sensitive   = true
+
+  type = object({
+    host              = string
+    port              = optional(string, "587")
+    from              = string
+    from_display_name = optional(string)
+    username          = string
+    password          = string
+  })
+}
