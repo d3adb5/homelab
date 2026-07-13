@@ -107,6 +107,11 @@ spec:
             - effect: NoSchedule
               operator: Exists
 
+          podMonitor:
+            enabled: true
+            extraLabels:
+              release: kube-prometheus-stack
+
           resources:
             limits:
               memory: 256Mi
