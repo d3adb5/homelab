@@ -4,6 +4,14 @@ metadata:
   name: keycloak
 spec:
   instances: 1
+  additionalOptions:
+    - name: metrics-enabled
+      value: "true"
+  # The operator generates a ServiceMonitor against the management port
+  # once metrics are enabled; the label gets Prometheus to select it.
+  serviceMonitor:
+    labels:
+      release: kube-prometheus-stack
   db:
     vendor: postgres
     host: keycloak-pgbouncer
