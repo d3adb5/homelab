@@ -18,3 +18,8 @@ allowTraefik:
 allowNamespaceIngress:
   namespaces:
     - media
+
+allowPrometheusScrape:
+  namespaces:
+    - media
+    - longhorn-system
