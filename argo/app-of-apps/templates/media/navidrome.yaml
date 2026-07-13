@@ -33,6 +33,12 @@ spec:
               skip_provider_button = true
               set_xauthrequest = true
 
+          metrics:
+            serviceMonitor:
+              enabled: true
+              labels:
+                release: kube-prometheus-stack
+
           ingress:
             enabled: true
             className: traefik

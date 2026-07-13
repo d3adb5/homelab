@@ -28,6 +28,12 @@ spec:
               reverse_proxy = true
               skip_provider_button = true
 
+          metrics:
+            serviceMonitor:
+              enabled: true
+              labels:
+                release: kube-prometheus-stack
+
           ingress:
             enabled: true
             className: traefik
