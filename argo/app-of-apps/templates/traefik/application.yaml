@@ -56,6 +56,15 @@ spec:
         accessLog:
           enabled: true
 
+        metrics:
+          prometheus:
+            service:
+              enabled: true
+            serviceMonitor:
+              enabled: true
+              additionalLabels:
+                release: kube-prometheus-stack
+
   destination:
     namespace: {{ .Values.traefik.namespace }}
     server: https://kubernetes.default.svc
