@@ -19,6 +19,12 @@ spec:
             cpu: 100m
             memory: 256Mi
 
+        metrics:
+          serviceMonitor:
+            enabled: true
+            labels:
+              release: kube-prometheus-stack
+
   destination:
     namespace: {{ .Values.sealedSecrets.namespace }}
     server: https://kubernetes.default.svc
