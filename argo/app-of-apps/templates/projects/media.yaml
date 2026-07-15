@@ -13,6 +13,7 @@ spec:
     - https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages
     - https://oauth2-proxy.github.io/manifests
     - oci.trueforge.org/truecharts
+    - ghcr.io/seerr-team/seerr
 
   destinations:
     - namespace: {{ .Values.media.namespace }}

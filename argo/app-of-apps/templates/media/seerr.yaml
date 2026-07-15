@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: seerr
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: media
+
+  source:
+    repoURL: ghcr.io/seerr-team/seerr
+    targetRevision: 3.7.0
+    chart: seerr-chart
+
+    helm:
+      valuesObject:
+        serviceAccount:
+          create: false
+          automount: false
+
+        config:
+          persistence:
+            size: "5Gi"
+            storageClass: longhorn
+
+        ingress:
+          enabled: true
+          ingressClassName: traefik
+          annotations:
+            cert-manager.io/cluster-issuer: letsencrypt
+          hosts:
+            - host: requests.d3adb5.ca
+              paths:
+                - path: /
+                  pathType: ImplementationSpecific
+          tls:
+            - secretName: seerr-tls
+              hosts:
+                - requests.d3adb5.ca
+
+        resources:
+          requests:
+            cpu: 200m
+            memory: 350Mi
+          limits:
+            memory: 350Mi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.media.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
