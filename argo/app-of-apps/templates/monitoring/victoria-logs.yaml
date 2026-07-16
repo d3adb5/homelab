@@ -46,7 +46,7 @@ spec:
                 secretName: logs-tls
 
     - repoURL: https://victoriametrics.github.io/helm-charts
-      targetRevision: 0.13.8
+      targetRevision: 0.13.9
       chart: victoria-logs-single
 
       helm:
