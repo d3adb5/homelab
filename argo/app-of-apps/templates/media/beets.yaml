@@ -56,7 +56,7 @@ spec:
           replicaCount: 1
           image:
             repository: lscr.io/linuxserver/beets
-            tag: "2.5.1@sha256:d591337d1c7bc512b52c8e19a6f881f3095b0bcd4f41b697a3b8f747df6d477d"
+            tag: "2.5.1@sha256:87e5130e72a506801d4f5ee21a2ce2e57b98f5faccfdb1223f5033fec6ae1f87"
             pullPolicy: IfNotPresent
           resources:
             requests:
