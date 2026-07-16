@@ -40,8 +40,6 @@ spec:
           ingress:
             enabled: true
             className: traefik
-            annotations:
-              {{- toYaml .Values.ingress.oauth2ProxyIngressAnnotations | nindent 14 }}
             hosts:
               - "navidrome.d3adb5.ca"
             path: /oauth2

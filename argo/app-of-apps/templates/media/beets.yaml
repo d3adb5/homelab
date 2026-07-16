@@ -39,8 +39,6 @@ spec:
           ingress:
             enabled: true
             className: traefik
-            annotations:
-              {{- toYaml .Values.ingress.oauth2ProxyIngressAnnotations | nindent 14 }}
             hosts:
               - "beets.d3adb5.ca"
             path: /oauth2

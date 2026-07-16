@@ -18,10 +18,6 @@ operators:
 metallb:
   namespace: metallb-system
 
-ingress:
-  oauth2ProxyIngressAnnotations:
-    cert-manager.io/cluster-issuer: letsencrypt
-
 traefik:
   namespace: traefik
 
