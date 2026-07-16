@@ -96,7 +96,7 @@ spec:
               ingressClassName: traefik
               annotations:
                 cert-manager.io/cluster-issuer: letsencrypt
-                traefik.ingress.kubernetes.io/router.middlewares: {{ .Values.media.namespace }}-navidrome-drop-auth-headers@kubernetescrd,{{ .Values.media.namespace }}-navidrome-oauth2-proxy@kubernetescrd
+                traefik.ingress.kubernetes.io/router.middlewares: "{{ .Values.media.namespace }}-navidrome-drop-auth-headers@kubernetescrd,{{ .Values.media.namespace }}-navidrome-oauth2-proxy@kubernetescrd"
               hosts:
                 - host: navidrome.d3adb5.ca
               tls:
@@ -113,7 +113,7 @@ spec:
               enabled: true
               ingressClassName: traefik
               annotations:
-                traefik.ingress.kubernetes.io/router.middlewares: {{ .Values.media.namespace }}-navidrome-drop-auth-headers@kubernetescrd
+                traefik.ingress.kubernetes.io/router.middlewares: "{{ .Values.media.namespace }}-navidrome-drop-auth-headers@kubernetescrd"
               hosts:
                 - host: navidrome.d3adb5.ca
                   paths:
@@ -132,7 +132,7 @@ spec:
               enabled: true
               ingressClassName: traefik
               annotations:
-                traefik.ingress.kubernetes.io/router.middlewares: {{ .Values.media.namespace }}-navidrome-metrics-block@kubernetescrd
+                traefik.ingress.kubernetes.io/router.middlewares: "{{ .Values.media.namespace }}-navidrome-metrics-block@kubernetescrd"
               hosts:
                 - host: navidrome.d3adb5.ca
                   paths:

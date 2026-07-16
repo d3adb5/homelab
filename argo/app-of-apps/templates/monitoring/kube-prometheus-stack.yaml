@@ -79,7 +79,7 @@ spec:
               ingressClassName: traefik
               annotations:
                 cert-manager.io/cluster-issuer: "letsencrypt"
-                traefik.ingress.kubernetes.io/router.middlewares: {{ .Values.monitoring.namespace }}-kube-prometheus-stack-oauth2-proxy@kubernetescrd
+                traefik.ingress.kubernetes.io/router.middlewares: "{{ .Values.monitoring.namespace }}-kube-prometheus-stack-oauth2-proxy@kubernetescrd"
               hosts:
                 - prometheus.d3adb5.ca
               tls:

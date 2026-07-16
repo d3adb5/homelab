@@ -75,7 +75,7 @@ spec:
               secretName: sonarr-tls
             annotations:
               cert-manager.io/cluster-issuer: letsencrypt
-              traefik.ingress.kubernetes.io/router.middlewares: {{ .Values.media.namespace }}-sonarr-oauth2-proxy@kubernetescrd
+              traefik.ingress.kubernetes.io/router.middlewares: "{{ .Values.media.namespace }}-sonarr-oauth2-proxy@kubernetescrd"
           extraEnv:
             - name: TZ
               value: America/Vancouver

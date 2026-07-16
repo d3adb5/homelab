@@ -78,7 +78,7 @@ spec:
               secretName: transmission-music-tls
             annotations:
               cert-manager.io/cluster-issuer: letsencrypt
-              traefik.ingress.kubernetes.io/router.middlewares: {{ .Values.media.namespace }}-transmission-music-oauth2-proxy@kubernetescrd
+              traefik.ingress.kubernetes.io/router.middlewares: "{{ .Values.media.namespace }}-transmission-music-oauth2-proxy@kubernetescrd"
           peerService:
             type: LoadBalancer
             port: 32555
