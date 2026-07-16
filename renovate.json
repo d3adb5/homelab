@@ -13,5 +13,36 @@
     "managerFilePatterns": [
       "/\\.yaml$/"
     ]
-  }
+  },
+  "customDatasources": {
+    "plex": {
+      "defaultRegistryUrlTemplate": "https://plex.tv/api/downloads/5.json",
+      "format": "json",
+      "transformTemplates": [
+        "{ \"releases\": [ { \"version\": $substringBefore(computer.Linux.version, \"-\"), \"releaseTimestamp\": $fromMillis(computer.Linux.release_date * 1000), \"changelogUrl\": \"https://plex.tv/media-server-downloads/#plex-media-server\" } ] }"
+      ]
+    }
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^argo\\/app-of-apps\\/templates\\/media\\/plex-media-server\\.yaml$/"
+      ],
+      "matchStrings": [
+        "# plex-version: (?<currentValue>\\S+)"
+      ],
+      "datasourceTemplate": "custom.plex",
+      "depNameTemplate": "plex-media-server",
+      "versioningTemplate": "loose"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Bundle the Plex image digest and its human-readable version marker into one PR",
+      "matchDatasources": ["docker", "custom.plex"],
+      "matchPackageNames": ["plexinc/pms-docker", "plex-media-server"],
+      "groupName": "plex-media-server"
+    }
+  ]
 }
