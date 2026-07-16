@@ -87,7 +87,7 @@ spec:
                     - logs.d3adb5.ca
 
     - repoURL: https://victoriametrics.github.io/helm-charts
-      targetRevision: 0.3.6
+      targetRevision: 0.3.7
       chart: victoria-logs-collector
 
       helm:
