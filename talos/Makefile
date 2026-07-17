@@ -79,22 +79,19 @@ generated/controlplane/%.yaml: nodes/controlplane/%.yaml generated/installers/%
 
 .PHONY: upgrade upgrade-control upgrade-workers upgrade-worker-% upgrade-control-%
 
-# --preserve only applies to the legacy upgrade API used against pre-1.13 nodes.
-# Drop it once every node runs 1.13+: the LifecycleService API always preserves.
-
 upgrade: upgrade-control upgrade-workers
 
 upgrade-control: $(addprefix upgrade-control-, $(basename $(CONTROLPLANE)))
 
 upgrade-control-%: generated/installers/%
 	@echo "Upgrading control plane node $*"
-	@talosctl upgrade $(EXTRA_UPGRADE_FLAGS) --image $$(cat $<) --preserve -n $*
+	@talosctl upgrade $(EXTRA_UPGRADE_FLAGS) --image $$(cat $<) -n $*
 
 upgrade-workers: $(addprefix upgrade-worker-, $(basename $(WORKERS)))
 
 upgrade-worker-%: generated/installers/%
 	@echo "Upgrading worker node $*"
-	@talosctl upgrade $(EXTRA_UPGRADE_FLAGS) --image $$(cat $<) --preserve -n $*
+	@talosctl upgrade $(EXTRA_UPGRADE_FLAGS) --image $$(cat $<) -n $*
 
 ################################################################################
 
