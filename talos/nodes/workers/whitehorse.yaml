@@ -9,8 +9,6 @@ machine:
       - name: nvidia_uvm
       - name: nvidia_drm
       - name: nvidia_modeset
-  sysctls:
-    net.core.bpf_jit_harden: 1
 ---
 apiVersion: v1alpha1
 kind: HostnameConfig
