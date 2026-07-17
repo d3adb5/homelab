@@ -3,6 +3,7 @@ machine:
     interfaces:
       - interface: bond0
         dhcp: true
+        mtu: 9000
         bond:
           mode: active-backup
           deviceSelectors:
