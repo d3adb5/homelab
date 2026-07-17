@@ -3,6 +3,7 @@ customization:
     - -selinux
     - -init_on_alloc
     - talos.auditd.disabled=1
+    - mitigations=off
   systemExtensions:
     officialExtensions:
       - siderolabs/i915-ucode
