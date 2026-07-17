@@ -57,7 +57,7 @@ config-control: $(addprefix generated/controlplane/, $(CONTROLPLANE))
 
 config-workers: $(addprefix generated/workers/, $(WORKERS))
 
-generated/workers/%.yaml: nodes/workers/%.yaml generated/installers/%
+generated/workers/%.yaml: nodes/workers/%.yaml $(wildcard patches/*.yaml) generated/installers/%
 	@mkdir -p $(dir $@)
 	@echo "Generating config file for worker node $*"
 	@talosctl gen config --with-secrets $(SECRETS_FILE) \
@@ -66,7 +66,7 @@ generated/workers/%.yaml: nodes/workers/%.yaml generated/installers/%
 		--kubernetes-version $(KUBERNETES_VERSION) \
 		$(CLUSTER_NAME) $(API_ENDPOINT)
 
-generated/controlplane/%.yaml: nodes/controlplane/%.yaml generated/installers/%
+generated/controlplane/%.yaml: nodes/controlplane/%.yaml $(wildcard patches/*.yaml) generated/installers/%
 	@mkdir -p $(dir $@)
 	@echo "Generating config file for controlplane node $*"
 	@talosctl gen config --with-secrets $(SECRETS_FILE) \
@@ -114,12 +114,11 @@ apply-worker-%: generated/workers/%.yaml
 
 all-images: $(addprefix generated/installers/, $(basename $(WORKERS)) $(basename $(CONTROLPLANE)))
 
-generated/installers/%:
+.SECONDEXPANSION:
+
+generated/installers/%: $$(firstword $$(wildcard schematics/$$*.yaml) schematics/default.yaml)
 	@mkdir -p $(dir $@)
 	@echo "Generating installer ID file for node $*"
-	[ -f schematics/$*.yaml ] \
-		&& SCHEMATIC="schematics/$*.yaml" \
-		|| SCHEMATIC="schematics/default.yaml"
-	@echo "Using schematic file: $${SCHEMATIC}"
-	IMAGE_ID=$$(curl -s --data-binary @$${SCHEMATIC} $(FACTORY_URL) | jq -r '.id')
+	@echo "Using schematic file: $<"
+	IMAGE_ID=$$(curl -s --data-binary @$< $(FACTORY_URL) | jq -r '.id')
 	echo -n factory.talos.dev/installer/$${IMAGE_ID}:v$(TALOS_VERSION) > $@
