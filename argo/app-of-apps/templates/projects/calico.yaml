@@ -34,3 +34,5 @@ spec:
       kind: Goldmane
     - group: operator.tigera.io
       kind: Whisker
+    - group: projectcalico.org
+      kind: FelixConfiguration
