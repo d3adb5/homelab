@@ -9,6 +9,7 @@ spec:
   typhaMetricsPort: 9093
   calicoNetwork:
     linuxDataplane: BPF
+    mtu: 1500
     ipPools:
       - name: default-ipv4-ippool
         allowedUses:
