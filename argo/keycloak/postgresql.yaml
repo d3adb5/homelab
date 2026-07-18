@@ -46,6 +46,10 @@ spec:
               topologyKey: kubernetes.io/hostname
   backups:
     pgbackrest:
+      manual:
+        repoName: repo1
+        options:
+          - --type=full
       global:
         repo1-retention-full: "14"
       repos:
