@@ -17,7 +17,7 @@ spec:
         parameters:
           synchronous_commit: on
   instances:
-    - replicas: 2
+    - replicas: 3
       dataVolumeClaimSpec:
         accessModes:
           - ReadWriteOnce
