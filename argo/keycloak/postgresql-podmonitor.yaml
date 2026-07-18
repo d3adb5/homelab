@@ -1,13 +1,12 @@
-# PGO adds the postgres_exporter sidecar but ships no monitor resource,
-# so target the discovery label it stamps on exporter-enabled pods.
+# PGO adds the OTel collector sidecar but ships no monitor resource, so
+# target the cluster label; only pods exposing otel-metrics become targets.
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: keycloak-postgres-exporter
+  name: keycloak-postgres-metrics
 spec:
   selector:
     matchLabels:
       postgres-operator.crunchydata.com/cluster: keycloak
-      postgres-operator.crunchydata.com/crunchy-postgres-exporter: "true"
   podMetricsEndpoints:
-    - port: exporter
+    - port: otel-metrics

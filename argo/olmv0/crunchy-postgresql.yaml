@@ -7,3 +7,7 @@ spec:
   name: postgresql
   source: operatorhubio-catalog
   sourceNamespace: operator-lifecycle-manager
+  config:
+    env:
+      - name: PGO_FEATURE_GATES
+        value: OpenTelemetryMetrics=true
