@@ -1,9 +1,21 @@
-apiVersion: k8s.keycloak.org/v2alpha1
+apiVersion: k8s.keycloak.org/v2beta1
 kind: Keycloak
 metadata:
   name: keycloak
 spec:
-  instances: 1
+  instances: 3
+  update:
+    strategy: Auto
+  scheduling:
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: keycloak
+                app.kubernetes.io/instance: keycloak
+                app.kubernetes.io/component: server
+            topologyKey: kubernetes.io/hostname
   additionalOptions:
     - name: metrics-enabled
       value: "true"
