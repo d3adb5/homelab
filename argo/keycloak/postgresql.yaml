@@ -46,8 +46,12 @@ spec:
               topologyKey: kubernetes.io/hostname
   backups:
     pgbackrest:
+      global:
+        repo1-retention-full: "14"
       repos:
         - name: repo1
+          schedules:
+            full: "0 3 * * *"
           volume:
             volumeClaimSpec:
               accessModes:
