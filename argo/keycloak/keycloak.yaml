@@ -18,6 +18,7 @@ spec:
     host: keycloak-pgbouncer
     database: keycloak
     schema: keycloak
+    url: jdbc:postgresql://keycloak-pgbouncer:5432/keycloak?targetServerType=any
     usernameSecret:
       name: keycloak-pguser-keycloak
       key: user
