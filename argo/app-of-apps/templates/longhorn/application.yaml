@@ -55,6 +55,8 @@ spec:
         valuesObject:
           preUpgradeChecker:
             jobEnabled: false
+          defaultSettings:
+            nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
           persistence:
             defaultClassReplicaCount: 3
             defaultDataLocality: best-effort
