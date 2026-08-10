@@ -47,6 +47,53 @@ spec:
                   to: websecure
                   scheme: https
                   permanent: true
+          websecure:
+            http:
+              # Applied to every router on this entrypoint, so a service that
+              # never thought about rate limiting still gets one. Per-service
+              # middlewares still run on top; this is a floor, not a
+              # replacement, and mediamtx keeps its own tighter limit.
+              middlewares:
+                - traefik-global-ratelimit@kubernetescrd
+
+        extraObjects:
+          # A global floor for the scanning that is already happening — tens
+          # of requests a second probing for /wp-config.php, /.ssh/id_rsa and
+          # the rest, all correctly refused, none of it currently costing the
+          # sender anything.
+          #
+          # Deliberately loose: this is not tuned to any one service's
+          # traffic, it exists to make a sweep expensive while sitting far
+          # above anything a person does. Two things make the effective number
+          # higher than what is written here, both established while tuning
+          # the mediamtx limit:
+          #
+          #  1. Traefik keeps a token bucket per instance with no shared
+          #     state, and there are three replicas — so the real ceiling is
+          #     roughly three times these figures.
+          #  2. Everyone in the house shares one bucket, because the router
+          #     hairpins LAN requests to a public hostname and they arrive as
+          #     192.168.1.1.
+          #
+          # 300/min with a burst of 600 is therefore about 900/min in
+          # practice, and still 300/min if this were ever scaled to one
+          # replica. Throttling rather than banning, for the same reason as
+          # the mediamtx limit: a rate limit cannot lock out someone who is
+          # merely reconnecting a lot.
+          - apiVersion: traefik.io/v1alpha1
+            kind: Middleware
+            metadata:
+              name: global-ratelimit
+              namespace: {{ .Values.traefik.namespace }}
+            spec:
+              rateLimit:
+                average: 300
+                burst: 600
+                period: 1m
+                # No sourceCriterion: the default keys on the peer address,
+                # which is the real client here — verified from access logs
+                # against known sources. Keying on X-Forwarded-For would be
+                # wrong, since nothing trustworthy sets it upstream of this.
 
         # Ingress NGINX never verified upstream certificates, e.g. for
         # backend-protocol: HTTPS services like Keycloak.
