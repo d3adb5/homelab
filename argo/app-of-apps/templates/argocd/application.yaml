@@ -89,6 +89,9 @@ spec:
             annotations:
               cert-manager.io/cluster-issuer: "letsencrypt"
             tls: true
+          pdb:
+            enabled: true
+            minAvailable: 1
           resources:
             requests:
               cpu: 20m
@@ -104,6 +107,9 @@ spec:
             enabled: true
             serviceMonitor:
               enabled: true
+          pdb:
+            enabled: true
+            minAvailable: 1
           resources:
             requests:
               cpu: 10m
