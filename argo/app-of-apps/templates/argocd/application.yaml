@@ -89,6 +89,12 @@ spec:
             annotations:
               cert-manager.io/cluster-issuer: "letsencrypt"
             tls: true
+          resources:
+            requests:
+              cpu: 20m
+              memory: 128Mi
+            limits:
+              memory: 128Mi
 
         repoServer:
           autoscaling:
@@ -98,6 +104,12 @@ spec:
             enabled: true
             serviceMonitor:
               enabled: true
+          resources:
+            requests:
+              cpu: 10m
+              memory: 128Mi
+            limits:
+              memory: 128Mi
 
         applicationSet:
           replicas: 2
