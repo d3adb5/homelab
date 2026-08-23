@@ -57,7 +57,7 @@ spec:
               syslog.streamFields.udp: '["hostname","app_name"]'
 
             retentionPeriod: 1y
-            retentionDiskSpaceUsage: 40GiB
+            retentionMaxDiskUsagePercent: "98"
 
             persistentVolume:
               enabled: true
