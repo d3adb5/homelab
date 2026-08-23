@@ -94,10 +94,10 @@ spec:
             minAvailable: 1
           resources:
             requests:
-              cpu: 20m
-              memory: 128Mi
+              cpu: 50m
+              memory: 256Mi
             limits:
-              memory: 128Mi
+              memory: 256Mi
 
         repoServer:
           autoscaling:
@@ -112,10 +112,10 @@ spec:
             minAvailable: 1
           resources:
             requests:
-              cpu: 10m
-              memory: 128Mi
+              cpu: 50m
+              memory: 512Mi
             limits:
-              memory: 128Mi
+              memory: 512Mi
 
         applicationSet:
           replicas: 2
