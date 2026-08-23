@@ -52,6 +52,10 @@ spec:
           server:
             fullnameOverride: victoria-logs
 
+            extraArgs:
+              syslog.listenAddr.udp: ":5140"
+              syslog.streamFields.udp: '["hostname","app_name"]'
+
             retentionPeriod: 1y
             retentionDiskSpaceUsage: 40GiB
 
