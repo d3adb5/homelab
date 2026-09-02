@@ -9,7 +9,7 @@ spec:
 
   source:
     repoURL: https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages
-    targetRevision: 1.6.0
+    targetRevision: 1.7.1
     chart: plex-media-server
 
     helm:
