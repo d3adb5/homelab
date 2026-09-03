@@ -58,7 +58,7 @@ spec:
           image:
             repository: lscr.io/linuxserver/transmission
             pullPolicy: IfNotPresent
-            tag: "4.1.3@sha256:81787bc706d3833d252e6d8b94545fea46bf2156f616320991a395619a477d2c"
+            tag: "4.1.3@sha256:d38840f24a82c79fa837525fc4d89cf001a95b1fd4edcf41fba327c45d0f19f9"
           replicaCount: 1
           resources:
             requests:
