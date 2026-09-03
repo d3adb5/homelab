@@ -56,7 +56,7 @@ spec:
           replicaCount: 0
           image:
             repository: lscr.io/linuxserver/lidarr
-            tag: "3.1.0@sha256:2e4cdc7c8d5fa36915f446a29976ee01d3f9cc9722b8530a09121c76fbabef55"
+            tag: "3.1.0@sha256:c74c32408fdf6e7926ad62641fc1a5544206ee65c33f2188bb179edb30e28f5a"
             pullPolicy: IfNotPresent
           resources:
             requests:
