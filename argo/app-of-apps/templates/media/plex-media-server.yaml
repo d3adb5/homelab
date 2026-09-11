@@ -20,8 +20,8 @@ spec:
         image:
           repository: plexinc/pms-docker
 
-          # plex-version: 1.43.3.10896
-          tag: "latest@sha256:c708587e4874617961a1bc24db9cffa2413653ff422f1b05dfec013339e6824d"
+          # plex-version: 1.43.4.10903
+          tag: "latest@sha256:dbb879bf58c3fc56635f21ac48c32aa6853aaa23d4a57b102033b6dc6d2d9cee"
 
           pullPolicy: IfNotPresent
         ingress:
