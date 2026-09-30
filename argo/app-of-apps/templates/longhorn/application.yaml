@@ -48,7 +48,7 @@ spec:
                 secretName: longhorn-ui-tls
 
     - repoURL: https://charts.longhorn.io
-      targetRevision: 1.12.1
+      targetRevision: 1.13.0
       chart: longhorn
 
       helm:
