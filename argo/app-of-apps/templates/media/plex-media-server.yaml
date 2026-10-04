@@ -75,9 +75,9 @@ spec:
           resources:
             requests:
               cpu: 2
-              memory: 6Gi
+              memory: 4Gi
             limits:
-              memory: 6Gi
+              memory: 4Gi
 
   destination:
     server: https://kubernetes.default.svc
