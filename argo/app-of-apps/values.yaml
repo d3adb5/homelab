@@ -183,3 +183,15 @@ minecraft:
           0HvmD27QA5bZApaijuV3qY3oSeJsMQJayTh0y5kKX7yjqJNaqfMgIQQC81E+SKN12sDk4zq+8O1z5fnh
           086/K8ce4lyNPoDb43VYHTMh0LOn9nE61BLZiXDzkzaxv2HEqgDkI/eFlxb7RHgp7ZaLEfAtNYNJiyWw
           2zP19OZxTVrrhC1nET0pmy6YbjQ40ll8q+SAPX+PoJIK3OI=
+    renv1:
+      whitelist:
+        - Insignus8255
+        - renv14548
+      ops:
+        - Insignus8255
+        - renv14548
+      secrets:
+        # TODO: replace with the output of
+        #   kubeseal --raw --namespace minecraft --name minecraft-renv1-secrets
+        rcon-password: |-
+          REPLACE_ME_WITH_SEALED_RCON_PASSWORD
