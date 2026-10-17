@@ -17,7 +17,7 @@ spec:
         replicaCount: 1
         image:
           repository: lscr.io/linuxserver/tautulli
-          tag: "2.18.2@sha256:9e7b476ef14ae44a043b446614b5354777605eb9cb2bdbb2dbd1f99df031ac17"
+          tag: "2.18.2@sha256:986125e67ab881504e6a71f93f8fe0932de0e1158f3060b53ca9d12ab38fa3be"
           pullPolicy: IfNotPresent
         service:
           port: 8181
