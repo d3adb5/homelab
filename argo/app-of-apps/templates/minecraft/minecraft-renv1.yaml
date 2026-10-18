@@ -30,6 +30,7 @@ spec:
         extraEnv:
           USE_MEOWICE_FLAGS: "true"
         minecraftServer:
+          hardcore: true
           eula: true
           type: VANILLA
           version: "LATEST"
