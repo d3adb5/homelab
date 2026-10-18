@@ -191,7 +191,14 @@ minecraft:
         - Insignus8255
         - renv14548
       secrets:
-        # TODO: replace with the output of
-        #   kubeseal --raw --namespace minecraft --name minecraft-renv1-secrets
         rcon-password: |-
-          REPLACE_ME_WITH_SEALED_RCON_PASSWORD
+          AgCtNSetZ+p3bhWQtSYvQu0YXA9cB+3796UW0VlA8eDQBeSx1qWUd/AD0VdiIDH8VndACLajijPsHLuL
+          cfKf8ITI4moqxQ9weGlzHxD3x49JKd/jBX7CnP1nXkAyyAPlfhMSlI8rz0StHlgLph/rXcyt3MBtkt3r
+          70vlbPkdbLI0KcnfLsIw6p1L/KjOj2s9eDmPfXpDvQPMtvQqf3KIJLFxghgUnS1W4QMPm+raAnahh0+C
+          Rni16NW2HWyWsiwQ9u8+J3hnvft80ARh5lJtp6zznftVbThFWq9i7h63OoiTakA9ZnjJVIWyB10CTD0L
+          LYK7or8DbDh3rPw05C/MklLY+cRiDsIl4juL714UQz4R3OX9sNFU6He07NuDUBOMmbUyNXYa2AJaaOAZ
+          93BSXf4iuPMXc6O0WMVB78OF6WWJUtuD/plCiR0dihGS+m8ZOAmPt2LAY94JP6c3Y7cEMB+TGWj63YCf
+          oBemkCZmDOQmTVemYp946mh8AiJEXp6xPQEO78AP5ordMDQW0cF4KY+tYTP8ocCGAhjncxYLzkbh1q6G
+          JTxCkdSRHWWfTFAp3mgDh2f2tC6A9KfZmS2E/J4TBRf6jlFbmzfrUE3/tqmvjhRXVsvAd8mBSS77MWvX
+          GvokSYCtOsx8SlGj91OPXotruMeZdOl3vlDKT4YJgYbGhfjdOlwHy9lv2Cdpj1KPV04M6tDvHswI2Bnp
+          qN9pnEoDQ99GrZoLUK93AW6WGk+yw0BhXoxq//hX6Crfwys=
