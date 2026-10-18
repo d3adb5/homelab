@@ -185,9 +185,9 @@ minecraft:
           2zP19OZxTVrrhC1nET0pmy6YbjQ40ll8q+SAPX+PoJIK3OI=
     renv1:
       whitelist:
-        - renv14548
+        - ab9c17
       ops:
-        - renv14548
+        - ab9c17
       secrets:
         rcon-password: |-
           AgCtNSetZ+p3bhWQtSYvQu0YXA9cB+3796UW0VlA8eDQBeSx1qWUd/AD0VdiIDH8VndACLajijPsHLuL
