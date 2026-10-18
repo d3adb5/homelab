@@ -185,10 +185,8 @@ minecraft:
           2zP19OZxTVrrhC1nET0pmy6YbjQ40ll8q+SAPX+PoJIK3OI=
     renv1:
       whitelist:
-        - Insignus8255
         - renv14548
       ops:
-        - Insignus8255
         - renv14548
       secrets:
         rcon-password: |-
