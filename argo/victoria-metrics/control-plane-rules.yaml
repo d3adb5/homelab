@@ -1,0 +1,89 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: control-plane
+  labels:
+    release: victoria-metrics
+spec:
+  groups:
+    - name: control-plane.disk
+      rules:
+        - alert: ControlPlaneDiskWriteLatencyHigh
+          expr: >-
+            (
+              rate(node_disk_write_time_seconds_total{device=~"nvme.*"}[5m])
+                / rate(node_disk_writes_completed_total{device=~"nvme.*"}[5m])
+            )
+              * on (instance) group_left (nodename) node_uname_info
+              * on (nodename) group_left ()
+                label_replace(kube_node_role{role="control-plane"}, "nodename", "$1", "node", "(.*)")
+              > 0.05
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: Writes on {{ $labels.nodename }}'s {{ $labels.device }} average {{ $value | humanizeDuration }}
+            description: >-
+              The control-plane disk normally completes writes in a few
+              milliseconds. It holds the only etcd member, so sustained
+              latency slows the API server and can make the controller
+              manager and scheduler lose their leases.
+
+    - name: control-plane.etcd
+      rules:
+        - alert: EtcdRequestLatencyHigh
+          expr: >-
+            sum(rate(etcd_request_duration_seconds_sum[5m]))
+              / sum(rate(etcd_request_duration_seconds_count[5m]))
+              > 0.1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: etcd requests from the API server average {{ $value | humanizeDuration }}
+            description: >-
+              Measured by the API server, since etcd itself is not scraped.
+              The baseline is a few milliseconds. Check the control-plane
+              disk's write latency first.
+
+        - alert: EtcdRequestLatencyCritical
+          expr: >-
+            sum(rate(etcd_request_duration_seconds_sum[5m]))
+              / sum(rate(etcd_request_duration_seconds_count[5m]))
+              > 0.5
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: etcd requests from the API server average {{ $value | humanizeDuration }}
+            description: >-
+              At this latency, leader election renewals time out and the
+              controller manager and scheduler restart. Move I/O-heavy
+              workloads off the control-plane node.
+
+        - alert: EtcdRequestErrors
+          expr: sum(increase(etcd_request_errors_total[10m])) > 5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: The API server saw {{ $value | humanize }} failed etcd requests in 10 minutes
+            description: >-
+              Usually timeouts caused by a slow etcd disk. Writes to the
+              cluster are failing while this fires.
+
+    - name: control-plane.components
+      rules:
+        - alert: ControlPlaneComponentRestarted
+          expr: >-
+            increase(kube_pod_container_status_restarts_total{namespace="kube-system",pod=~"kube-(apiserver|controller-manager|scheduler)-.*"}[30m])
+              > 0
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{ $labels.pod }} restarted {{ $value | humanize }} times in 30 minutes"
+            description: >-
+              The controller manager and scheduler exit when they fail to
+              renew their leader lease, usually because the API server or
+              etcd is slow. Nothing reconciles or schedules while they are
+              down.
