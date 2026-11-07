@@ -240,6 +240,8 @@ spec:
             spec:
               replicaCount: 2
               configSecret: alertmanager-config
+              extraArgs:
+                cluster.reconnect-timeout: 5m
               affinity:
                 {{- include "homelab.avoidControlPlane" . | nindent 16 }}
                 podAntiAffinity:
