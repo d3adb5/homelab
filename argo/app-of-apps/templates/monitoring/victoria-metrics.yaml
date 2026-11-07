@@ -262,6 +262,15 @@ spec:
             enabled: false
             forceDeployDatasource: false
 
+          kubelet:
+            vmScrape:
+              spec:
+                relabelConfigs:
+                  - sourceLabels: [__metrics_path__]
+                    targetLabel: metrics_path
+                  - targetLabel: job
+                    replacement: kubelet
+
           kubeControllerManager:
             enabled: false
 
