@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: olm-alert-rules
+  namespace: operator-lifecycle-manager
+spec:
+  groups:
+  - name: olm.csv_abnormal.rules
+    rules:
+    - alert: CsvAbnormalFailedOver2Min
+      annotations:
+        description: Failed to install Operator {{ $labels.name }} version {{ $labels.version
+          }}. Reason-{{ $labels.reason }}
+        summary: CSV failed for over 2 minutes
+      expr: last_over_time(csv_abnormal{phase="Failed"}[5m])
+      for: 2m
+      labels:
+        severity: warning
+    - alert: CsvAbnormalOver30Min
+      annotations:
+        description: Failed to install Operator {{ $labels.name }} version {{ $labels.version
+          }}. Phase-{{ $labels.phase }} Reason-{{ $labels.reason }}
+        summary: CSV abnormal for over 30 minutes
+      expr: last_over_time(csv_abnormal{phase=~"(Replacing|Pending|Deleting|Unknown)"}[5m])
+      for: 30m
+      labels:
+        severity: warning
