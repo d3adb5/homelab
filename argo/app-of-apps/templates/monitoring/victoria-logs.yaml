@@ -8,8 +8,12 @@ spec:
   project: monitoring
 
   sources:
+    - repoURL: {{ .Values.repository.homelab.url }}
+      targetRevision: {{ .Values.repository.homelab.targetRevision }}
+      path: argo/victoria-logs
+
     - repoURL: https://oauth2-proxy.github.io/manifests
-      targetRevision: 10.7.1
+      targetRevision: 10.7.2
       chart: oauth2-proxy
 
       helm:
@@ -44,7 +48,7 @@ spec:
                 secretName: logs-tls
 
     - repoURL: https://victoriametrics.github.io/helm-charts
-      targetRevision: 0.13.9
+      targetRevision: 0.13.11
       chart: victoria-logs-single
 
       helm:
@@ -52,21 +56,26 @@ spec:
           server:
             fullnameOverride: victoria-logs
 
+            mode: deployment
+
+            service:
+              type: ClusterIP
+
             extraArgs:
               syslog.listenAddr.udp: ":5140"
               syslog.streamFields.udp: '["hostname","app_name"]'
 
             retentionPeriod: 1y
-            retentionMaxDiskUsagePercent: "98"
+            retentionMaxDiskUsagePercent: "95"
 
             persistentVolume:
               enabled: true
-              storageClassName: truenas-iscsi-hdd
-              size: 50Gi
+              storageClassName: longhorn-low-redundancy
+              size: 25Gi
 
             resources:
               limits:
-                memory: 1Gi
+                memory: 2Gi
               requests:
                 cpu: 100m
                 memory: 512Mi
@@ -91,7 +100,7 @@ spec:
                     - logs.d3adb5.ca
 
     - repoURL: https://victoriametrics.github.io/helm-charts
-      targetRevision: 0.3.7
+      targetRevision: 0.3.8
       chart: victoria-logs-collector
 
       helm:
