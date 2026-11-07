@@ -68,4 +68,4 @@ spec:
     matchLabels:
       k8s-app: calico-kube-controllers
   endpoints:
-    - targetPort: 9094
+    - port: metrics-port
