@@ -9,7 +9,7 @@ CLUSTER_NAME = homelab
 API_ENDPOINT = https://ottawa.home.arpa:6443
 
 FACTORY_URL   := https://factory.talos.dev/schematics
-TALOS_VERSION := 1.13.6
+TALOS_VERSION := 1.13.7
 
 KUBERNETES_VERSION := 1.36.2
 
