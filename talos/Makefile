@@ -64,6 +64,7 @@ generated/workers/%.yaml: nodes/workers/%.yaml $(wildcard patches/*.yaml) genera
 		--output-types worker $(PATCHES) --config-patch @$< --output $@ \
 		--install-image $$(cat generated/installers/$*) \
 		--kubernetes-version $(KUBERNETES_VERSION) \
+		--talos-version v$(TALOS_VERSION) \
 		$(CLUSTER_NAME) $(API_ENDPOINT)
 
 generated/controlplane/%.yaml: nodes/controlplane/%.yaml $(wildcard patches/*.yaml) generated/installers/%
@@ -73,6 +74,7 @@ generated/controlplane/%.yaml: nodes/controlplane/%.yaml $(wildcard patches/*.ya
 		--output-types controlplane $(PATCHES) --config-patch @$< --output $@ \
 		--install-image $$(cat generated/installers/$*) \
 		--kubernetes-version $(KUBERNETES_VERSION) \
+		--talos-version v$(TALOS_VERSION) \
 		$(CLUSTER_NAME) $(API_ENDPOINT)
 
 ################################################################################
