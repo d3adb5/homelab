@@ -1,0 +1,208 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: monitoring
+
+  sources:
+    - repoURL: {{ .Values.repository.homelab.url }}
+      targetRevision: {{ .Values.repository.homelab.targetRevision }}
+      path: argo/grafana
+
+    - repoURL: https://grafana-community.github.io/helm-charts
+      targetRevision: 14.4.0
+      chart: grafana
+
+      helm:
+        valuesObject:
+          fullnameOverride: grafana
+
+          persistence:
+            enabled: false
+
+          plugins:
+            - victoriametrics-logs-datasource
+
+          serviceMonitor:
+            enabled: true
+
+          sidecar:
+            dashboards:
+              enabled: true
+              label: grafana_dashboard
+              labelValue: "1"
+              searchNamespace: {{ .Values.monitoring.namespace }}
+              folderAnnotation: grafana_folder
+              provider:
+                foldersFromFilesStructure: true
+            datasources:
+              enabled: false
+            resources:
+              limits:
+                memory: 128Mi
+              requests:
+                cpu: 10m
+                memory: 128Mi
+
+          datasources:
+            datasources.yaml:
+              apiVersion: 1
+              datasources:
+                - name: VictoriaMetrics
+                  uid: victoriametrics
+                  type: prometheus
+                  access: proxy
+                  isDefault: true
+                  url: http://vmselect-victoria-metrics.{{ .Values.monitoring.namespace }}.svc.cluster.local:8481/select/0/prometheus
+                  jsonData:
+                    prometheusType: Prometheus
+                    timeInterval: 60s
+                - name: VictoriaMetrics Long-Term
+                  uid: victoriametrics-longterm
+                  type: prometheus
+                  access: proxy
+                  isDefault: false
+                  url: http://vmsingle-victoria-metrics-longterm.{{ .Values.monitoring.namespace }}.svc.cluster.local:8428
+                  jsonData:
+                    prometheusType: Prometheus
+                    timeInterval: 60s
+                - name: VictoriaLogs
+                  uid: victorialogs
+                  type: victoriametrics-logs-datasource
+                  access: proxy
+                  isDefault: false
+                  url: http://victoria-logs.{{ .Values.monitoring.namespace }}.svc.cluster.local:9428
+                - name: Alertmanager
+                  uid: alertmanager
+                  type: alertmanager
+                  access: proxy
+                  isDefault: false
+                  url: http://vmalertmanager-victoria-metrics.{{ .Values.monitoring.namespace }}.svc.cluster.local:9093
+                  jsonData:
+                    implementation: prometheus
+
+          dashboardProviders:
+            dashboardproviders.yaml:
+              apiVersion: 1
+              providers:
+                - name: downloaded
+                  orgId: 1
+                  folder: Downloaded
+                  type: file
+                  disableDeletion: false
+                  options:
+                    path: /var/lib/grafana/dashboards/downloaded
+
+          dashboards:
+            downloaded:
+              argocd:
+                gnetId: 14584
+                revision: 1
+                datasource: VictoriaMetrics
+              traefik:
+                gnetId: 17347
+                revision: 9
+                datasource: VictoriaMetrics
+              longhorn:
+                gnetId: 13032
+                revision: 6
+                datasource: VictoriaMetrics
+              metallb:
+                gnetId: 14127
+                revision: 1
+                datasource: VictoriaMetrics
+              cert-manager:
+                gnetId: 11001
+                revision: 1
+                datasource: VictoriaMetrics
+              calico-felix:
+                gnetId: 12175
+                revision: 7
+                datasource: VictoriaMetrics
+              coredns:
+                gnetId: 15762
+                revision: 22
+                datasource: VictoriaMetrics
+              postgresql:
+                gnetId: 9628
+                revision: 8
+                datasource: VictoriaMetrics
+              keycloak-troubleshooting:
+                url: https://raw.githubusercontent.com/keycloak/keycloak-grafana-dashboard/f819507c13206e9b0d2ca0b95470bac605361a43/dashboards/keycloak-troubleshooting-dashboard.json
+                datasource: VictoriaMetrics
+              keycloak-capacity-planning:
+                url: https://raw.githubusercontent.com/keycloak/keycloak-grafana-dashboard/f819507c13206e9b0d2ca0b95470bac605361a43/dashboards/keycloak-capacity-planning-dashboard.json
+                datasource: VictoriaMetrics
+              vlagent:
+                url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaLogs/v1.51.0/dashboards/vlagent.json
+                datasource: VictoriaMetrics
+
+          ingress:
+            enabled: true
+            ingressClassName: traefik
+            annotations:
+              cert-manager.io/cluster-issuer: "letsencrypt"
+            hosts:
+              - grafana.d3adb5.ca
+            tls:
+              - hosts:
+                  - grafana.d3adb5.ca
+                secretName: grafana-tls
+
+          envValueFrom:
+            GRAFANA_OAUTH_CLIENT_ID:
+              secretKeyRef:
+                name: grafana-oidc-secrets
+                key: client-id
+            GRAFANA_OAUTH_CLIENT_SECRET:
+              secretKeyRef:
+                name: grafana-oidc-secrets
+                key: client-secret
+
+          grafana.ini:
+            server:
+              root_url: https://grafana.d3adb5.ca
+            auth:
+              disable_login_form: true
+            auth.basic:
+              enabled: false
+            auth.generic_oauth:
+              enabled: true
+              auto_login: true
+              name: Keycloak
+              allow_sign_up: true
+              client_id: "${GRAFANA_OAUTH_CLIENT_ID}"
+              client_secret: "${GRAFANA_OAUTH_CLIENT_SECRET}"
+              scopes: openid email profile offline_access roles groups
+              email_attribute_path: email
+              login_attribute_path: username
+              name_attribute_path: full_name
+              auth_url: https://id.d3adb5.ca/realms/core/protocol/openid-connect/auth
+              token_url: https://id.d3adb5.ca/realms/core/protocol/openid-connect/token
+              api_url: https://id.d3adb5.ca/realms/core/protocol/openid-connect/userinfo
+              role_attribute_path: >-
+                contains(groups[*], '/Admin') && 'Admin'
+                || contains(groups[*], '/Grafana') && 'Editor'
+                || 'Viewer'
+
+          resources:
+            limits:
+              memory: 768Mi
+            requests:
+              cpu: 50m
+              memory: 512Mi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.monitoring.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
