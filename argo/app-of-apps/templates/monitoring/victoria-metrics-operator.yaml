@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: victoria-metrics-operator
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: monitoring
+
+  sources:
+    - repoURL: https://victoriametrics.github.io/helm-charts
+      targetRevision: 0.68.2
+      chart: victoria-metrics-operator
+
+      helm:
+        valuesObject:
+          fullnameOverride: victoria-metrics-operator
+
+          crds:
+            enabled: false
+            plain: false
+
+          operator:
+            disable_prometheus_converter: false
+            prometheus_converter_add_argocd_ignore_annotations: true
+            enable_converter_ownership: true
+
+          admissionWebhooks:
+            enabled: true
+            policy: Ignore
+            certManager:
+              enabled: true
+              issuer: {}
+
+          serviceMonitor:
+            enabled: true
+
+          resources:
+            limits:
+              memory: 512Mi
+            requests:
+              cpu: 50m
+              memory: 128Mi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.monitoring.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
