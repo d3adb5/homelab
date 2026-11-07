@@ -1,0 +1,20 @@
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: calico-system.vmagent-kube-controllers-metrics
+  namespace: calico-system
+spec:
+  tier: calico-system
+  order: 10
+  selector: k8s-app == 'calico-kube-controllers'
+  types:
+    - Ingress
+  ingress:
+    - action: Allow
+      protocol: TCP
+      source:
+        namespaceSelector: kubernetes.io/metadata.name == 'monitoring'
+        selector: app.kubernetes.io/name == 'vmagent'
+      destination:
+        ports:
+          - 9094
