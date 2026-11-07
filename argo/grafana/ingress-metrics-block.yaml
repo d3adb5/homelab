@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana-metrics-block
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: monitoring-grafana-metrics-block@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: grafana.d3adb5.ca
+      http:
+        paths:
+          - path: /metrics
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - grafana.d3adb5.ca
+      secretName: grafana-tls
