@@ -12,3 +12,11 @@ spec:
       - http01:
           ingress:
             class: traefik
+      - dns01:
+          cloudflare:
+            apiTokenSecretRef:
+              name: cloudflare-api-token
+              key: api-token
+        selector:
+          dnsNames:
+            - sync.d3adb5.ca

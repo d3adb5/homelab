@@ -1,0 +1,109 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: syncthing
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: syncthing
+
+  source:
+    repoURL: oci.trueforge.org/truecharts
+    chart: syncthing
+    targetRevision: 24.1.0
+
+    helm:
+      valuesObject:
+        image:
+          repository: ghcr.io/syncthing/syncthing
+          tag: 2.1.7@sha256:2b71da7c0d0a91a6ae5285ad079226fecc0a365d08b27720e1f7037b018f7546
+
+        TZ: America/Vancouver
+
+        workload:
+          main:
+            podSpec:
+              containers:
+                main:
+                  resources:
+                    requests:
+                      cpu: 250m
+                      memory: 512Mi
+                    limits:
+                      memory: 2Gi
+
+        service:
+          main:
+            ports:
+              main:
+                port: 8384
+                targetPort: 8384
+          listeners:
+            enabled: true
+            type: LoadBalancer
+            annotations:
+              metallb.io/loadBalancerIPs: "192.168.1.42"
+              metallb.io/allow-shared-ip: lan
+            ports:
+              tcp:
+                enabled: true
+                port: 22000
+                targetPort: 22000
+                protocol: tcp
+              udp:
+                enabled: true
+                port: 22000
+                targetPort: 22000
+                protocol: udp
+          listeners-udp:
+            enabled: false
+          discovery:
+            enabled: false
+
+        ingress:
+          main:
+            enabled: true
+            ingressClassName: traefik
+            integrations:
+              traefik:
+                enabled: false
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt
+              traefik.ingress.kubernetes.io/router.entrypoints: lan-websecure
+            hosts:
+              - host: sync.d3adb5.ca
+                paths:
+                  - path: /
+                    pathType: Prefix
+            tls:
+              - hosts:
+                  - sync.d3adb5.ca
+                secretName: syncthing-tls
+
+        persistence:
+          config:
+            enabled: true
+            type: pvc
+            storageClass: longhorn
+            size: 4Gi
+            mountPath: /var/syncthing/config
+
+          data-retro:
+            enabled: true
+            type: pvc
+            storageClass: truenas-iscsi-nvme
+            size: 512Gi
+            mountPath: /data/retro
+            annotations:
+              argocd.argoproj.io/sync-options: Prune=false,Delete=false
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.syncthing.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -6,6 +6,7 @@ denyAll:
 denyIngress:
   namespaces:
     - media
+    - syncthing
 
 allowACME:
   namespaces:
@@ -16,6 +17,7 @@ allowACME:
 allowTraefik:
   namespaces:
     - media
+    - syncthing
 
 allowNamespaceIngress:
   namespaces:

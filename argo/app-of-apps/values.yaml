@@ -46,6 +46,9 @@ media:
 longhorn:
   namespace: longhorn-system
 
+syncthing:
+  namespace: syncthing
+
 democraticCsi:
   namespace: democratic-csi
   driverConfigs:

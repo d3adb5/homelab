@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: syncthing
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Syncthing file synchronization
+
+  sourceRepos:
+    - oci.trueforge.org/truecharts
+
+  destinations:
+    - namespace: {{ .Values.syncthing.namespace }}
+      server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace

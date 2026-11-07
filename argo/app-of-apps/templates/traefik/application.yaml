@@ -29,6 +29,13 @@ spec:
         service:
           annotations:
             metallb.io/loadBalancerIPs: 192.168.1.32
+          additionalServices:
+            lan:
+              annotations:
+                metallb.io/loadBalancerIPs: 192.168.1.42
+                metallb.io/allow-shared-ip: lan
+              spec:
+                type: LoadBalancer
 
         ingressClass:
           enabled: true
@@ -41,6 +48,7 @@ spec:
 
         ports:
           web:
+            asDefault: true
             http:
               redirections:
                 entryPoint:
@@ -48,6 +56,7 @@ spec:
                   scheme: https
                   permanent: true
           websecure:
+            asDefault: true
             http:
               # Applied to every router on this entrypoint, so a service that
               # never thought about rate limiting still gets one. Per-service
@@ -55,6 +64,31 @@ spec:
               # replacement, and mediamtx keeps its own tighter limit.
               middlewares:
                 - traefik-global-ratelimit@kubernetescrd
+          lan-web:
+            port: 9080
+            exposedPort: 80
+            protocol: TCP
+            expose:
+              default: false
+              lan: true
+            http:
+              redirections:
+                entryPoint:
+                  to: lan-websecure
+                  scheme: https
+                  permanent: true
+          lan-websecure:
+            port: 9443
+            exposedPort: 443
+            protocol: TCP
+            expose:
+              default: false
+              lan: true
+            http:
+              tls:
+                enabled: true
+              middlewares:
+                - traefik-lan-only@kubernetescrd
 
         extraObjects:
           # A global floor for the scanning that is already happening — tens
@@ -94,6 +128,16 @@ spec:
                 # which is the real client here — verified from access logs
                 # against known sources. Keying on X-Forwarded-For would be
                 # wrong, since nothing trustworthy sets it upstream of this.
+
+          - apiVersion: traefik.io/v1alpha1
+            kind: Middleware
+            metadata:
+              name: lan-only
+              namespace: {{ .Values.traefik.namespace }}
+            spec:
+              ipAllowList:
+                sourceRange:
+                  - 192.168.1.0/24
 
         # Ingress NGINX never verified upstream certificates, e.g. for
         # backend-protocol: HTTPS services like Keycloak.
