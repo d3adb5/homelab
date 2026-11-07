@@ -1,0 +1,330 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: victoria-metrics
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: monitoring
+
+  sources:
+    - repoURL: {{ .Values.repository.homelab.url }}
+      targetRevision: {{ .Values.repository.homelab.targetRevision }}
+      path: argo/victoria-metrics
+
+    - repoURL: https://oauth2-proxy.github.io/manifests
+      targetRevision: 10.7.2
+      chart: oauth2-proxy
+
+      helm:
+        valuesObject:
+          replicaCount: 2
+
+          config:
+            existingSecret: prometheus-oidc-secrets
+
+            configFile: |-
+              email_domains = ["*"]
+              provider = "keycloak-oidc"
+              oidc_issuer_url = "https://id.d3adb5.ca/realms/core"
+              redirect_url = "https://prometheus.d3adb5.ca/oauth2/callback"
+              code_challenge_method = "S256"
+              allowed_groups = ["/Prometheus"]
+              upstreams = [ "static://202" ]
+              reverse_proxy = true
+              skip_provider_button = true
+
+          metrics:
+            serviceMonitor:
+              enabled: true
+
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: ScheduleAnyway
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: oauth2-proxy
+                  app.kubernetes.io/instance: victoria-metrics
+
+          ingress:
+            enabled: true
+            className: traefik
+            hosts:
+              - "prometheus.d3adb5.ca"
+            path: /oauth2
+            tls:
+              - hosts:
+                  - "prometheus.d3adb5.ca"
+                secretName: prometheus-tls
+
+    - repoURL: https://victoriametrics.github.io/helm-charts
+      targetRevision: 0.97.1
+      chart: victoria-metrics-k8s-stack
+
+      helm:
+        valuesObject:
+          argocdReleaseOverride: victoria-metrics
+          fullnameOverride: victoria-metrics
+
+          victoria-metrics-operator:
+            enabled: false
+
+          external:
+            grafana:
+              host: https://grafana.d3adb5.ca
+              datasource: VictoriaMetrics
+
+          vmsingle:
+            enabled: false
+
+          vmcluster:
+            enabled: true
+            spec:
+              retentionPeriod: "3"
+              replicationFactor: 2
+
+              vmstorage:
+                replicaCount: 2
+                storageDataPath: /vm-data
+                storage:
+                  volumeClaimTemplate:
+                    spec:
+                      storageClassName: truenas-iscsi-hdd
+                      accessModes:
+                        - ReadWriteOnce
+                      resources:
+                        requests:
+                          storage: 60Gi
+                extraArgs:
+                  dedup.minScrapeInterval: 60s
+                affinity:
+                  podAntiAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      - labelSelector:
+                          matchLabels:
+                            app.kubernetes.io/name: vmstorage
+                            app.kubernetes.io/instance: victoria-metrics
+                        topologyKey: kubernetes.io/hostname
+                resources:
+                  limits:
+                    memory: 4Gi
+                  requests:
+                    cpu: 200m
+                    memory: 1Gi
+
+              vmselect:
+                replicaCount: 2
+                cacheMountPath: /select-cache
+                storage:
+                  emptyDir: {}
+                extraArgs:
+                  dedup.minScrapeInterval: 60s
+                affinity:
+                  podAntiAffinity:
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 100
+                        podAffinityTerm:
+                          labelSelector:
+                            matchLabels:
+                              app.kubernetes.io/name: vmselect
+                              app.kubernetes.io/instance: victoria-metrics
+                          topologyKey: kubernetes.io/hostname
+                resources:
+                  limits:
+                    memory: 2Gi
+                  requests:
+                    cpu: 100m
+                    memory: 512Mi
+
+              vminsert:
+                replicaCount: 2
+                affinity:
+                  podAntiAffinity:
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 100
+                        podAffinityTerm:
+                          labelSelector:
+                            matchLabels:
+                              app.kubernetes.io/name: vminsert
+                              app.kubernetes.io/instance: victoria-metrics
+                          topologyKey: kubernetes.io/hostname
+                resources:
+                  limits:
+                    memory: 1Gi
+                  requests:
+                    cpu: 100m
+                    memory: 256Mi
+
+            ingress:
+              select:
+                enabled: true
+                ingressClassName: traefik
+                annotations:
+                  cert-manager.io/cluster-issuer: "letsencrypt"
+                  traefik.ingress.kubernetes.io/router.middlewares: "{{ .Values.monitoring.namespace }}-victoria-metrics-oauth2-proxy@kubernetescrd,{{ .Values.monitoring.namespace }}-victoria-metrics-vmui@kubernetescrd"
+                path: /
+                hosts:
+                  - prometheus.d3adb5.ca
+                tls:
+                  - hosts:
+                      - prometheus.d3adb5.ca
+                    secretName: prometheus-tls
+
+          vmagent:
+            spec:
+              replicaCount: 2
+              scrapeInterval: 60s
+              minScrapeInterval: 60s
+              selectAllByDefault: true
+              extraArgs:
+                promscrape.streamParse: "true"
+                remoteWrite.maxDiskUsagePerURL: "4GB"
+              affinity:
+                podAntiAffinity:
+                  preferredDuringSchedulingIgnoredDuringExecution:
+                    - weight: 100
+                      podAffinityTerm:
+                        labelSelector:
+                          matchLabels:
+                            app.kubernetes.io/name: vmagent
+                            app.kubernetes.io/instance: victoria-metrics
+                        topologyKey: kubernetes.io/hostname
+              resources:
+                limits:
+                  memory: 1Gi
+                requests:
+                  cpu: 100m
+                  memory: 256Mi
+
+            additionalRemoteWrites:
+              - url: http://vmsingle-victoria-metrics-longterm.{{ .Values.monitoring.namespace }}.svc.cluster.local:8428/api/v1/write
+                inlineUrlRelabelConfig:
+                  - action: keep
+                    source_labels: [retention]
+                    regex: 1y
+
+          vmalert:
+            spec:
+              replicaCount: 2
+              evaluationInterval: 60s
+              extraArgs:
+                external.url: https://grafana.d3adb5.ca
+              affinity:
+                podAntiAffinity:
+                  preferredDuringSchedulingIgnoredDuringExecution:
+                    - weight: 100
+                      podAffinityTerm:
+                        labelSelector:
+                          matchLabels:
+                            app.kubernetes.io/name: vmalert
+                            app.kubernetes.io/instance: victoria-metrics
+                        topologyKey: kubernetes.io/hostname
+              resources:
+                limits:
+                  memory: 512Mi
+                requests:
+                  cpu: 50m
+                  memory: 128Mi
+
+          alertmanager:
+            enabled: true
+            spec:
+              replicaCount: 2
+              configSecret: alertmanager-config
+              affinity:
+                podAntiAffinity:
+                  preferredDuringSchedulingIgnoredDuringExecution:
+                    - weight: 100
+                      podAffinityTerm:
+                        labelSelector:
+                          matchLabels:
+                            app.kubernetes.io/name: vmalertmanager
+                            app.kubernetes.io/instance: victoria-metrics
+                        topologyKey: kubernetes.io/hostname
+              resources:
+                limits:
+                  memory: 256Mi
+                requests:
+                  cpu: 50m
+                  memory: 128Mi
+
+          defaultDatasources:
+            victoriametrics:
+              datasources:
+                - name: VictoriaMetrics
+                  type: prometheus
+                  access: proxy
+                  uid: victoriametrics
+                  isDefault: true
+
+          grafana:
+            enabled: false
+            forceDeployDatasource: false
+
+          kubeControllerManager:
+            enabled: false
+
+          kubeScheduler:
+            enabled: false
+
+          kubeEtcd:
+            enabled: false
+
+          kubeApiServer:
+            vmScrape:
+              spec:
+                endpoints:
+                  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+                    port: https
+                    scheme: https
+                    tlsConfig:
+                      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+                      serverName: kubernetes
+                    metricRelabelConfigs:
+                      - action: drop
+                        source_labels: [__name__]
+                        regex: apiserver_request_duration_seconds_bucket|apiserver_request_body_size_bytes_bucket|apiserver_response_sizes_bucket|apiserver_watch_list_duration_seconds_bucket|apiserver_watch_cache_read_wait_seconds_bucket|apiserver_watch_events_sizes_bucket|etcd_request_duration_seconds_bucket
+
+          defaultRules:
+            groups:
+              etcd:
+                enabled: false
+              kubernetes-system-controller-manager:
+                enabled: false
+              kubernetes-system-scheduler:
+                enabled: false
+              kubernetes-system-apiserver:
+                rules:
+                  KubeClientCertificateExpiration:
+                    enabled: false
+
+          prometheus-node-exporter:
+            resources:
+              limits:
+                cpu: 100m
+                memory: 64Mi
+              requests:
+                cpu: 10m
+                memory: 32Mi
+
+          kube-state-metrics:
+            resources:
+              limits:
+                cpu: 200m
+                memory: 128Mi
+              requests:
+                cpu: 10m
+                memory: 64Mi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.monitoring.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

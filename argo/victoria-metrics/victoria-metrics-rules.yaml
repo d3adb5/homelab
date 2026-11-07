@@ -1,0 +1,96 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: victoria-metrics
+  labels:
+    release: victoria-metrics
+spec:
+  groups:
+    - name: victoria-metrics.storage
+      rules:
+        - alert: VictoriaMetricsVolumeFilling
+          expr: >-
+            kubelet_volume_stats_used_bytes{namespace="monitoring",persistentvolumeclaim=~".*vmstorage.*"}
+              / kubelet_volume_stats_capacity_bytes{namespace="monitoring",persistentvolumeclaim=~".*vmstorage.*"}
+              > 0.8
+          for: 6h
+          labels:
+            severity: warning
+          annotations:
+            summary: vmstorage volume {{ $labels.persistentvolumeclaim }} is over 80% full
+            description: >-
+              {{ $value | humanizePercentage }} used against a 3 month
+              retention. Either ingestion grew or the estimate was low. Grow
+              the volume, shorten retention, or start dropping series at
+              scrape time.
+
+        - alert: VictoriaMetricsVolumeAlmostFull
+          expr: >-
+            kubelet_volume_stats_used_bytes{namespace="monitoring",persistentvolumeclaim=~".*vmstorage.*"}
+              / kubelet_volume_stats_capacity_bytes{namespace="monitoring",persistentvolumeclaim=~".*vmstorage.*"}
+              > 0.9
+          for: 30m
+          labels:
+            severity: critical
+          annotations:
+            summary: vmstorage volume {{ $labels.persistentvolumeclaim }} is over 90% full
+            description: >-
+              vmstorage becomes read-only when it runs out of space and
+              ingestion stops cluster-wide.
+
+        - alert: VictoriaMetricsLongTermVolumeFilling
+          expr: >-
+            kubelet_volume_stats_used_bytes{namespace="monitoring",persistentvolumeclaim=~".*victoria-metrics-longterm.*"}
+              / kubelet_volume_stats_capacity_bytes{namespace="monitoring",persistentvolumeclaim=~".*victoria-metrics-longterm.*"}
+              > 0.8
+          for: 6h
+          labels:
+            severity: warning
+          annotations:
+            summary: Long-term metrics volume is over 80% full
+            description: >-
+              {{ $value | humanizePercentage }} used against a 1 year
+              retention. Check what the long-term remote write is keeping —
+              the keep rule in the vmagent additionalRemoteWrites block is the
+              only thing bounding it.
+
+    - name: victoria-metrics.availability
+      rules:
+        - alert: VictoriaMetricsStorageDegraded
+          expr: >-
+            kube_statefulset_status_replicas_ready{namespace="monitoring",statefulset=~"vmstorage-.*"} < 2
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            summary: A vmstorage node is unavailable
+            description: >-
+              {{ $value }} of 2 vmstorage replicas are ready. With
+              replicationFactor 2 across 2 nodes every sample exists on both,
+              so queries stay correct — but there is no redundancy left and a
+              second failure loses ingestion.
+
+        - alert: VictoriaMetricsAgentDegraded
+          expr: >-
+            kube_deployment_status_replicas_available{namespace="monitoring",deployment=~"vmagent-.*"} < 2
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: A vmagent replica is unavailable
+            description: >-
+              {{ $value }} of 2 vmagent replicas are ready. Both scrape every
+              target and storage deduplicates the result, so one survivor is
+              still complete coverage — but there is no spare.
+
+        - alert: GrafanaDown
+          expr: >-
+            kube_deployment_status_replicas_available{namespace="monitoring",deployment="grafana"} < 1
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: Grafana is unavailable
+            description: >-
+              No Grafana replica is available. Dashboards are down; alerting
+              does not depend on Grafana and keeps working.

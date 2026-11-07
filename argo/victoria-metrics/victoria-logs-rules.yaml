@@ -1,0 +1,54 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: victoria-logs
+  labels:
+    release: victoria-metrics
+spec:
+  groups:
+    - name: victoria-logs.storage
+      rules:
+        - alert: VictoriaLogsVolumeFilling
+          expr: >-
+            kubelet_volume_stats_used_bytes{namespace="monitoring",persistentvolumeclaim="victoria-logs"}
+              / kubelet_volume_stats_capacity_bytes{namespace="monitoring",persistentvolumeclaim="victoria-logs"}
+              > 0.8
+          for: 6h
+          labels:
+            severity: warning
+          annotations:
+            summary: VictoriaLogs volume is over 80% full
+            description: >-
+              {{ $value | humanizePercentage }} used. The disk-usage cap is set
+              to 95%, so the oldest logs will start rotating out before the
+              intended 1 year retention period. Grow the volume or accept the
+              shorter window.
+
+        - alert: VictoriaLogsVolumeAlmostFull
+          expr: >-
+            kubelet_volume_stats_used_bytes{namespace="monitoring",persistentvolumeclaim="victoria-logs"}
+              / kubelet_volume_stats_capacity_bytes{namespace="monitoring",persistentvolumeclaim="victoria-logs"}
+              > 0.97
+          for: 30m
+          labels:
+            severity: critical
+          annotations:
+            summary: VictoriaLogs volume is over 97% full
+            description: >-
+              The 95% disk-usage cap should have rotated data out before this
+              point. Check that retention is being enforced before ingestion
+              stops.
+
+    - name: victoria-logs.availability
+      rules:
+        - alert: VictoriaLogsDown
+          expr: >-
+            kube_deployment_status_replicas_available{namespace="monitoring",deployment="victoria-logs"} < 1
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: VictoriaLogs is unavailable
+            description: >-
+              Logs cannot be searched. Kubernetes logs wait in the collector's
+              on-disk buffer, but syslog sent over UDP is being lost.

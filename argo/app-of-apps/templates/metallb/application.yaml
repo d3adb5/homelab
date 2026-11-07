@@ -19,8 +19,8 @@ spec:
 
           prometheus:
             # Metrics are served over TLS and authorized through TokenReview,
-            # so the chart binds RBAC to Prometheus' service account.
-            serviceAccount: kube-prometheus-stack-prometheus
+            # so the chart binds RBAC to the scraping agent's service account.
+            serviceAccount: vmagent-victoria-metrics
             namespace: {{ .Values.monitoring.namespace }}
             serviceMonitor:
               enabled: true
