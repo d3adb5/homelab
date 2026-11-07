@@ -17,6 +17,15 @@ spec:
       requests:
         storage: 5Gi
 
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: DoesNotExist
+
   resources:
     limits:
       memory: 1Gi

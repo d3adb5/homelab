@@ -140,6 +140,9 @@ spec:
                 url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaLogs/v1.51.0/dashboards/vlagent.json
                 datasource: VictoriaMetrics
 
+          affinity:
+            {{- include "homelab.avoidControlPlane" . | nindent 12 }}
+
           ingress:
             enabled: true
             ingressClassName: traefik

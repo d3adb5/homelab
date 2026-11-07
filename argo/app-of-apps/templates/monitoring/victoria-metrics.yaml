@@ -38,6 +38,9 @@ spec:
             serviceMonitor:
               enabled: true
 
+          affinity:
+            {{- include "homelab.avoidControlPlane" . | nindent 12 }}
+
           topologySpreadConstraints:
             - maxSkew: 1
               topologyKey: kubernetes.io/hostname
@@ -99,6 +102,7 @@ spec:
                 extraArgs:
                   dedup.minScrapeInterval: 60s
                 affinity:
+                  {{- include "homelab.avoidControlPlane" . | nindent 18 }}
                   podAntiAffinity:
                     requiredDuringSchedulingIgnoredDuringExecution:
                       - labelSelector:
@@ -121,6 +125,7 @@ spec:
                 extraArgs:
                   dedup.minScrapeInterval: 60s
                 affinity:
+                  {{- include "homelab.avoidControlPlane" . | nindent 18 }}
                   podAntiAffinity:
                     preferredDuringSchedulingIgnoredDuringExecution:
                       - weight: 100
@@ -140,6 +145,7 @@ spec:
               vminsert:
                 replicaCount: 2
                 affinity:
+                  {{- include "homelab.avoidControlPlane" . | nindent 18 }}
                   podAntiAffinity:
                     preferredDuringSchedulingIgnoredDuringExecution:
                       - weight: 100
@@ -181,6 +187,7 @@ spec:
                 promscrape.streamParse: "true"
                 remoteWrite.maxDiskUsagePerURL: "4GB"
               affinity:
+                {{- include "homelab.avoidControlPlane" . | nindent 16 }}
                 podAntiAffinity:
                   preferredDuringSchedulingIgnoredDuringExecution:
                     - weight: 100
@@ -211,6 +218,7 @@ spec:
               extraArgs:
                 external.url: https://grafana.d3adb5.ca
               affinity:
+                {{- include "homelab.avoidControlPlane" . | nindent 16 }}
                 podAntiAffinity:
                   preferredDuringSchedulingIgnoredDuringExecution:
                     - weight: 100
@@ -233,6 +241,7 @@ spec:
               replicaCount: 2
               configSecret: alertmanager-config
               affinity:
+                {{- include "homelab.avoidControlPlane" . | nindent 16 }}
                 podAntiAffinity:
                   preferredDuringSchedulingIgnoredDuringExecution:
                     - weight: 100
@@ -311,13 +320,14 @@ spec:
           prometheus-node-exporter:
             resources:
               limits:
-                cpu: 100m
                 memory: 64Mi
               requests:
                 cpu: 10m
                 memory: 32Mi
 
           kube-state-metrics:
+            affinity:
+              {{- include "homelab.avoidControlPlane" . | nindent 14 }}
             resources:
               limits:
                 cpu: 200m

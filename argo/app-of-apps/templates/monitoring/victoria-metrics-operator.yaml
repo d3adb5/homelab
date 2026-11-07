@@ -37,6 +37,9 @@ spec:
           serviceMonitor:
             enabled: true
 
+          affinity:
+            {{- include "homelab.avoidControlPlane" . | nindent 12 }}
+
           resources:
             limits:
               memory: 512Mi

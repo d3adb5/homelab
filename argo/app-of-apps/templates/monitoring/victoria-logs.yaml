@@ -36,6 +36,9 @@ spec:
             serviceMonitor:
               enabled: true
 
+          affinity:
+            {{- include "homelab.avoidControlPlane" . | nindent 12 }}
+
           ingress:
             enabled: true
             className: traefik
@@ -64,6 +67,9 @@ spec:
             extraArgs:
               syslog.listenAddr.udp: ":5140"
               syslog.streamFields.udp: '["hostname","app_name"]'
+
+            affinity:
+              {{- include "homelab.avoidControlPlane" . | nindent 14 }}
 
             retentionPeriod: 1y
             retentionMaxDiskUsagePercent: "95"
