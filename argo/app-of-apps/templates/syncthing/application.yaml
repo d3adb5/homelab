@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: oci.trueforge.org/truecharts
     chart: syncthing
-    targetRevision: 24.1.0
+    targetRevision: 24.1.4
 
     helm:
       valuesObject:
