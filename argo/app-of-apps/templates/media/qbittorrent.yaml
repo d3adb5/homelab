@@ -116,10 +116,13 @@ spec:
           extraVolumeMounts:
             - name: tv-library
               mountPath: /downloads/tv
+              subPath: complete
             - name: movies-library
               mountPath: /downloads/movies
+              subPath: complete
             - name: music-library
               mountPath: /downloads/music
+              subPath: complete
 
   destination:
     server: https://kubernetes.default.svc
