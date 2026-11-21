@@ -25,8 +25,6 @@ spec:
       value: "true"
     - name: event-metrics-user-enabled
       value: "true"
-    - name: log-level
-      value: "INFO,org.keycloak.services.managers:debug,org.keycloak.TokenVerifier:debug,org.keycloak.services.resources.admin:debug"
   db:
     vendor: postgres
     host: keycloak-pgbouncer
