@@ -1,0 +1,139 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: qbittorrent
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: media
+
+  sources:
+    - repoURL: {{ .Values.repository.homelab.url }}
+      targetRevision: {{ .Values.repository.homelab.targetRevision }}
+      path: argo/media/qbittorrent
+
+    - repoURL: https://oauth2-proxy.github.io/manifests
+      targetRevision: 10.7.4
+      chart: oauth2-proxy
+
+      helm:
+        valuesObject:
+          config:
+            existingSecret: qbittorrent-oidc-secrets
+
+            configFile: |-
+              email_domains = ["*"]
+              provider = "keycloak-oidc"
+              oidc_issuer_url = "https://id.d3adb5.ca/realms/core"
+              redirect_url = "https://qbt.d3adb5.ca/oauth2/callback"
+              code_challenge_method = "S256"
+              allowed_groups = ["/qBittorrent"]
+              upstreams = [ "static://202" ]
+              reverse_proxy = true
+              skip_provider_button = true
+
+          metrics:
+            serviceMonitor:
+              enabled: true
+
+          ingress:
+            enabled: true
+            className: traefik
+            hosts:
+              - "qbt.d3adb5.ca"
+            path: /oauth2
+            tls:
+              - hosts:
+                  - "qbt.d3adb5.ca"
+                secretName: qbittorrent-tls
+
+    - repoURL: https://charts.d3adb5.net
+      targetRevision: 0.2.0
+      chart: qbittorrent
+
+      helm:
+        valuesObject:
+          image:
+            repository: lscr.io/linuxserver/qbittorrent
+            pullPolicy: IfNotPresent
+            tag: "5.3.0@sha256:3d4c4545d51a690a0df15a2ff99038823a88a9822df8e794526447b9afbd7384"
+          replicaCount: 1
+          podSecurityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+          securityContext:
+            readOnlyRootFilesystem: true
+          qbittorrent:
+            config:
+              WebUI:
+                AuthSubnetWhitelistEnabled: true
+                AuthSubnetWhitelist: 10.244.0.0/16
+              BitTorrent:
+                Session\DefaultSavePath: /downloads/
+                Session\TempPathEnabled: false
+                Session\DisableAutoTMMByDefault: false
+          resources:
+            requests:
+              cpu: 500m
+              memory: 2Gi
+            limits:
+              memory: 4Gi
+          persistence:
+            config:
+              storageClass: longhorn
+          ingress:
+            enabled: true
+            className: traefik
+            host: qbt.d3adb5.ca
+            tls:
+              enabled: true
+              secretName: qbittorrent-tls
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt
+              traefik.ingress.kubernetes.io/router.middlewares: "{{ .Values.media.namespace }}-qbittorrent-oauth2-proxy@kubernetescrd"
+          peerService:
+            type: LoadBalancer
+            port: 32333
+            externalTrafficPolicy: Local
+            annotations:
+              metallb.io/loadBalancerIPs: "192.168.1.43"
+          extraEnv:
+            - name: TZ
+              value: America/Vancouver
+          extraVolumes:
+            - name: tv-library
+              persistentVolumeClaim:
+                claimName: {{ .Values.media.libraries.tv.claimName }}
+            - name: movies-library
+              persistentVolumeClaim:
+                claimName: {{ .Values.media.libraries.movies.claimName }}
+            - name: music-library
+              persistentVolumeClaim:
+                claimName: {{ .Values.media.libraries.music.claimName }}
+          extraVolumeMounts:
+            - name: tv-library
+              mountPath: /downloads/tv
+            - name: movies-library
+              mountPath: /downloads/movies
+            - name: music-library
+              mountPath: /downloads/music
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.media.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+
+  ignoreDifferences:
+    - kind: Service
+      jqPathExpressions:
+        - .spec.ports[]?.nodePort
