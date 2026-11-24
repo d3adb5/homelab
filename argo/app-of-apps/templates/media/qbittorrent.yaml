@@ -56,7 +56,7 @@ spec:
           image:
             repository: lscr.io/linuxserver/qbittorrent
             pullPolicy: IfNotPresent
-            tag: "5.3.0@sha256:afed7399d0f336ee22d6d011b3c8c50a44e3810f0af6e3c4083d79e566f1677a"
+            tag: "5.3.1@sha256:1fa2f9692501f27ce51c4fffd771d63ec38f1163cb648941c324344b7c5a3915"
           replicaCount: 1
           podSecurityContext:
             runAsNonRoot: true
