@@ -12,7 +12,7 @@ spec:
   sources:
     - repoURL: https://victoriametrics.github.io/helm-charts
       chart: victoria-metrics-operator-crds
-      targetRevision: 0.15.2
+      targetRevision: 0.16.0
 
       helm:
         valuesObject:
