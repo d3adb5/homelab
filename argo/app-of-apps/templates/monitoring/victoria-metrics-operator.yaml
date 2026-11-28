@@ -11,7 +11,7 @@ spec:
 
   sources:
     - repoURL: https://victoriametrics.github.io/helm-charts
-      targetRevision: 0.68.2
+      targetRevision: 0.69.0
       chart: victoria-metrics-operator
 
       helm:
