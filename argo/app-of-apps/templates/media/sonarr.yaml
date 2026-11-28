@@ -56,7 +56,7 @@ spec:
           replicaCount: 1
           image:
             repository: lscr.io/linuxserver/sonarr
-            tag: "4.0.20@sha256:a5c1a5fecbef946927ab90ad68df319ac5fe644057e5fc18cd993f01ac07b2b2"
+            tag: "4.0.20@sha256:5c943771636f8f13b833efc0eae81b9373737435a262503a29157842c052ed0b"
             pullPolicy: IfNotPresent
           resources:
             requests:
